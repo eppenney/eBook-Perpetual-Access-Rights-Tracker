@@ -59,7 +59,7 @@ color: rgb(255, 255, 255);
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>220</x>
       <y>280</y>
       <width>751</width>
       <height>51</height>
@@ -109,7 +109,7 @@ color:rgb(255, 255, 255);</string>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>1120</x>
+      <x>1110</x>
       <y>340</y>
       <width>51</width>
       <height>41</height>
@@ -128,7 +128,7 @@ background-color: rgb(100, 167, 225);</string>
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>1060</x>
+      <x>1050</x>
       <y>340</y>
       <width>51</width>
       <height>41</height>
