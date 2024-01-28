@@ -24,7 +24,7 @@ def scrapeCRKN():
 	soup = BeautifulSoup(page_text, "html.parser")
 
 	links = soup.find_all('a', href=lambda href: href and (href.endswith('.xlsx')))
-	# Maybe include some other options in here? CSV, other excel format?
+	# Maybe include some other options in here? CSV, other excel format - xls?
 
 	connection = database.connect_to_database()
 	for link in links:
@@ -37,49 +37,31 @@ def scrapeCRKN():
 			with open("temp.xlsx", 'wb') as file:
 				response = requests.get(config.CRKN_root_url + file_link)
 				file.write(response.content)
-			upload_to_database("temp.xlsx", file_first, connection)
+			file_df = file_to_dataframe_excel("temp.xlsx")
+			upload_to_database(file_df, file_first, connection)
 	database.close_database(connection)
 
 
 def compare_file(file, method, connection):
-	# Repeating code, not sure the best way to resolve it - does it work to replace it with the method variable?
-
 	# True means already exists
 	# False means does not exist
 	if method != "CRKN" and method != "local":
 		raise Exception("Incorrect method type (CRKN or local) to indicate type/location of file")
 
-	if method == "CRKN":
-		cursor = connection.cursor()
-		files = cursor.execute(f"SELECT * FROM CRKN_file_names WHERE file_name = '{file[0]}'").fetchall()
-		if not files:
-			cursor.execute(f"INSERT INTO CRKN_file_names (file_name, file_date) VALUES ('{file[0]}', '{file[1]}')")
-			print(f"file name inserted - {file[0]}, {file[1]}")
+	cursor = connection.cursor()
+	files = cursor.execute(f"SELECT * FROM {method}_file_names WHERE file_name = '{file[0]}'").fetchall()
+	if not files:
+		cursor.execute(f"INSERT INTO {method}_file_names (file_name, file_date) VALUES ('{file[0]}', '{file[1]}')")
+		print(f"file name inserted - {file[0]}, {file[1]}")
+		return False
+	else:
+		files_dates = cursor.execute(f"SELECT * FROM {method}_file_names WHERE file_name = '{file[0]}' and file_date = '{file[1]}'").fetchall()
+		if not files_dates:
+			cursor.execute(f"UPDATE {method}_file_names SET file_date = '{file[1]}' WHERE file_name = '{file[0]}';")
+			print(f"file name updated - {file[0]}, {file[1]}")
 			return False
-		else:
-			files_dates = cursor.execute(f"SELECT * FROM CRKN_file_names WHERE file_name = '{file[0]}' and file_date = '{file[1]}'").fetchall()
-			if not files_dates:
-				cursor.execute(f"UPDATE CRKN_file_names SET file_date = '{file[1]}' WHERE file_name = '{file[0]}';")
-				print(f"file name updated - {file[0]}, {file[1]}")
-				return False
-			print(f"File already there - {file[0]}, {file[1]}")
-			return True
-
-	else:   # local method
-		cursor = connection.cursor()
-		files = cursor.execute(f"SELECT * FROM Local_file_names WHERE file_name = '{file[0]}'").fetchall()
-		if not files:
-			cursor.execute(f"INSERT INTO Local_file_names (file_name, file_date) VALUES ('{file[0]}', '{file[1]}')")
-			print(f"file name inserted - {file[0]}, {file[1]}")
-			return False
-		else:
-			files_dates = cursor.execute(f"SELECT * FROM Local_file_names WHERE file_name = '{file[0]}' and file_date = '{file[1]}'").fetchall()
-			if not files_dates:
-				cursor.execute(f"UPDATE Local_file_names SET file_date = '{file[1]}' WHERE file_name = '{file[0]}';")
-				print(f"file name updated - {file[0]}, {file[1]}")
-				return False
-			print(f"File already there - {file[0]}, {file[1]}")
-			return True
+		print(f"File already there - {file[0]}, {file[1]}")
+		return True
 
 
 def split_CRKN_file_name(file_name):
@@ -90,13 +72,23 @@ def split_CRKN_file_name(file_name):
 	return [a[2], c]
 
 
-def upload_to_database(file, table_name, connection):
+def file_to_dataframe_excel(file):
 	# File can be either a file or a URL link to a file
 	try:
-		df = pd.read_excel(file, sheet_name="PA-Rights")
+		return pd.read_excel(file, sheet_name="PA-Rights")
 	except ValueError:
-		df = pd.read_excel(file, sheet_name="PA-rights")
+		return pd.read_excel(file, sheet_name="PA-rights")
 
+
+def file_to_dataframe_csv(file):
+	# File can be either a file or a URL link to a file
+	try:
+		return pd.read_csv(file)
+	except ValueError:
+		raise Exception("Unable to read csv file.")
+
+
+def upload_to_database(df, table_name, connection):
 	df.to_sql(
 		name=table_name,
 		con=connection,
