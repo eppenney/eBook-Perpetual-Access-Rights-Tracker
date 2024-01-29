@@ -50,6 +50,37 @@ def create_file_name_tables(connection):
 			"""CREATE TABLE Local_file_names(file_name VARCHAR(255),file_date VARCHAR(255));""")
 
 
+def search_database(connection, searchType, value):
+	results = []
+	cursor = connection.cursor()
+	listOfTables = connection.execute(
+		"""SELECT file_name FROM CRKN_file_names
+		UNION
+		SELECT file_name FROM Local_file_names;""").fetchall()
+	listOfTables = [row[0] for row in listOfTables]
+	for table in listOfTables:
+		if searchType == 'Title':
+			value = f'%{value}%'
+			query = f'SELECT Title, Platform_eISBN, OCN, [{config.institution}] FROM {table} WHERE {searchType} LIKE ?;'
+			cursor.execute(query, (value,))
+		else:
+			cursor = connection.execute(f'SELECT Title, Platform_eISBN, OCN, [{config.institution}] FROM {table} WHERE {searchType}={value};')
+		results = results + cursor.fetchall()
+	return results
+
+
+def search_by_title(connection, value):
+	return search_database(connection, "Title", value)
+
+
+def search_by_ISBN(connection, value):
+	return search_database(connection, "Platform_eISBN", value)
+
+
+def search_by_OCN(connection, value):
+	return search_database(connection, "OCN", value)
+
+
 # Code to initialize the database (create it, create the starting tables, and close it)
 connection_obj = connect_to_database()
 create_file_name_tables(connection_obj)

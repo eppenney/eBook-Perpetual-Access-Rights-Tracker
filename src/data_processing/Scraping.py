@@ -72,12 +72,13 @@ def split_CRKN_file_name(file_name):
 	return [a[2], c]
 
 
+# Need a way to determine if sheets are from CRKN and need to skip first 2 lines or not
 def file_to_dataframe_excel(file):
 	# File can be either a file or a URL link to a file
 	try:
-		return pd.read_excel(file, sheet_name="PA-Rights")
+		return pd.read_excel(file, sheet_name="PA-Rights", skiprows=[0, 1])
 	except ValueError:
-		return pd.read_excel(file, sheet_name="PA-rights")
+		return pd.read_excel(file, sheet_name="PA-rights", skiprows=[0, 1])
 
 
 def file_to_dataframe_csv(file):
