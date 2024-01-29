@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import QFileDialog, QFileDialog, QFileDialog
 from PyQt5.QtWidgets import QFileDialog
 import os
 import pandas as pd
+# import database.py
 
 def upload_and_process_file():
     options = QFileDialog.Options()
@@ -30,3 +31,17 @@ def process_file(file_path):
     save_path = os.path.join(save_folder, 'processed_data.csv')
     file.to_csv(save_path, index=False)
     print(f"Saved to: {save_path}")
+
+    """
+    # Upload to database? Need to test with database stuff
+    connection = database.connect_to_database()
+    file_df = pd.read_csv(file)
+    upload_to_database(file_df, "Local_Upload", connection)
+    file_df.to_sql(
+		name="Local_Upload",
+		con=connection,
+		if_exists="append",
+		index=False
+	)
+    database.close_database(connection)
+    """
