@@ -8,6 +8,7 @@ Also, a function to create tables for file names and dates, that I am using with
 Cian Bottomley-Mason
 January 28, 2024,
 Basic database-wide search functionality using Isaac's scraped filename system
+Preliminary implementation of an advanced search feature
 """
 
 
@@ -25,6 +26,17 @@ def close_database(connection):
 	print("Closing connection to the database")
 	connection.commit()
 	connection.close()
+
+
+# Quick function to return a list of all CRKN/local table names
+def get_tables(connection):
+	# Grabs the names of all tables via the CRKN and local file name tables
+	listOfTables = connection.execute(
+		"""SELECT file_name FROM CRKN_file_names
+        UNION
+        SELECT file_name FROM Local_file_names;""").fetchall()
+	listOfTables = [row[0] for row in listOfTables]  # neat way to strip the apostrophes/parentheses from python's default formatting
+	return listOfTables
 
 
 # Not sure about this code - got it from internet, so could be wrong, but I think it works
@@ -54,28 +66,25 @@ def create_file_name_tables(connection):
 			"""CREATE TABLE Local_file_names(file_name VARCHAR(255),file_date VARCHAR(255));""")
 
 
-# Search functionality: returns a list of items matching the search parameters from all lists
+# Search functionality: returns a list of items matching the search parameters from all tables
 # Keeps duplicate items at the moment, not sure if we should also include the publisher to distinguish dupes,
-# or if we should just remove them instead (keeping whichever one has the best access value, i.e. if one says "Y", delete the other?
+# or should we just remove them instead (keeping whichever one has the best access, if one says Y, delete the other?)
 def search_database(connection, searchType, value):
 	results = []
 	cursor = connection.cursor()
 
 	# Grabs the names of all tables via the CRKN and local file name tables
-	listOfTables = connection.execute(
-		"""SELECT file_name FROM CRKN_file_names
-		UNION
-		SELECT file_name FROM Local_file_names;""").fetchall()
-	listOfTables = [row[0] for row in listOfTables] # neat way to strip the apostrophes/parentheses from python's default formatting
+	listOfTables = get_tables(connection)
 
 	# Searches for matching items through each table one by one and adds any matches to the list
 	for table in listOfTables:
 		if searchType == 'Title':
 			value = f'%{value}%'
-			query = f'SELECT Title, Platform_eISBN, OCN, [{config.institution}] FROM {table} WHERE {searchType} LIKE ?;'
+			query = f'SELECT Title, Platform_eISBN, OCN, "{config.institution}" FROM {table} WHERE {searchType} LIKE ?'
 			cursor.execute(query, (value,))
 		else:
-			cursor = connection.execute(f'SELECT Title, Platform_eISBN, OCN, [{config.institution}] FROM {table} WHERE {searchType}={value};')
+			query = f'SELECT Title, Platform_eISBN, OCN, "{config.institution}" FROM {table} WHERE {searchType}={value}'
+			cursor.execute(query)
 		results = results + cursor.fetchall()
 	return results
 
@@ -91,6 +100,40 @@ def search_by_ISBN(connection, value):
 
 def search_by_OCN(connection, value):
 	return search_database(connection, "OCN", value)
+
+
+# Functions to add AND/OR statements to queries for the advanced search
+def add_AND_query(searchType, query, term):
+	if searchType == "Title":
+		term = f'%{term}%'
+		return query + f" AND {searchType} LIKE '{term}'"
+	else:
+		return query + f" AND {searchType}={term}"
+
+
+def add_OR_query(searchType, query, term):
+	if searchType == "Title":
+		term = f'%{term}%'
+		return query + f" OR {searchType} LIKE '{term}'"
+	else:
+		return query + f" OR {searchType}={term}"
+
+
+# Advanced search function takes in a generated SQL query and sql connection
+# Returns a list of all matching results throughout all tables
+# Query should be generated via a base query (likely the original search term) + a combination of add AND/OR functions
+def advanced_search(connection, query):
+	results = []
+	cursor = connection.cursor()
+
+	listOfTables = get_tables(connection)
+
+	# Searches for matching items through each table one by one and adds any matches to the list
+	for table in listOfTables:
+		query = query.replace("temp", table)  # original query should list the table used as 'temp' scuffed for now
+		cursor.execute(query)
+		results = results + cursor.fetchall()
+	return results
 
 
 # Code to initialize the database (create it, create the starting tables, and close it)
