@@ -7,8 +7,6 @@ Some functions can also be re-used for the local file uploads (compare_file)
 
 Works well I think - should test the update functionality
 I tested new files and the same files, but not when the file has a newer date (to update)
-
-In the compare_file function, I have repeating code - if someone knows a good way to fix that, go for it
 """
 
 
