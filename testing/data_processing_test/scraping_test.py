@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 import requests
-from src.data_processing import Scraping
+from src.data_processing.Scraping import scrapeCRKN
 from src.data_processing.Scraping import split_CRKN_file_name
 from src.data_processing.Scraping import compare_file
 
@@ -15,30 +15,45 @@ class MockResponse:
         if self.status_code != 200:
             raise requests.exceptions.HTTPError
 
+#Mock HTML content
+mock_html = "<html><body><a href='CRKN_EbookPARightsTracking_Proquest_2024_01_20_02.xlsx'>CRKN_EbookPARightsTracking_Proquest_2024_01_20_02.xlsx</a><a href='CRKN_EbookPARightsTracking_Proquest_2024_01_20_02.xlsx'>CRKN_EbookPARightsTracking_Proquest_2024_01_20_02.xlsx</a></body></html>"
 
-# Mock data
-mock_html_content = "<html><body><a href='file1.xlsx'>File 1</a><a href='file2.xlsx'>File 2</a></body></html>"
 
-
-def test_scrapeCRKN():
+def test_scrapeCRKN_success():
     # Mock data for the response
-    mock_html = "<html><body><a href='file1.xlsx'>File 1</a><a href='file2.xlsx'>File 2</a></body></html>"
     mock_response = MockResponse(mock_html, 200)
     # Patching requests.get to return the mock response
-    with patch('scraping.requests.get', return_value=mock_response):
+    with patch('src.data_processing.Scraping.requests.get', return_value=mock_response):
         # Patching the database connection methods
-        with patch('scraping.database.connect_to_database') as mock_connect, \
-                patch('scraping.database.close_database') as mock_close:
+        with patch('src.data_processing.database.connect_to_database') as mock_connect, \
+                patch('src.data_processing.database.close_database') as mock_close:
             # Create a mock connection object
             mock_connection = MagicMock()
             mock_connect.return_value = mock_connection
 
             # Call the function
-            Scraping.scrapeCRKN()
+            scrapeCRKN()
 
             # Assertions to verify behavior
             mock_connect.assert_called_once()  # Verify database connection was opened
             mock_close.assert_called_once_with(mock_connection)  # Verify database connection was closed
+
+def test_scrapeCRKN_HTTP_failure():
+    # Mock data for the response
+    mock_response = MockResponse(None, 404)
+    # Patching requests.get to return the mock response
+    with patch('src.data_processing.Scraping.requests.get', return_value=mock_response):
+        # Patching the database connection methods
+        with patch('src.data_processing.database.connect_to_database') as mock_connect:
+            # Create a mock connection object
+            mock_connection = MagicMock()
+            mock_connect.return_value = mock_connection
+
+            # Call the function
+            scrapeCRKN()
+
+            # Assertions to verify behavior
+            mock_connect.assert_not_called()  # Verify database connection was opened
 
 
 def test_split_CRKN_file_name():
@@ -59,7 +74,6 @@ def test_split_CRKN_file_name():
 
 def test_scrapeCRKN_html_processing():
     # Mock HTML content
-    mock_html = "<html><body><a href='file1.xlsx'>File 1</a><a href='file2.xlsx'>File 2</a></body></html>"
 
     # Mock response for requests.get
     mock_response = MagicMock()
@@ -69,10 +83,10 @@ def test_scrapeCRKN_html_processing():
     # Mock database connection
     mock_connection = MagicMock()
 
-    with patch('scraping.requests.get', return_value=mock_response):
-        with patch('scraping.database.connect_to_database', return_value=mock_connection):
+    with patch('src.data_processing.Scraping.requests.get', return_value=mock_response):
+        with patch('src.data_processing.database.connect_to_database', return_value=mock_connection):
             # Call the function
-            Scraping.scrapeCRKN()
+            scrapeCRKN()
 
             # Check if database connection was used to execute queries
             assert mock_connection.cursor.called, "Database cursor was not called"

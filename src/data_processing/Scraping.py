@@ -14,10 +14,11 @@ from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 from src.utility import config
-import database
+from src.data_processing import database
 
 
 def scrapeCRKN():
+    error = ""
     try:
         # Make a request to the CRKN website
         response = requests.get(config.CRKN_url)
@@ -26,22 +27,28 @@ def scrapeCRKN():
         # If request successful, process text
         page_text = response.text
 
+
     except requests.exceptions.HTTPError as http_err:
         # Handle HTTP errors
-        print(f"HTTP error occurred: {http_err}")
+        error = http_err
         page_text = None
     except requests.exceptions.ConnectionError as conn_err:
         # Handle errors like refused connections
-        print(f"Connection error occured: {conn_err}")
+        error = conn_err
         page_text = None
     except requests.exceptions.Timeout as timeout_err:
         # Handle request timeout
-        print(f"Timeout error occurred: {timeout_err}")
+        error = timeout_err
         page_text = None
     except Exception as e:
         # Handle any other exceptions
-        print(f"An error occurred: {e}")
+        error = e
         page_text = None
+
+    #We will need to address how to show errors to the users when they happen (something like show a pop up instead of returning); will leave like this for now
+    if page_text is None:
+        print(f"An error occurred: {error}")
+        return
 
     soup = BeautifulSoup(page_text, "html.parser")
 

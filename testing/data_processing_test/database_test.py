@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 from src.data_processing import database
 
 
-@patch('database.sqlite3')
+@patch('src.data_processing.database.sqlite3')
 def test_connect_to_database_mock(mock_sqlite3):
     # Set up the mock for sqlite3.connect
     mock_connection = MagicMock()
