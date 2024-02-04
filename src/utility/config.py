@@ -6,7 +6,7 @@ institution = "Univ. of Prince Edward Island"
 language = "English"
 results_per_page = 25
 theme = "Dark"
-CRKN_url = "https://www.crkn-rcdr.ca/en/perpetual-access-rights-reports-storage"
+CRKN_url = "https://library.upei.ca/test-page-ebooks-perpetual-access-project"
 
 # Probably use the second one, so that the user only changes the first thing, then it should work for both
 # CRKN_root_url = "https://www.crkn-rcdr.ca"
