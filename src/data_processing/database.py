@@ -13,13 +13,13 @@ Preliminary implementation of an advanced search feature
 
 
 import sqlite3
-from src.utility import config
+from src.utility import settings
 
 
 # Putting this here just to create the database
 def connect_to_database():
 	print("Connecting to the database")
-	return sqlite3.connect(config.database_name)
+	return sqlite3.connect(settings.settings.database_name)
 
 
 def close_database(connection):
@@ -80,10 +80,10 @@ def search_database(connection, searchType, value):
 	for table in listOfTables:
 		if searchType == 'Title':
 			value = f'%{value}%'
-			query = f'SELECT Title, Platform_eISBN, OCN, "{config.institution}" FROM {table} WHERE {searchType} LIKE ?'
+			query = f'SELECT Title, Platform_eISBN, OCN, "{settings.settings.institution}" FROM {table} WHERE {searchType} LIKE ?'
 			cursor.execute(query, (value,))
 		else:
-			query = f'SELECT Title, Platform_eISBN, OCN, "{config.institution}" FROM {table} WHERE {searchType}={value}'
+			query = f'SELECT Title, Platform_eISBN, OCN, "{settings.settings.institution}" FROM {table} WHERE {searchType}={value}'
 			cursor.execute(query)
 		results = results + cursor.fetchall()
 	return results
