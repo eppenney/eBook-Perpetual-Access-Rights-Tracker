@@ -1,5 +1,5 @@
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMessageBox
+from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMessageBox, QComboBox
 
 from searchDisplay import searchDisplay
 from settingsPage import settingsPage
@@ -12,13 +12,19 @@ class startScreen(QDialog):
 
         #basic idea we are going to do is stack here where each searchbar will be pop when the negative
         self.duplicateTextEdits = []
+        self.duplicateCombos = []
 
         self.removeButton = self.findChild(QPushButton, 'removeButton') #finding child pushButton from the parent class
         self.removeButton.clicked.connect(self.removeTextEdit)
 
+
+        #finding the method from the class.
         self.pushButton = self.findChild(QPushButton, 'pushButton')
         self.textEdit = self.findChild(QTextEdit, 'textEdit')
         self.duplicateCount = 0 #This will be tracking the number of dublicates
+
+
+        self.booleanBox = self.findChild(QComboBox, 'booleanBox')
 
         self.pushButton.clicked.connect(self.duplicateTextEdit)
 
@@ -41,6 +47,7 @@ class startScreen(QDialog):
     def duplicateTextEdit(self):
 
       MAX_DUPLICATES = 5
+
       if self.duplicateCount < MAX_DUPLICATES:
         self.duplicateCount += 1  # Use the corrected attribute name
 
@@ -60,6 +67,21 @@ class startScreen(QDialog):
         self.duplicateTextEdits.append(new_text_edit) # this will store in the system making it like a stack that way we can pop through when negative
 
         new_text_edit.show()
+
+        #Duplicating the QComboBox when the text editor is dublicated.
+
+        new_boolean_box = QComboBox(self)
+        new_boolean_box.setGeometry(self.booleanBox.x(),newY,self.booleanBox.width(),self.booleanBox.height())
+
+        new_boolean_box.setFont(self.booleanBox.font())
+        new_boolean_box.setStyleSheet(self.booleanBox.styleSheet())
+
+        for i in range(self.booleanBox.count()):
+            new_boolean_box.addItem(self.booleanBox.itemText(i))
+        new_boolean_box.show()
+        self.duplicateCombos.append(new_boolean_box)
+
+
       else:
           QMessageBox.warning(self, "Limit reached", "You can only search {} at a time".format(MAX_DUPLICATES))
 
@@ -68,6 +90,9 @@ class startScreen(QDialog):
         if self.duplicateTextEdits:  # Check if there are any duplicates to remove
             last_text_edit = self.duplicateTextEdits.pop()  # Remove the last QTextEdit from the list
             last_text_edit.deleteLater()  # Delete the QTextEdit widget
+
+            last_boolean_box= self.duplicateCombos.pop()
+            last_boolean_box.deleteLater()
             self.duplicateCount -= 1  # Decrement the count of duplicates
         else:
             QMessageBox.information(self, "No More Duplicates", "There are no more duplicated text fields to remove.")
@@ -86,5 +111,7 @@ class startScreen(QDialog):
         self.widget.addWidget(search)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
-    # def searchClickedResult(self):
-    #     search_term = self.search_input.text()
+
+
+    #this method is responisible for showing the result to the result screen.
+    def showResult(self):
