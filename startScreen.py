@@ -115,3 +115,4 @@ class startScreen(QDialog):
 
     #this method is responisible for showing the result to the result screen.
     def showResult(self):
+        pass
