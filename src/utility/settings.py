@@ -7,7 +7,8 @@ class Settings:
 		self.theme = "Light"
 		self.institution = "Univ. of Prince Edward Island"
 		self.results_per_page = 25
-		self.CRKN_url = "https://www.crkn-rcdr.ca/en/perpetual-access-rights-reports-storage"
+		# self.CRKN_url = "https://www.crkn-rcdr.ca/en/perpetual-access-rights-reports-storage"
+		self.CRKN_url = "https://library.upei.ca/test-page-ebooks-perpetual-access-project"
 		self.CRKN_root_url = "/".join(self.CRKN_url.split("/")[:3])
 		self.database_name = "ebook_database.db"
 
