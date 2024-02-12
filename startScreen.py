@@ -1,8 +1,12 @@
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMessageBox, QComboBox
+from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMessageBox, QComboBox, QTableWidgetItem
 
 from searchDisplay import searchDisplay
 from settingsPage import settingsPage
+from src.data_processing import database
+from src.data_processing.database import connect_to_database, search_by_title, search_by_ISBN, search_by_OCN, \
+    close_database
+#from searchDisplay import display_results_in_table
 
 
 class startScreen(QDialog):
@@ -30,7 +34,8 @@ class startScreen(QDialog):
 
         # search button linked to search to display method that when clicked for now shows the search screen this
         # need to be updated and connect to searching the database
-        self.search.clicked.connect(self.searchToDisplay)
+        #self.search.clicked.connect(self.searchToDisplay)
+        self.search.clicked.connect(self.search_button_clicked)
         self.widget = widget  # Store the QStackedWidget reference
 
         # making a group of different button to give a effect of burger menu
@@ -106,13 +111,34 @@ class startScreen(QDialog):
         self.widget.addWidget(settings)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
-    def searchToDisplay(self):
+    def searchToDisplay(self,results):
         search = searchDisplay(self.widget)
         self.widget.addWidget(search)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+        search.display_results_in_table(results)
+
+
+    #this method is responisible sending the text in the back end for the searching the value
+    def search_button_clicked(self):
 
 
 
-    #this method is responisible for showing the result to the result screen.
-    def showResult(self):
-        pass
+        searchText = self.textEdit.toPlainText().strip()
+        searchType = "Title"
+        connection = connect_to_database()
+
+        #using the if statement that will initiate the search through the database
+        if searchType == "Title":
+            results = search_by_title(connection,searchText)
+        elif searchType == "Platform_eISBN":
+            results = search_by_ISBN(connection, searchText)
+        elif searchType == "OCN":
+            results = search_by_OCN(connection,searchText)
+        else:
+            print("Unknow search type") #should not be needing as it is going to be dynamic
+            results = []
+
+        close_database(connection)
+
+        self.searchToDisplay(results)
+

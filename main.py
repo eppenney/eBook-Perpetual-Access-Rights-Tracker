@@ -3,7 +3,7 @@ from PyQt6.uic import loadUi
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QDialog, QApplication, QWidget, QStackedWidget, QButtonGroup
 from startScreen import startScreen
-#from src.data_processing import database
+from src.data_processing import database
 
 
 
