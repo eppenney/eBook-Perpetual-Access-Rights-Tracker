@@ -104,15 +104,15 @@ def split_CRKN_file_name(file_name):
 def file_to_dataframe_excel(file):
     # File can be either a file or a URL link to a file
     try:
-        return pd.read_excel(file, sheet_name="PA-Rights")
+        return pd.read_excel(file, sheet_name="PA-Rights", header=2)
     except ValueError:
-        return pd.read_excel(file, sheet_name="PA-rights")
+        return pd.read_excel(file, sheet_name="PA-rights", header=2)
 
 
 def file_to_dataframe_csv(file):
     # File can be either a file or a URL link to a file
     try:
-        return pd.read_csv(file)
+        return pd.read_csv(file, header=2)
     except ValueError:
         raise Exception("Unable to read csv file.")
 
