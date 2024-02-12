@@ -78,13 +78,14 @@ def search_database(connection, searchType, value):
 
 	# Searches for matching items through each table one by one and adds any matches to the list
 	for table in listOfTables:
+		institution = settings.settings.institution
 		if searchType == 'Title':
 			value = f'%{value}%'
-			query = f'SELECT Title, Platform_eISBN, OCN, "{settings.settings.institution}" FROM {table} WHERE {searchType} LIKE ?'
-			cursor.execute(query, (value,))
+			query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType} LIKE ?"
+			cursor.execute(query, (institution, value))
 		else:
-			query = f'SELECT Title, Platform_eISBN, OCN, "{settings.settings.institution}" FROM {table} WHERE {searchType}={value}'
-			cursor.execute(query)
+			query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType}=?"
+			cursor.execute(query, (institution, value))
 		results = results + cursor.fetchall()
 	return results
 
@@ -105,10 +106,9 @@ def search_by_OCN(connection, value):
 # Functions to add AND/OR statements to queries for the advanced search
 def add_AND_query(searchType, query, term):
 	if searchType == "Title":
-		term = f'%{term}%'
-		return query + f" AND {searchType} LIKE '{term}'"
+		return f"{query} AND {searchType} LIKE '{term}'"
 	else:
-		return query + f" AND {searchType}={term}"
+		return f"{query} AND {searchType}='{term}'"
 
 
 def add_OR_query(searchType, query, term):
@@ -130,9 +130,12 @@ def advanced_search(connection, query):
 
 	# Searches for matching items through each table one by one and adds any matches to the list
 	for table in listOfTables:
-		query = query.replace("temp", table)  # original query should list the table used as 'temp' scuffed for now
-		cursor.execute(query)
-		results = results + cursor.fetchall()
+		# original query should list the table used as 'temp' scuffed for now
+		formatted_query = query.format(table_name=table)
+
+		#execute the formatted query
+		cursor.execute(formatted_query)
+		results.extend(cursor.fetchall())
 	return results
 
 
