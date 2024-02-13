@@ -13,7 +13,7 @@ Preliminary implementation of an advanced search feature
 
 
 import sqlite3
-from src.utility import settings
+from utility import settings
 
 
 # Putting this here just to create the database
