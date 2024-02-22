@@ -38,4 +38,4 @@ def process_file(file_path):
 		if_exists="replace",
 		index=False
 	)
-    connection.close()
+    database.close_database(connection)
