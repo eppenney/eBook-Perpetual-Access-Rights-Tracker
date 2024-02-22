@@ -8,6 +8,11 @@ Process_file will likely need to be adjusted in the future based on
 database work.
 Feb 13 
 Modified to use database system properly.
+Feb 22
+Made some changes based on feedback in pull request. 
+ * Closed Database,
+ * Added file naming convention and changed to replace instead of append, 
+ * Removed double file reading - remnant from previous filler code 
 """
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QFileDialog, QFileDialog, QFileDialog
@@ -26,11 +31,11 @@ def upload_and_process_file():
 
 def process_file(file_path):
     connection = database.connect_to_database()
-    file = pd.read_csv(file_path)
-    file_df = pd.read_csv(file)
+    file_df = pd.read_csv(file_path)
     file_df.to_sql(
-		name="Local_Upload",
+		name=file_path.split("/")[-1],
 		con=connection,
-		if_exists="append",
+		if_exists="replace",
 		index=False
 	)
+    connection.close()
