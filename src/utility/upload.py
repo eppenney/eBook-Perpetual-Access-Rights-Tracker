@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import QFileDialog, QFileDialog, QFileDialog
 from PyQt5.QtWidgets import QFileDialog
 import os
 import pandas as pd
-from data_processing import database
+from src.data_processing import database
 
 def upload_and_process_file():
     options = QFileDialog.Options()

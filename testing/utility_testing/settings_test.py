@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, mock_open
-from src.utility.settings import Settings
+from src.utility.settings_manager import Settings
 import json
 
 @pytest.fixture

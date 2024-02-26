@@ -13,13 +13,16 @@ Preliminary implementation of an advanced search feature
 
 
 import sqlite3
-from src.utility import settings
+from src.utility.settings_manager import Settings
 
+
+settings_manager = Settings()
 
 # Putting this here just to create the database
 def connect_to_database():
 	print("Connecting to the database")
-	return sqlite3.connect(settings.settings.database_name)
+	database_name = settings_manager.get_setting('database_name')
+	return sqlite3.connect(database_name)
 
 
 def close_database(connection):
@@ -78,7 +81,7 @@ def search_database(connection, searchType, value):
 
 	# Searches for matching items through each table one by one and adds any matches to the list
 	for table in listOfTables:
-		institution = settings.settings.institution
+		institution = settings_manager.get_setting('institution')
 		if searchType == 'Title':
 			value = f'%{value}%'
 			query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType} LIKE ?"
