@@ -15,7 +15,6 @@ self.exportButton.clicked.connect(export_data)
 """
 from PyQt5.QtWidgets import QFileDialog, QApplication
 import pandas as pd
-import os
 import sys
 
 def export_data(data):
@@ -23,7 +22,6 @@ def export_data(data):
     if app is None:  # If no instance exists, create a new one
         app = QApplication(sys.argv)
 
-    print(app)
     # data should be a dictionary with column names as keys and lists as values
     # This can be changed if the function should expect a DataFrame instead? Will need to consult. 
     df = pd.DataFrame(data)

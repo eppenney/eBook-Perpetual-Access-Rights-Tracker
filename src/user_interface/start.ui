@@ -227,6 +227,25 @@ border-radius:20px;</string>
      </property>
     </item>
    </widget>
+   <widget class="QPushButton" name="uploadButton">
+    <property name="geometry">
+        <rect>
+            <x>1049</x>
+            <y>120</y>
+            <width>111</width>
+            <height>41</height>
+        </rect>
+    </property>
+    <property name="styleSheet">
+        <string notr="true">background-color: rgb(0, 85, 127);
+            color: rgb(255, 255, 255);
+            font: 14pt &quot;MS Shell Dlg 2&quot;;
+            border-radius: 20px;</string>
+    </property>
+    <property name="text">
+        <string>Upload</string>
+    </property>
+</widget>
   </widget>
  </widget>
  <resources/>

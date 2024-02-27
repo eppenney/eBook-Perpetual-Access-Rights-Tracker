@@ -5,6 +5,7 @@ from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
 from src.data_processing.database import connect_to_database, search_by_title, search_by_ISBN, search_by_OCN, \
     close_database
+from src.utility.upload import upload_and_process_file
 
 import os
 #from searchDisplay import display_results_in_table
@@ -48,6 +49,9 @@ class startScreen(QDialog):
         self.buttonGroup.addButton(self.settingButton3)
 
         self.buttonGroup.buttonClicked.connect(self.settingsDisplay)
+
+        self.uploadButton = self.findChild(QPushButton, 'uploadButton')
+        self.uploadButton.clicked.connect(self.upload_button_clicked)
 
 
 #this method responsible for making the new text edit each time the plus sign is clicked. (Please talk to me if you want to understand the code)
@@ -144,3 +148,5 @@ class startScreen(QDialog):
         close_database(connection)
         self.searchToDisplay(results)
 
+    def upload_button_clicked(self):
+        upload_and_process_file()

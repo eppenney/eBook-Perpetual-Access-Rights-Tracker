@@ -14,14 +14,16 @@ Made some changes based on feedback in pull request.
  * Added file naming convention and changed to replace instead of append, 
  * Removed double file reading - remnant from previous filler code 
 """
-from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtWidgets import QFileDialog, QFileDialog, QFileDialog
-from PyQt5.QtWidgets import QFileDialog
-import os
+from PyQt5.QtWidgets import QFileDialog, QApplication
 import pandas as pd
-from data_processing import database
+from src.data_processing import database
+import sys
 
 def upload_and_process_file():
+    app = QApplication.instance()  # Try to get the existing application instance
+    if app is None:  # If no instance exists, create a new one
+        app = QApplication(sys.argv)
+
     options = QFileDialog.Options()
     options |= QFileDialog.ReadOnly
     file_path, _ = QFileDialog.getOpenFileName(None, "Open File", "", "CSV Files (*.csv);;All Files (*)", options=options)
