@@ -75,7 +75,6 @@ def search_database(connection, searchType, value):
 
     # Grabs the names of all tables via the CRKN and local file name tables
     listOfTables = get_tables(connection)
-
     # Searches for matching items through each table one by one and adds any matches to the list
     for table in listOfTables:
         institution = settings.settings.institution
