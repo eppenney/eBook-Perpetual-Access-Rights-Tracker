@@ -168,8 +168,6 @@ class startScreen(QDialog):
         upload_and_process_file()
 
     def update_all_sizes(self):
-        print("Updating sizes!")
-
         original_width = 1200
         original_height = 800
         new_width = self.width()
