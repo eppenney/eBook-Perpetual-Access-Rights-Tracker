@@ -13,7 +13,7 @@ import requests.exceptions
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
-from src.utility import config
+from src.utility import settings
 from src.data_processing import database
 
 
@@ -21,7 +21,7 @@ def scrapeCRKN():
     error = ""
     try:
         # Make a request to the CRKN website
-        response = requests.get(config.CRKN_url)
+        response = requests.get(settings.settings.CRKN_url)
         # Check if request was successful (status 200)
         response.raise_for_status()
         # If request successful, process text
@@ -45,7 +45,7 @@ def scrapeCRKN():
         error = e
         page_text = None
 
-    #We will need to address how to show errors to the users when they happen (something like show a pop up instead of returning); will leave like this for now
+    # We will need to address how to show errors to the users when they happen (something like show a pop up instead of returning); will leave like this for now
     if page_text is None:
         print(f"An error occurred: {error}")
         return
@@ -63,7 +63,7 @@ def scrapeCRKN():
         # If file does not exist/is not up-to-date
         if not result:
             with open("temp.xlsx", 'wb') as file:
-                response = requests.get(config.CRKN_root_url + file_link)
+                response = requests.get(settings.settings.CRKN_root_url + file_link)
                 file.write(response.content)
             file_df = file_to_dataframe_excel("temp.xlsx")
             upload_to_database(file_df, file_first, connection)

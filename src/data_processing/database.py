@@ -17,8 +17,8 @@ from src.utility import settings
 
 # Putting this here just to create the database
 def connect_to_database():
-    print("Connecting to the database")
-    return sqlite3.connect(settings.settings.database_name)
+	print("Connecting to the database")
+	return sqlite3.connect(settings.settings.database_name)
 
 
 def close_database(connection):
@@ -76,17 +76,18 @@ def search_database(connection, searchType, value):
     # Grabs the names of all tables via the CRKN and local file name tables
     listOfTables = get_tables(connection)
 
-    # Searches for matching items through each table one by one and adds any matches to the list
-    for table in listOfTables:
-        if searchType == 'Title':
-            value = f'%{value}%'
-            query = f'SELECT Title, Platform_eISBN, OCN, "{settings.settings.institution}" FROM {table} WHERE {searchType} LIKE ?'
-            cursor.execute(query, (value,))
-        else:
-            query = f'SELECT Title, Platform_eISBN, OCN, "{settings.settings.institution}" FROM {table} WHERE {searchType}={value}'
-            cursor.execute(query)
-        results = results + cursor.fetchall()
-    return results
+	# Searches for matching items through each table one by one and adds any matches to the list
+	for table in listOfTables:
+		institution = settings.settings.institution
+		if searchType == 'Title':
+			value = f'%{value}%'
+			query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType} LIKE ?"
+			cursor.execute(query, (institution, value))
+		else:
+			query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType}=?"
+			cursor.execute(query, (institution, value))
+		results = results + cursor.fetchall()
+	return results
 
 
 # individual search functions for each search type
@@ -104,11 +105,10 @@ def search_by_OCN(connection, value):
 
 # Functions to add AND/OR statements to queries for the advanced search
 def add_AND_query(searchType, query, term):
-    if searchType == "Title":
-        term = f'%{term}%'
-        return query + f" AND {searchType} LIKE '{term}'"
-    else:
-        return query + f" AND {searchType}={term}"
+	if searchType == "Title":
+		return f"{query} AND {searchType} LIKE '{term}'"
+	else:
+		return f"{query} AND {searchType}='{term}'"
 
 
 def add_OR_query(searchType, query, term):
@@ -128,12 +128,15 @@ def advanced_search(connection, query):
 
     listOfTables = get_tables(connection)
 
-    # Searches for matching items through each table one by one and adds any matches to the list
-    for table in listOfTables:
-        query = query.replace("temp", table)  # original query should list the table used as 'temp' scuffed for now
-        cursor.execute(query)
-        results = results + cursor.fetchall()
-    return results
+	# Searches for matching items through each table one by one and adds any matches to the list
+	for table in listOfTables:
+		# original query should list the table used as 'temp' scuffed for now
+		formatted_query = query.format(table_name=table)
+
+		#execute the formatted query
+		cursor.execute(formatted_query)
+		results.extend(cursor.fetchall())
+	return results
 
 
 # Code to initialize the database (create it, create the starting tables, and close it)
