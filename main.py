@@ -2,8 +2,8 @@ import sys
 from PyQt6.uic import loadUi
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QDialog, QApplication, QWidget, QStackedWidget, QButtonGroup
-from user_interface.startScreen import startScreen
-from data_processing import database
+from src.user_interface.startScreen import startScreen
+from src.data_processing import database
 
 
 

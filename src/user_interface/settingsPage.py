@@ -7,13 +7,15 @@
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog
+import os
 
 
 class settingsPage(QDialog):
 
     def __init__(self, widget):
         super(settingsPage, self).__init__()
-        loadUi("settingsPage.ui", self)
+        ui_file = os.path.join(os.path.dirname(__file__), "settingsPage.ui")
+        loadUi(ui_file, self)
 
     #     self.backButton2.clicked.connect(self.backToStartScreen2)
     #     self.widget = widget
