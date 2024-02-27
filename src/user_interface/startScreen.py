@@ -3,9 +3,9 @@ from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMess
 
 from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
-from src.data_processing import database
 from src.data_processing.database import connect_to_database, search_by_title, search_by_ISBN, search_by_OCN, \
     close_database
+from src.data_processing.Scraping import scrapeCRKN
 
 import os
 #from searchDisplay import display_results_in_table
@@ -14,6 +14,9 @@ import os
 class startScreen(QDialog):
     def __init__(self, widget):
         super(startScreen, self).__init__()
+
+        scrapeCRKN()
+
         ui_file = os.path.join(os.path.dirname(__file__), "start.ui")  # Assuming the UI file is in the same directory as the script
         loadUi(ui_file, self)
 
@@ -140,6 +143,7 @@ class startScreen(QDialog):
         else:
             print("Unknow search type") #should not be needing as it is going to be dynamic
             results = []
+        print(results)
 
         close_database(connection)
         self.searchToDisplay(results)

@@ -15,6 +15,7 @@ class searchDisplay(QDialog):
         self.backButton.clicked.connect(self.backToStartScreen)
         self.exportButton.clicked.connect(self.export_data_handler)
         self.widget = widget
+        self.results = []
 
     def backToStartScreen(self):
         from src.user_interface.startScreen import startScreen
@@ -23,12 +24,15 @@ class searchDisplay(QDialog):
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
     def display_results_in_table(self, results):
-        temporary_results = [
-            ["John", "Doe", 30],
-            ["Jane", "Smith", 25],
-            ["Bob", "Johnson", 40]
+        self.results = results
+        # Test code
+        self.results = [
+            ["John", "Mary", "Sue"]
         ]
-        results = temporary_results
+        for i in range(100):
+            self.results.append(self.results[0])
+        results = self.results
+        # Test code end
         self.tableWidget.setRowCount(0)  # Clear existing rows
         self.tableWidget.setColumnCount(len(results[0])) if results else self.tableWidget.setColumnCount(0)
 
@@ -37,11 +41,6 @@ class searchDisplay(QDialog):
             for column_number, data in enumerate(row_data):
                 self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
     def export_data_handler(self):
-        temporary_results = [
-            ["John", "Doe", 30],
-            ["Jane", "Smith", 25],
-            ["Bob", "Johnson", 40]
-        ]
-        export_data(temporary_results)
+        export_data(self.results)
 
 
