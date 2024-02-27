@@ -1,7 +1,7 @@
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMessageBox, QComboBox, QTableWidgetItem
 
-from searchDisplay import searchDisplay
+from user_interface.searchDisplay import searchDisplay
 from settingsPage import settingsPage
 from src.data_processing import database
 from src.data_processing.database import connect_to_database, search_by_title, search_by_ISBN, search_by_OCN, \
@@ -139,6 +139,5 @@ class startScreen(QDialog):
             results = []
 
         close_database(connection)
-
         self.searchToDisplay(results)
 

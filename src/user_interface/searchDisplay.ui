@@ -125,6 +125,25 @@ color: rgb(255, 255, 255);
      </property>
     </column>
    </widget>
+   <widget class="QPushButton" name="exportButton">
+    <property name="geometry">
+     <rect>
+          <x>1049</x>
+          <y>750</y>
+          <width>111</width>
+          <height>41</height>
+     </rect>
+     </property>
+          <property name="styleSheet">
+          <string notr="true">background-color: rgb(0, 85, 127);
+               color: rgb(255, 255, 255);
+               font: 14pt &quot;MS Shell Dlg 2&quot;;
+               border-radius:20px;</string>
+          </property>
+          <property name="text">
+          <string>Export</string>
+     </property>
+  </widget>
   </widget>
  </widget>
  <resources/>

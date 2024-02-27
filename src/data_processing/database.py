@@ -76,18 +76,18 @@ def search_database(connection, searchType, value):
     # Grabs the names of all tables via the CRKN and local file name tables
     listOfTables = get_tables(connection)
 
-	# Searches for matching items through each table one by one and adds any matches to the list
-	for table in listOfTables:
-		institution = settings.settings.institution
-		if searchType == 'Title':
-			value = f'%{value}%'
-			query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType} LIKE ?"
-			cursor.execute(query, (institution, value))
-		else:
-			query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType}=?"
-			cursor.execute(query, (institution, value))
-		results = results + cursor.fetchall()
-	return results
+    # Searches for matching items through each table one by one and adds any matches to the list
+    for table in listOfTables:
+        institution = settings.settings.institution
+        if searchType == 'Title':
+            value = f'%{value}%'
+            query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType} LIKE ?"
+            cursor.execute(query, (institution, value))
+        else:
+            query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType}=?"
+            cursor.execute(query, (institution, value))
+        results = results + cursor.fetchall()
+    return results
 
 
 # individual search functions for each search type
@@ -129,14 +129,14 @@ def advanced_search(connection, query):
     listOfTables = get_tables(connection)
 
 	# Searches for matching items through each table one by one and adds any matches to the list
-	for table in listOfTables:
-		# original query should list the table used as 'temp' scuffed for now
-		formatted_query = query.format(table_name=table)
+    for table in listOfTables:
+        # original query should list the table used as 'temp' scuffed for now
+        formatted_query = query.format(table_name=table)
 
-		#execute the formatted query
-		cursor.execute(formatted_query)
-		results.extend(cursor.fetchall())
-	return results
+        #execute the formatted query
+        cursor.execute(formatted_query)
+        results.extend(cursor.fetchall())
+    return results
 
 
 # Code to initialize the database (create it, create the starting tables, and close it)
