@@ -10,8 +10,21 @@ from src.utility.upload import upload_and_process_file
 import os
 #from searchDisplay import display_results_in_table
 
+"""
+When creating instances of startScreen, use startScreen.get_instance(widget)
+-Ethan
+Feb 27, 2024
+"""
+
 
 class startScreen(QDialog):
+    _instance = None
+    @classmethod
+    def get_instance(cls, arg):
+        if not cls._instance:
+            cls._instance = cls(arg)
+        return cls._instance
+    
     def __init__(self, widget):
         super(startScreen, self).__init__()
 
@@ -29,8 +42,9 @@ class startScreen(QDialog):
         #finding the method from the class.
         self.pushButton = self.findChild(QPushButton, 'pushButton')
         self.textEdit = self.findChild(QTextEdit, 'textEdit')
-        self.duplicateCount = 0 #This will be tracking the number of dublicates
+        self.duplicateCount = 0 #This will be tracking the number of duplicates
 
+        self.txt = ""
 
         self.booleanBox = self.findChild(QComboBox, 'booleanBox')
 
@@ -52,6 +66,7 @@ class startScreen(QDialog):
 
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
         self.uploadButton.clicked.connect(self.upload_button_clicked)
+
 
 
 #this method responsible for making the new text edit each time the plus sign is clicked. (Please talk to me if you want to understand the code)
@@ -127,9 +142,6 @@ class startScreen(QDialog):
 
     #this method is responisible sending the text in the back end for the searching the value
     def search_button_clicked(self):
-
-
-
         searchText = self.textEdit.toPlainText().strip()
         searchType = "Title"
         connection = connect_to_database()
@@ -142,7 +154,7 @@ class startScreen(QDialog):
         elif searchType == "OCN":
             results = search_by_OCN(connection,searchText)
         else:
-            print("Unknow search type") #should not be needing as it is going to be dynamic
+            print("Unknown search type") #should not be needing as it is going to be dynamic
             results = []
 
         close_database(connection)
@@ -150,3 +162,4 @@ class startScreen(QDialog):
 
     def upload_button_clicked(self):
         upload_and_process_file()
+

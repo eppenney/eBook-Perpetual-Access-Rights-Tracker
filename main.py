@@ -13,7 +13,7 @@ def main():
     scrapeCRKN()
     app = QApplication(sys.argv)
     widget = QtWidgets.QStackedWidget()
-    start = startScreen(widget)  # Pass the widget to startScreen
+    start = startScreen.get_instance(widget)  # Pass the widget to startScreen
     widget.addWidget(start)
     widget.setFixedHeight(800)
     widget.setFixedWidth(1200)

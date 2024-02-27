@@ -19,7 +19,7 @@ class searchDisplay(QDialog):
 
     def backToStartScreen(self):
         from src.user_interface.startScreen import startScreen
-        backButton = startScreen(self.widget)
+        backButton = startScreen.get_instance(self.widget)
         self.widget.addWidget(backButton)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
