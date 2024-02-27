@@ -25,14 +25,6 @@ class searchDisplay(QDialog):
 
     def display_results_in_table(self, results):
         self.results = results
-        # Test code
-        self.results = [
-            ["John", "Mary", "Sue"]
-        ]
-        for i in range(100):
-            self.results.append(self.results[0])
-        results = self.results
-        # Test code end
         self.tableWidget.setRowCount(0)  # Clear existing rows
         self.tableWidget.setColumnCount(len(results[0])) if results else self.tableWidget.setColumnCount(0)
 

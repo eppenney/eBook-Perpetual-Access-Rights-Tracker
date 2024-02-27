@@ -143,7 +143,6 @@ class startScreen(QDialog):
         else:
             print("Unknow search type") #should not be needing as it is going to be dynamic
             results = []
-        print(results)
 
         close_database(connection)
         self.searchToDisplay(results)
