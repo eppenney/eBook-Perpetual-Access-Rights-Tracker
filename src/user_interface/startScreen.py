@@ -1,12 +1,11 @@
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMessageBox, QComboBox, QTableWidgetItem
+from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMessageBox, QComboBox, QSizePolicy, QWidget
 
 from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
 from src.data_processing.database import connect_to_database, search_by_title, search_by_ISBN, search_by_OCN, \
     close_database
 from src.utility.upload import upload_and_process_file
-
 import os
 #from searchDisplay import display_results_in_table
 
@@ -30,6 +29,9 @@ class startScreen(QDialog):
 
         ui_file = os.path.join(os.path.dirname(__file__), "start.ui")  # Assuming the UI file is in the same directory as the script
         loadUi(ui_file, self)
+
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
 
         #basic idea we are going to do is stack here where each searchbar will be pop when the negative
         self.duplicateTextEdits = []
@@ -66,6 +68,8 @@ class startScreen(QDialog):
 
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
         self.uploadButton.clicked.connect(self.upload_button_clicked)
+
+        self.original_widget_values = None 
 
 
 
@@ -163,3 +167,43 @@ class startScreen(QDialog):
     def upload_button_clicked(self):
         upload_and_process_file()
 
+    def update_all_sizes(self):
+        print("Updating sizes!")
+
+        original_width = 1200
+        original_height = 800
+        new_width = self.width()
+        new_height = self.height()
+
+        if self.original_widget_values is None:
+            # If it's the first run, store the original values
+            self.original_widget_values = {}
+            for widget in self.findChildren(QWidget):
+                self.original_widget_values[widget] = {
+                    'geometry': widget.geometry(),
+                    'font_size': widget.font().pointSize() if isinstance(widget, (QTextEdit, QComboBox)) else None
+                }
+
+        # Iterate through every widget loaded using loadUi
+        for widget, original_values in self.original_widget_values.items():
+            # Calculate new geometry and size for each widget
+            x = int(original_values['geometry'].x() * (new_width / original_width))
+            y = int(original_values['geometry'].y() * (new_height / original_height))
+            width = int(original_values['geometry'].width() * (new_width / original_width))
+            height = int(original_values['geometry'].height() * (new_height / original_height))
+
+            # Set the new geometry and size
+            widget.setGeometry(x, y, width, height)
+
+            # If the widget is a QTextEdit or QComboBox, adjust font size
+            if isinstance(widget, (QTextEdit, QComboBox)):
+                font = widget.font()
+                original_font_size = original_values['font_size']
+                if original_font_size is not None:
+                    font.setPointSize(int(original_font_size * (new_width / original_width)))
+                widget.setFont(font)
+
+    def resizeEvent(self, event):
+        # Override the resizeEvent method to call update_all_sizes when the window is resized
+        super().resizeEvent(event)
+        self.update_all_sizes()

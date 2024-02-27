@@ -15,8 +15,8 @@ def main():
     widget = QtWidgets.QStackedWidget()
     start = startScreen.get_instance(widget)  # Pass the widget to startScreen
     widget.addWidget(start)
-    widget.setFixedHeight(800)
-    widget.setFixedWidth(1200)
+    widget.setMinimumHeight(800)
+    widget.setMinimumWidth(1200)
     widget.show()
     sys.exit(app.exec())
 
