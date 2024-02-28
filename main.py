@@ -6,9 +6,6 @@ from src.user_interface.startScreen import startScreen
 from src.data_processing import database
 from src.data_processing.Scraping import scrapeCRKN
 
-
-
-
 def main():
     scrapeCRKN()
     app = QApplication(sys.argv)

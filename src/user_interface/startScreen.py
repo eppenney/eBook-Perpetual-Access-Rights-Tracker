@@ -167,6 +167,11 @@ class startScreen(QDialog):
     def upload_button_clicked(self):
         upload_and_process_file()
 
+    """
+    This was made my chatGPT yo, do not sue me. 
+    -Ethan
+    Feb 27, 2024 
+    """
     def update_all_sizes(self):
         original_width = 1200
         original_height = 800
