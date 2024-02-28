@@ -160,4 +160,4 @@ def upload_to_database(df, table_name, connection):
     )
 
 
-scrapeCRKN()
+# scrapeCRKN()
