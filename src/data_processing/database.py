@@ -139,6 +139,4 @@ def advanced_search(connection, query):
 
 
 # Code to initialize the database (create it, create the starting tables, and close it)
-connection_obj = connect_to_database()
-create_file_name_tables(connection_obj)
-close_database(connection_obj)
+
