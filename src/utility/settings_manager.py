@@ -1,9 +1,10 @@
 import json
+import os
 
 '''
 Baki Feb 26
 
-Interaction with the settings.json file now goes through this settings_manager.py. Need to make an instance of
+Interaction with the settings.json file now goes through this settings_manager_test.py. Need to make an instance of
 settings_manager first to get or update values like this:
 1) import settings 
 from src.utility.settings_manager import Settings
@@ -19,28 +20,33 @@ settings_manager.get_setting('institution')
 '''
 
 class Settings:
-	def __init__(self, settings_file='settings.json'):
+	def __init__(self, settings_file=f"{os.path.abspath(os.path.dirname(__file__))}/settings.json"):
 		self.settings_file = settings_file
-		self.settings = self.load_settings()
+
+		self.load_settings()
 
 	def load_settings(self):
 		"""Load the current settings from the JSON file."""
 		try:
 			with open(self.settings_file, 'r') as file:
-				return json.load(file)
+				self.settings = json.load(file)
 		except FileNotFoundError:
 			# Return default settings if the file does not exist.
-			return {
+
+			#write default settings to a new settings.json
+			self.settings = {
 				"language": "English",
 				"theme": "Light",
 				"institution": "",
 				"results_per_page": 25,
 				"CRKN_url": "https://www.crkn-rcdr.ca/en/perpetual-access-rights-reports-storage",
 				"CRKN_root_url": "https://www.crkn-rcdr.ca",
-				"database_name": "ebook_database.db",
+				"database_name": f"{os.path.abspath(os.path.dirname(__file__))}/ebook_database.db",
 				"github_link": "https://github.com"
 			}
+			print(self.settings)
 
+	#save setting
 	def save_settings(self):
 		"""Save the current settings back to the JSON file."""
 		with open(self.settings_file, 'w') as file:
@@ -75,6 +81,3 @@ class Settings:
 	def set_institution(self, institution):
 		"""Set the institution."""
 		self.update_setting('institution', institution)
-
-
-
