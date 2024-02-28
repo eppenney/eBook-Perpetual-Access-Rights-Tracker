@@ -6,7 +6,7 @@
 
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog
+from PyQt6.QtWidgets import QDialog, QPushButton
 import os
 
 
@@ -17,11 +17,12 @@ class settingsPage(QDialog):
         ui_file = os.path.join(os.path.dirname(__file__), "settingsPage.ui")
         loadUi(ui_file, self)
 
-    #     self.backButton2.clicked.connect(self.backToStartScreen2)
-    #     self.widget = widget
-    #
-    # def backToStartScreen2(self):
-    #     from startScreen import startScreen
-    #     backButton2 = startScreen(self.widget)
-    #     self.widget.addWidget(backButton2)
-    #     self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+        self.backButton2 = self.findChild(QPushButton, 'pushButton') #finding child pushButton from the parent class
+        self.backButton2.clicked.connect(self.backToStartScreen2)
+        self.widget = widget
+    
+    def backToStartScreen2(self):
+        from src.user_interface.startScreen import startScreen
+        backButton2 = startScreen.get_instance(self.widget)
+        self.widget.addWidget(backButton2)
+        self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
