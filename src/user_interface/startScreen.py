@@ -1,5 +1,6 @@
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMessageBox, QComboBox, QSizePolicy, QWidget
+from PyQt6.QtGui import QIcon
 
 from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
@@ -58,13 +59,14 @@ class startScreen(QDialog):
         self.search.clicked.connect(self.search_button_clicked)
         self.widget = widget  # Store the QStackedWidget reference
 
-        # making a group of different button to give a effect of burger menu
+        # # making a group of different button to give a effect of burger menu
         self.buttonGroup = QButtonGroup()
-        self.buttonGroup.addButton(self.settingButton1)
-        self.buttonGroup.addButton(self.settingButton2)
-        self.buttonGroup.addButton(self.settingButton3)
 
-        self.buttonGroup.buttonClicked.connect(self.settingsDisplay)
+        self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
+        self.settingMenuButton.setIcon(QIcon("resources/hamburger_icon_updated.png"))
+        icon_size = self.settingMenuButton.size()
+        self.settingMenuButton.setIconSize(icon_size)
+        self.settingMenuButton.clicked.connect(self.settingsDisplay)
 
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
         self.uploadButton.clicked.connect(self.upload_button_clicked)

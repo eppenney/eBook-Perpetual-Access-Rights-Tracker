@@ -61,50 +61,12 @@ color: rgb(255, 255, 255);
        <x>40</x>
        <y>20</y>
        <width>61</width>
-       <height>10</height>
+       <height>61</height>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);
+      <string notr="true">background-color: transparent;
 border-radius:3px;
-font: 18pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(255, 255, 255);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="settingButton2">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>40</y>
-       <width>61</width>
-       <height>10</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">border-radius:3px;
-background-color: rgb(255, 255, 255);
-font: 18pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(255, 255, 255);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="settingButton3">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>60</y>
-       <width>61</width>
-       <height>10</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">border-radius:3px;
-background-color: rgb(255, 255, 255);
 font: 18pt &quot;MS Shell Dlg 2&quot;;
 color: rgb(255, 255, 255);</string>
      </property>
