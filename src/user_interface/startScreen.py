@@ -1,5 +1,6 @@
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMessageBox, QComboBox, QSizePolicy, QWidget
+from PyQt6.QtGui import QIcon
 
 from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
@@ -58,18 +59,21 @@ class startScreen(QDialog):
         self.search.clicked.connect(self.search_button_clicked)
         self.widget = widget  # Store the QStackedWidget reference
 
-        # making a group of different button to give a effect of burger menu
+        # # making a group of different button to give a effect of burger menu
         self.buttonGroup = QButtonGroup()
-        self.buttonGroup.addButton(self.settingButton1)
-        self.buttonGroup.addButton(self.settingButton2)
-        self.buttonGroup.addButton(self.settingButton3)
 
-        self.buttonGroup.buttonClicked.connect(self.settingsDisplay)
+        self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
+        self.settingMenuButton.setIcon(QIcon("resources/hamburger_icon_updated.png"))
+        icon_size = self.settingMenuButton.size()
+        self.settingMenuButton.setIconSize(icon_size)
+        self.settingMenuButton.clicked.connect(self.settingsDisplay)
 
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
         self.uploadButton.clicked.connect(self.upload_button_clicked)
 
         self.original_widget_values = None 
+        self.original_width = 1200
+        self.original_height = 800
 
 
 
@@ -111,6 +115,11 @@ class startScreen(QDialog):
             new_boolean_box.addItem(self.booleanBox.itemText(i))
         new_boolean_box.show()
         self.duplicateCombos.append(new_boolean_box)
+        # Updating sizes array to account for new elements
+        self.original_widget_values = None
+        self.original_width = self.width()
+        self.original_height = self.height()
+        self.update_all_sizes()
 
 
       else:
@@ -125,6 +134,11 @@ class startScreen(QDialog):
             last_boolean_box= self.duplicateCombos.pop()
             last_boolean_box.deleteLater()
             self.duplicateCount -= 1  # Decrement the count of duplicates
+            # Updating sizes array to account for new elements
+            self.original_widget_values = None
+            self.original_width = self.width()
+            self.original_height = self.height()
+            self.update_all_sizes()
         else:
             QMessageBox.information(self, "No More Duplicates", "There are no more duplicated text fields to remove.")
 
@@ -133,7 +147,7 @@ class startScreen(QDialog):
 
 
     def settingsDisplay(self):
-        settings = settingsPage(self.widget)
+        settings = settingsPage.get_instance(self.widget)
         self.widget.addWidget(settings)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
@@ -169,13 +183,16 @@ class startScreen(QDialog):
 
     """
     This was made my chatGPT yo, do not sue me. 
-    -Ethan
+    - Ethan
     Feb 27, 2024 
+
+    You may notice this differs from the update_all_sizes method on other pages. Search boxes required extra functionality. 
+    There is issues with I think empty widgets being stored, but I just threw in a try/except that seems to bandaid it. 
+    - Ethan
+    Mar 4th
     """
     def update_all_sizes(self):
-        original_width = 1200
-        original_height = 800
-        new_width = self.width()
+        new_width = self.width() + 25
         new_height = self.height()
 
         if self.original_widget_values is None:
@@ -190,21 +207,26 @@ class startScreen(QDialog):
         # Iterate through every widget loaded using loadUi
         for widget, original_values in self.original_widget_values.items():
             # Calculate new geometry and size for each widget
-            x = int(original_values['geometry'].x() * (new_width / original_width))
-            y = int(original_values['geometry'].y() * (new_height / original_height))
-            width = int(original_values['geometry'].width() * (new_width / original_width))
-            height = int(original_values['geometry'].height() * (new_height / original_height))
+            x = int(original_values['geometry'].x() * (new_width / self.original_width))
+            y = int(original_values['geometry'].y() * (new_height / self.original_height))
+            width = int(original_values['geometry'].width() * (new_width / self.original_width))
+            height = int(original_values['geometry'].height() * (new_height / self.original_height))
 
-            # Set the new geometry and size
-            widget.setGeometry(x, y, width, height)
+            try:
+                # Set the new geometry and size
+                widget.setGeometry(x, y, width, height)
+            
 
-            # If the widget is a QTextEdit or QComboBox, adjust font size
-            if isinstance(widget, (QTextEdit, QComboBox)):
-                font = widget.font()
-                original_font_size = original_values['font_size']
-                if original_font_size is not None:
-                    font.setPointSize(int(original_font_size * (new_width / original_width)))
-                widget.setFont(font)
+                # If the widget is a QTextEdit or QComboBox, adjust font size
+                if isinstance(widget, (QTextEdit, QComboBox)):
+                    font = widget.font()
+                    original_font_size = original_values['font_size']
+                    if original_font_size is not None:
+                        font.setPointSize(int(original_font_size * (new_width / self.original_width)))
+                    widget.setFont(font)
+            except RuntimeError:
+                continue
+                # print("Widget resizing error") # All these damn prints getting annoying - E
 
     def resizeEvent(self, event):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
