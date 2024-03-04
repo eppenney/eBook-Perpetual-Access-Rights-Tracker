@@ -23,7 +23,7 @@ class startScreen(QDialog):
         if not cls._instance:
             cls._instance = cls(arg)
         return cls._instance
-    
+
     def __init__(self, widget):
         super(startScreen, self).__init__()
 
@@ -33,9 +33,11 @@ class startScreen(QDialog):
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
 
+
         #basic idea we are going to do is stack here where each searchbar will be pop when the negative
         self.duplicateTextEdits = []
         self.duplicateCombos = []
+        self.duplicateCombos2 = []
 
         self.removeButton = self.findChild(QPushButton, 'removeButton') #finding child pushButton from the parent class
         self.removeButton.clicked.connect(self.removeTextEdit)
@@ -44,11 +46,21 @@ class startScreen(QDialog):
         #finding the method from the class.
         self.pushButton = self.findChild(QPushButton, 'pushButton')
         self.textEdit = self.findChild(QTextEdit, 'textEdit')
+
+
+        # Set the size of the window
+        self.setGeometry(100, 100, 400, 200)
         self.duplicateCount = 0 #This will be tracking the number of duplicates
 
         self.txt = ""
 
+        # finding the boolean box from the main class.
         self.booleanBox = self.findChild(QComboBox, 'booleanBox')
+        self.booleanBox.hide()
+
+        #finding the boolean box2 from the class widget
+        self.booleanBox2 = self.findChild(QComboBox, 'booleanBox2')
+
 
         self.pushButton.clicked.connect(self.duplicateTextEdit)
 
@@ -75,6 +87,11 @@ class startScreen(QDialog):
 
 #this method responsible for making the new text edit each time the plus sign is clicked. (Please talk to me if you want to understand the code)
 #basically we are only having limit of 5 searches at the same time
+
+
+
+#Issue1 : The duplicate is not comming directly below the search finding the fix to that.
+#Issue2 : Code for dublicating the booleanBox2 is not working. Still working on it.
     def duplicateTextEdit(self):
 
       MAX_DUPLICATES = 5
@@ -85,12 +102,14 @@ class startScreen(QDialog):
         new_text_edit = QTextEdit(self)
         newY = self.textEdit.y() + (self.textEdit.height() + 10) * self.duplicateCount
 
+        newX = self.textEdit.x()
+
         # Copy properties from the original textEdit
         new_text_edit.setFont(self.textEdit.font())
         new_text_edit.setStyleSheet(self.textEdit.styleSheet())
 
         # Set geometry for the new QTextEdit
-        new_text_edit.setGeometry(self.textEdit.x(), newY, self.textEdit.width(), self.textEdit.height())
+        new_text_edit.setGeometry(newX, newY, self.textEdit.width(), self.textEdit.height())
 
         # If there's any specific initialization content or placeholder text
         new_text_edit.setPlaceholderText(self.textEdit.placeholderText())
@@ -111,6 +130,8 @@ class startScreen(QDialog):
             new_boolean_box.addItem(self.booleanBox.itemText(i))
         new_boolean_box.show()
         self.duplicateCombos.append(new_boolean_box)
+
+
 
 
       else:

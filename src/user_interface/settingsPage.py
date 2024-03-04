@@ -4,9 +4,9 @@
 # another issue is that this approch always take to new instance of
 # main screen however might need to use another approch late but this works now.
 
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal, QRect
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QPushButton
+from PyQt6.QtWidgets import QDialog, QPushButton, QTextEdit, QComboBox, QWidget
 import os
 
 
@@ -26,3 +26,44 @@ class settingsPage(QDialog):
         backButton2 = startScreen.get_instance(self.widget)
         self.widget.addWidget(backButton2)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+
+    def update_all_sizes(self):
+        original_width = 1200
+        original_height = 800
+        new_width = self.width()
+        new_height = self.height()
+
+        if self.original_widget_values is None:
+            # If it's the first run, store the original values
+            self.original_widget_values = {}
+            for widget in self.findChildren(QWidget):
+                self.original_widget_values[widget] = {
+                    'geometry': widget.geometry(),
+                    'font_size': widget.font().pointSize() if isinstance(widget, (QTextEdit, QComboBox)) else None
+                }
+
+        # Iterate through every widget loaded using loadUi
+        for widget, original_values in self.original_widget_values.items():
+            # Calculate new geometry and size for each widget
+            x = int(original_values['geometry'].x() * (new_width / original_width))
+            y = int(original_values['geometry'].y() * (new_height / original_height))
+            width = int(original_values['geometry'].width() * (new_width / original_width))
+            height = int(original_values['geometry'].height() * (new_height / original_height))
+
+            # Set the new geometry and size
+            widget.setGeometry(QRect(x, y, width, height))
+
+            # If the widget is a QTextEdit or QComboBox, adjust font size
+            if isinstance(widget, (QTextEdit, QComboBox)):
+                font = widget.font()
+                original_font_size = original_values['font_size']
+                if original_font_size is not None:
+                    new_font_size = int(original_font_size * (new_width / original_width))
+                    font.setPointSize(new_font_size)
+                widget.setFont(font)
+
+        # Override resizeEvent to update sizes dynamically
+
+    def resizeEvent(self, event):
+        self.update_all_sizes()
+        super(settingsPage, self).resizeEvent(event)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1177</width>
-    <height>898</height>
+    <width>1210</width>
+    <height>924</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <rect>
      <x>-20</x>
      <y>0</y>
-     <width>1200</width>
+     <width>1221</width>
      <height>900</height>
     </rect>
    </property>
@@ -30,7 +30,7 @@
      <rect>
       <x>10</x>
       <y>0</y>
-      <width>1200</width>
+      <width>1211</width>
       <height>90</height>
      </rect>
     </property>
@@ -116,25 +116,26 @@ color: rgb(255, 255, 255);</string>
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>170</x>
       <y>280</y>
       <width>751</width>
-      <height>51</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">border-radius: 20px;
 font: 16pt &quot;Arial&quot;;
-background-color: rgb(255, 255, 255);</string>
+background-color: rgb(255, 255, 255);
+left-padding:5px;</string>
     </property>
    </widget>
    <widget class="QPushButton" name="search">
     <property name="geometry">
      <rect>
-      <x>1030</x>
+      <x>1070</x>
       <y>280</y>
-      <width>150</width>
-      <height>51</height>
+      <width>131</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -166,8 +167,8 @@ color:rgb(255, 255, 255);</string>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>1110</x>
-      <y>340</y>
+      <x>1140</x>
+      <y>330</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -185,8 +186,8 @@ background-color: rgb(100, 167, 225);</string>
    <widget class="QPushButton" name="removeButton">
     <property name="geometry">
      <rect>
-      <x>1050</x>
-      <y>340</y>
+      <x>1080</x>
+      <y>330</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -204,8 +205,8 @@ background-color: rgb(100, 167, 225);</string>
    <widget class="QComboBox" name="booleanBox">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>290</y>
+      <x>50</x>
+      <y>280</y>
       <width>101</width>
       <height>41</height>
      </rect>
@@ -229,23 +230,59 @@ border-radius:20px;</string>
    </widget>
    <widget class="QPushButton" name="uploadButton">
     <property name="geometry">
-        <rect>
-            <x>1049</x>
-            <y>120</y>
-            <width>111</width>
-            <height>41</height>
-        </rect>
+     <rect>
+      <x>1080</x>
+      <y>120</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
     </property>
     <property name="styleSheet">
-        <string notr="true">background-color: rgb(0, 85, 127);
+     <string notr="true">background-color: rgb(0, 85, 127);
             color: rgb(255, 255, 255);
             font: 14pt &quot;MS Shell Dlg 2&quot;;
             border-radius: 20px;</string>
     </property>
     <property name="text">
-        <string>Upload</string>
+     <string>Upload</string>
     </property>
-</widget>
+   </widget>
+   <widget class="QComboBox" name="booleanBox_2">
+    <property name="geometry">
+     <rect>
+      <x>950</x>
+      <y>280</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+font: 75 12pt &quot;MS Shell Dlg 2&quot;;
+background-color: rgb(100, 167, 225);
+border-radius:20px;</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>ISBN</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>TITLE</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>PUBLISHER</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>OCN</string>
+     </property>
+    </item>
+   </widget>
   </widget>
  </widget>
  <resources/>
