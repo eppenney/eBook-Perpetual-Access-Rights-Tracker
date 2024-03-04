@@ -1,7 +1,7 @@
 import sys
 from PyQt6.uic import loadUi
 from PyQt6 import QtWidgets
-from PyQt6.QtWidgets import QDialog, QApplication, QWidget, QStackedWidget, QButtonGroup
+from PyQt6.QtWidgets import QApplication
 from src.user_interface.startScreen import startScreen
 from src.data_processing.database import connect_to_database, create_file_name_tables, close_database
 from src.data_processing.Scraping import scrapeCRKN
