@@ -13,15 +13,18 @@ import requests.exceptions
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
-from src.utility import settings
+from src.utility.settings_manager import Settings
 from src.data_processing import database
 
+settings_manager = Settings()
+crkn_url = settings_manager.get_setting('CRKN_url')
 
 def scrapeCRKN():
     error = ""
     try:
         # Make a request to the CRKN website
-        response = requests.get(settings.settings.CRKN_url)
+
+        response = requests.get(crkn_url)
         # Check if request was successful (status 200)
         response.raise_for_status()
         # If request successful, process text

@@ -3,6 +3,7 @@ import sqlite3
 import pytest
 from unittest.mock import patch, MagicMock
 from src.data_processing import database
+from src.utility.settings_manager import Settings
 
 
 def setup_database(cursor):
@@ -48,12 +49,13 @@ def test_connect_to_database_mock(mock_sqlite3):
     # Set up the mock for sqlite3.connect
     mock_connection = MagicMock()
     mock_sqlite3.connect.return_value = mock_connection
+    settings_manager = Settings()
 
     # Call the function
     connection = database.connect_to_database()
 
     # Check that sqlite3.connect was called with the correct database name
-    mock_sqlite3.connect.assert_called_with(database.settings.settings.database_name)
+    mock_sqlite3.connect.assert_called_with(settings_manager.get_setting('database_name'))
 
     # Check that the return value is the mock connection
     assert connection == mock_connection

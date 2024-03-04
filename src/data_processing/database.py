@@ -12,13 +12,16 @@ Preliminary implementation of an advanced search feature
 """
 
 import sqlite3
-from src.utility import settings
+from src.utility.settings_manager import Settings
 
+
+settings_manager = Settings()
 
 # Putting this here just to create the database
 def connect_to_database():
 	print("Connecting to the database")
-	return sqlite3.connect(settings.settings.database_name)
+	database_name = settings_manager.get_setting('database_name')
+	return sqlite3.connect(database_name)
 
 
 def close_database(connection):
@@ -70,23 +73,25 @@ def create_file_name_tables(connection):
 # Keeps duplicate items at the moment, not sure if we should also include the publisher to distinguish dupes,
 # or should we just remove them instead (keeping whichever one has the best access, if one says Y, delete the other?)
 def search_database(connection, searchType, value):
-    results = []
-    cursor = connection.cursor()
 
-    # Grabs the names of all tables via the CRKN and local file name tables
-    listOfTables = get_tables(connection)
-    # Searches for matching items through each table one by one and adds any matches to the list
-    for table in listOfTables:
-        institution = settings.settings.institution
-        if searchType == 'Title':
-            value = f'%{value}%'
-            query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType} LIKE ?"
-            cursor.execute(query, (institution, value))
-        else:
-            query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType}=?"
-            cursor.execute(query, (institution, value))
-        results = results + cursor.fetchall()
-    return results
+	results = []
+	cursor = connection.cursor()
+
+	# Grabs the names of all tables via the CRKN and local file name tables
+	listOfTables = get_tables(connection)
+
+	# Searches for matching items through each table one by one and adds any matches to the list
+	for table in listOfTables:
+		institution = settings_manager.get_setting('institution')
+		if searchType == 'Title':
+			value = f'%{value}%'
+			query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType} LIKE ?"
+			cursor.execute(query, (institution, value))
+		else:
+			query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType}=?"
+			cursor.execute(query, (institution, value))
+		results = results + cursor.fetchall()
+	return results
 
 
 # individual search functions for each search type
