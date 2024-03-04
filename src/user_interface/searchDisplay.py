@@ -1,6 +1,8 @@
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QTableWidgetItem, QTextEdit, QComboBox, QWidget
 from src.utility.export import export_data
+import math
+
 
 import os
 
@@ -33,6 +35,8 @@ class searchDisplay(QDialog):
             self.tableWidget.insertRow(row_number)
             for column_number, data in enumerate(row_data):
                 self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+        self.update_all_sizes()
+
     def export_data_handler(self):
         export_data(self.results)
 
@@ -69,6 +73,18 @@ class searchDisplay(QDialog):
                 if original_font_size is not None:
                     font.setPointSize(int(original_font_size * (new_width / original_width)))
                 widget.setFont(font)
+        
+        table_width = int(0.8 * new_width)
+        self.tableWidget.setFixedWidth(table_width)
+
+         # Calculate the width for each column
+        num_columns = self.tableWidget.columnCount()
+        column_width = math.floor(table_width / num_columns) if num_columns > 0 else 0
+        column_width -= 16
+
+        # Set the calculated width for each column
+        for column_number in range(num_columns):
+            self.tableWidget.setColumnWidth(column_number, column_width)
 
     def resizeEvent(self, event):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
