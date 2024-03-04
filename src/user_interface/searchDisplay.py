@@ -43,7 +43,7 @@ class searchDisplay(QDialog):
     def update_all_sizes(self):
         original_width = 1200
         original_height = 800
-        new_width = self.width()
+        new_width = self.width() + 25
         new_height = self.height()
 
         if self.original_widget_values is None:

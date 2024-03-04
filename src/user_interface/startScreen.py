@@ -190,7 +190,7 @@ class startScreen(QDialog):
     Mar 4th
     """
     def update_all_sizes(self):
-        new_width = self.width()
+        new_width = self.width() + 25
         new_height = self.height()
 
         if self.original_widget_values is None:
