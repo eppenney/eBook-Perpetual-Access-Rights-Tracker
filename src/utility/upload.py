@@ -65,6 +65,10 @@ def process_file(file_path):
 
 
 def remove_local_file(file_name):
+    """
+    Remove local file from database
+    :param file_name: the name of the file to remove
+    """
     connection = database.connect_to_database()
     cursor = connection.cursor()
 
