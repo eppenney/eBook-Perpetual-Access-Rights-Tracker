@@ -9,6 +9,24 @@ Cian Bottomley-Mason
 January 28, 2024,
 Basic database-wide search functionality using Isaac's scraped filename system
 Preliminary implementation of an advanced search feature
+
+DATABASE STRUCTURE:
+
+Table 1: CRKN_file_names: (file_name, file_date)
+		- Contains a list of all of the tables that contain CRKN file data
+		- file_name = first part of file link name on CRKN website
+		- file_date = date and version number of file link name on CRKN website
+
+Table 2: local_file_names: (file_name, file_date)
+		- Contains a list of all the tables that contain local file data
+		- NOTE: Does not include "local_" that is at the beginning of the actual tables
+		- file_name = entire file name that is uploaded
+		- file_date = the actual date that the file was uploaded to the database
+
+Other Tables:
+		- All other tables are tables listed in the two tables above
+		- For CRKN_file_names - direct references (file_name)
+		- For local_file_names - "local_" + file_name
 """
 
 import sqlite3
@@ -44,40 +62,45 @@ def get_tables(connection):
 	:param connection: database connection object
 	:return: list of all CRKN/local file name tables
 	"""
-	listOfTables = connection.execute(
-		"""SELECT file_name FROM CRKN_file_names UNION SELECT file_name FROM Local_file_names;""").fetchall()
-	listOfTables = [row[0] for row in listOfTables]  # neat way to strip the apostrophes/parentheses from python's default formatting
-	return listOfTables
+	list_of_tables = connection.execute("SELECT file_name FROM CRKN_file_names;").fetchall()
+	# strip the apostrophes/parentheses from formatting
+	list_of_tables = [row[0] for row in list_of_tables]
+
+	# Need to modify the table names for the local files
+	local_tables = connection.execute("SELECT file_name FROM local_file_names;").fetchall()
+	local_tables = ["local_" + row[0] for row in local_tables]
+
+	# Combine the two lists - CRKN and local file names
+	list_of_tables.extend(local_tables)
+	return list_of_tables
 
 
 def create_file_name_tables(connection):
 	"""
-	Create default database tables - CRKN_file_names and Local_file_names
+	Create default database tables - CRKN_file_names and local_file_names
 	Table name format: just the abbreviation
 	:param connection: database connection object
 	"""
 	# cursor object to interact with database
 	cursor = connection.cursor()
 
-	listOfTables = cursor.execute(
+	list_of_tables = cursor.execute(
 		"""SELECT name FROM sqlite_master WHERE type='table'
 		AND name='CRKN_file_names'; """).fetchall()
 
 	# If table doesn't exist, create new table for CRKN file info
-	if not listOfTables:
+	if not list_of_tables:
 		print("Table does not exist, creating new one")
-		cursor.execute(
-			"""CREATE TABLE CRKN_file_names(file_name VARCHAR(255), file_date VARCHAR(255));""")
+		cursor.execute("CREATE TABLE CRKN_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
 
-	listOfTables = cursor.execute(
+	list_of_tables = cursor.execute(
 		"""SELECT name FROM sqlite_master WHERE type='table'
-		AND name='Local_file_names'; """).fetchall()
+		AND name='local_file_names'; """).fetchall()
 
 	# If table does not exist, create new table for local file info
-	if not listOfTables:
+	if not list_of_tables:
 		print("Table does not exist, creating new one")
-		cursor.execute(
-			"""CREATE TABLE Local_file_names(file_name VARCHAR(255),file_date VARCHAR(255));""")
+		cursor.execute("CREATE TABLE local_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
 
 
 # Keeps duplicate items at the moment, not sure if we should also include the publisher to distinguish dupes,
@@ -94,10 +117,10 @@ def search_database(connection, searchType, value):
 	cursor = connection.cursor()
 
 	# Grabs the names of all tables via the CRKN and local file name tables
-	listOfTables = get_tables(connection)
+	list_of_tables = get_tables(connection)
 
 	# Searches for matching items through each table one by one and adds any matches to the list
-	for table in listOfTables:
+	for table in list_of_tables:
 		institution = settings_manager.get_setting('institution')
 		if searchType == 'Title':
 			value = f'%{value}%'
@@ -167,10 +190,10 @@ def advanced_search(connection, query):
 	results = []
 	cursor = connection.cursor()
 
-	listOfTables = get_tables(connection)
+	list_of_tables = get_tables(connection)
 
 	# Searches for matching items through each table one by one and adds any matches to the list
-	for table in listOfTables:
+	for table in list_of_tables:
 		# original query should list the table used as 'temp' scuffed for now
 		formatted_query = query.format(table_name=table)
 

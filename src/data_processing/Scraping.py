@@ -57,7 +57,7 @@ def scrapeCRKN():
 
     soup = BeautifulSoup(page_text, "html.parser")
 
-    # Extend list to include csv and other excel format files as well, pretty easy to update rest of code too.
+    # Extend list to include csv and other Excel format files as well, pretty easy to update rest of code too.
     links = soup.find_all('a', href=lambda href: href and (href.endswith('.xlsx')))
 
     # List of files that need to be updated/added to the local database
@@ -126,7 +126,7 @@ def compare_file(file, method, connection):
     else:
         files_dates = cursor.execute(
             f"SELECT * FROM {method}_file_names WHERE file_name = '{file[0]}' and file_date = '{file[1]}'").fetchall()
-        if not files_dates:
+        if not files_dates or method == "local":
             return "UPDATE"
         print(f"File already there - {file[0]}, {file[1]}")
         return False
@@ -134,7 +134,7 @@ def compare_file(file, method, connection):
 
 def update_tables(file, method, connection, command):
     """
-    Update table with file information in local database.
+    Update {method}_file_names table with file information in local database.
     :param file: file name information - [publisher, date/version number]
     :param method: CRKN or local
     :param connection: database connection object
@@ -179,9 +179,8 @@ def file_to_dataframe_excel(file):
     """
     try:
         return pd.read_excel(file, sheet_name="PA-Rights", header=2)
-    # Following line isn't needed anymore, unless we keep/modify for exceptions
-    except ValueError:
-        return pd.read_excel(file, sheet_name="PA-rights", header=2)
+    except Exception:
+        raise Exception("Unable to read Excel file.")
 
 
 def file_to_dataframe_csv(file):
@@ -193,7 +192,7 @@ def file_to_dataframe_csv(file):
     """
     try:
         return pd.read_csv(file, header=2)
-    except ValueError:
+    except Exception:
         raise Exception("Unable to read csv file.")
 
 
