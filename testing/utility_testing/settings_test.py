@@ -39,6 +39,6 @@ def test_load_settings_file_not_found():
         assert settings.theme == "Light"
         assert settings.institution == "Univ. of Prince Edward Island"
         assert settings.results_per_page == 25
-        assert settings.CRKN_url == "https://www.crkn-rcdr.ca/en/perpetual-access-rights-reports-storage"
+        assert settings.CRKN_url == "https://library.upei.ca/test-page-ebooks-perpetual-access-project"
         assert settings.CRKN_root_url == "/".join(settings.CRKN_url.split("/")[:3])
         assert settings.database_name == "ebook_database.db"
