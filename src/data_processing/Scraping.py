@@ -196,6 +196,19 @@ def file_to_dataframe_csv(file):
         raise Exception("Unable to read csv file.")
 
 
+def file_to_dataframe_tsv(file):
+    """
+        Convert tsv file to pandas dataframe.
+        File can be either a file or a URL link to a file.
+        :param file: local file to convert to dataframe
+        :return: dataframe
+        """
+    try:
+        return pd.read_table(file, header=2)
+    except Exception:
+        raise Exception("Unable to read tsv file.")
+
+
 def upload_to_database(df, table_name, connection):
     """
     Upload file dataframe to table in database.
