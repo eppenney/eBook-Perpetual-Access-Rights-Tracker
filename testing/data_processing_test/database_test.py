@@ -7,9 +7,9 @@ from src.utility.settings_manager import Settings
 
 
 def setup_database(cursor):
-    # Create CRKN and Local file name tables to store file names
+    # Create CRKN and local file name tables to store file names
     cursor.execute("""CREATE TABLE CRKN_file_names (file_name TEXT);""")
-    cursor.execute("""CREATE TABLE Local_file_names (file_name TEXT);""")
+    cursor.execute("""CREATE TABLE local_file_names (file_name TEXT);""")
 
     # Define file names representing table names for CRKN and local data
     crkn_file_names = ['crkn_data_2021', 'crkn_data_2022']
@@ -19,7 +19,7 @@ def setup_database(cursor):
     for file_name in crkn_file_names:
         cursor.execute("INSERT INTO CRKN_file_names (file_name) VALUES (?);", (file_name,))
     for file_name in local_file_names:
-        cursor.execute("INSERT INTO Local_file_names (file_name) VALUES (?);", (file_name,))
+        cursor.execute("INSERT INTO local_file_names (file_name) VALUES (?);", (file_name,))
 
     # Create tables based on the inserted file names and populate them with test data
     tables_to_create = crkn_file_names + local_file_names
@@ -80,7 +80,7 @@ def test_create_file_name_tables_when_tables_exist():
     mock_cursor = MagicMock()
     mock_connection.cursor.return_value = mock_cursor
     # Simulate existing tables
-    mock_cursor.execute.return_value.fetchall.return_value = [('CRKN_file_names',), ('Local_file_names',)]
+    mock_cursor.execute.return_value.fetchall.return_value = [('CRKN_file_names',), ('local_file_names',)]
 
     # Call the function with the mock connection
     database.create_file_name_tables(mock_connection)
@@ -109,22 +109,22 @@ def test_get_tables():
     connection = sqlite3.connect(":memory:")
     cursor = connection.cursor()
     cursor.execute("""CREATE TABLE CRKN_file_names (file_name VARCHAR(255));""")
-    cursor.execute("""CREATE TABLE Local_file_names (file_name VARCHAR(255));""")
+    cursor.execute("""CREATE TABLE local_file_names (file_name VARCHAR(255));""")
 
     # Insert mock data into tables
     crkn_files = ['CRKN_data1', 'CRKN_data2']
-    local_files = ['Local_data1', 'Local_data2']
+    local_files = ['local_data1', 'local_data2']
     for file in crkn_files:
         cursor.execute("INSERT INTO CRKN_file_names (file_name) VALUES (?);", (file,))
     for file in local_files:
-        cursor.execute("INSERT INTO Local_file_names (file_name) VALUES (?);", (file,))
+        cursor.execute("INSERT INTO local_file_names (file_name) VALUES (?);", (file,))
     connection.commit()
 
     # Call get_tables and verify it returns correct table names
     expected_tables = sorted(crkn_files + local_files)
     actual_tables = sorted(database.get_tables(connection))
 
-    assert actual_tables == expected_tables, "get_tables should return all file names from CRKN_file_names and Local_file_names"
+    assert actual_tables == expected_tables, "get_tables should return all file names from CRKN_file_names and local_file_names"
 
     connection.close()
 
