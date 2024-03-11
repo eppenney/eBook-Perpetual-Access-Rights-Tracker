@@ -103,6 +103,11 @@ class startScreen(QDialog):
 
         new_text_edit.show()
 
+        self.original_widget_values[new_text_edit] = {
+                    'geometry': new_text_edit.geometry(),
+                    'font_size': new_text_edit.font().pointSize() if isinstance(new_text_edit, (QTextEdit, QComboBox)) else None
+                }
+
         #Duplicating the QComboBox when the text editor is dublicated.
 
         new_boolean_box = QComboBox(self)
@@ -115,12 +120,11 @@ class startScreen(QDialog):
             new_boolean_box.addItem(self.booleanBox.itemText(i))
         new_boolean_box.show()
         self.duplicateCombos.append(new_boolean_box)
-        # Updating sizes array to account for new elements
-        self.original_widget_values = None
-        self.original_width = self.width()
-        self.original_height = self.height()
-        self.update_all_sizes()
 
+        self.original_widget_values[new_boolean_box] = {
+                    'geometry': new_boolean_box.geometry(),
+                    'font_size': new_boolean_box.font().pointSize() if isinstance(new_boolean_box, (QTextEdit, QComboBox)) else None
+                }
 
       else:
           QMessageBox.warning(self, "Limit reached", "You can only search {} at a time".format(MAX_DUPLICATES))
@@ -134,11 +138,7 @@ class startScreen(QDialog):
             last_boolean_box= self.duplicateCombos.pop()
             last_boolean_box.deleteLater()
             self.duplicateCount -= 1  # Decrement the count of duplicates
-            # Updating sizes array to account for new elements
-            self.original_widget_values = None
-            self.original_width = self.width()
-            self.original_height = self.height()
-            self.update_all_sizes()
+
         else:
             QMessageBox.information(self, "No More Duplicates", "There are no more duplicated text fields to remove.")
 
