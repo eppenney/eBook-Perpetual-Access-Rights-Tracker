@@ -55,10 +55,9 @@ def scrapeCRKN():
         print(f"An error occurred: {error}")
         return
 
+    # Get list of links that end in xlsx, csv, or tsv from the CRKN website link
     soup = BeautifulSoup(page_text, "html.parser")
-
-    # Extend list to include csv and other Excel format files as well, pretty easy to update rest of code too.
-    links = soup.find_all('a', href=lambda href: href and (href.endswith('.xlsx')))
+    links = soup.find_all('a', href=lambda href: href and (href.endswith('.xlsx') or href.endswith('.csv') or href.endswith('.tsv')))
 
     # List of files that need to be updated/added to the local database
     files = []
@@ -94,18 +93,40 @@ def download_files(files):
 
     for [link, command] in files:
         file_link = link.get("href")
+
+        # Get which type of file it is (xlsx, csv, or tsv)
+        file_type = file_link.split(".")[-1]
+
         file_first, file_date = split_CRKN_file_name(file_link)
         update_tables([file_first, file_date], "CRKN", connection, command)
 
         # Write file to temporary local file, then convert that file into a dataframe to upload to database
-        with open(f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx", 'wb') as file:
+        with open(f"{os.path.abspath(os.path.dirname(__file__))}/temp.{file_type}", 'wb') as file:
             response = requests.get(settings_manager.get_setting("CRKN_root_url") + file_link)
             file.write(response.content)
-        file_df = file_to_dataframe_excel(f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
+
+        if file_type == "xlsx":
+            file_df = file_to_dataframe_excel(f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
+        elif file_type == "tsv":
+            file_df = file_to_dataframe_tsv(f"{os.path.abspath(os.path.dirname(__file__))}/temp.tsv")
+        else:
+            file_df = file_to_dataframe_csv(f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
+
         upload_to_database(file_df, file_first, connection)
 
     database.close_database(connection)
-    os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
+    try:
+        os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
+    except FileNotFoundError:
+        pass
+    try:
+        os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
+    except FileNotFoundError:
+        pass
+    try:
+        os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.tsv")
+    except FileNotFoundError:
+        pass
 
 
 def compare_file(file, method, connection):
