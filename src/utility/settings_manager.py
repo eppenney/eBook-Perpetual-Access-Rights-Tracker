@@ -66,6 +66,9 @@ class Settings(metaclass=SingletonMeta):
                 "database_name": default_db_path,
                 "github_link": "https://github.com"
             }
+            #Set the CRKN root url from the CRKN url
+            url_parts = settings["CRKN_url"].split('/')
+            settings["CRKN_root_url"] = '/'.join(url_parts[:3])
         return settings
 
     def save_settings(self):
