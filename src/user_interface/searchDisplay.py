@@ -31,6 +31,10 @@ class searchDisplay(QDialog):
         self.tableWidget.setRowCount(0)  # Clear existing rows
         self.tableWidget.setColumnCount(len(results[0])) if results else self.tableWidget.setColumnCount(0)
 
+        if results:
+            column_labels = ["Access", "Title", "Publisher", "Year of Publication", "eISBN", "OCN"]
+            self.tableWidget.setHorizontalHeaderLabels(column_labels)
+
         for row_number, row_data in enumerate(results):
             self.tableWidget.insertRow(row_number)
             for column_number, data in enumerate(row_data):
