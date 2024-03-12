@@ -50,6 +50,7 @@ class startScreen(QDialog):
         self.txt = ""
 
         self.booleanBox = self.findChild(QComboBox, 'booleanBox')
+        self.booleanBox.hide()
 
         self.pushButton.clicked.connect(self.duplicateTextEdit)
 
@@ -191,6 +192,8 @@ class startScreen(QDialog):
     - Ethan
     Mar 4th
     """
+
+    #there is some issue in resizing these cause when add button is clicked it adds and moves the resolution to right and never comes back.
     def update_all_sizes(self):
         new_width = self.width() + 25
         new_height = self.height()

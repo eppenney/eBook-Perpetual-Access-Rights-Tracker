@@ -64,9 +64,10 @@ class Settings(metaclass=SingletonMeta):
                 "CRKN_url": "https://library.upei.ca/test-page-ebooks-perpetual-access-project",
                 "CRKN_root_url": "",
                 "database_name": default_db_path,
-                "github_link": "https://github.com"
+                "github_link": "https://github.com",
+                "firstLaunch": True
             }
-            #Set the CRKN root url from the CRKN url
+            # Set the CRKN root url from the CRKN url
             url_parts = settings["CRKN_url"].split('/')
             settings["CRKN_root_url"] = '/'.join(url_parts[:3])
         return settings
@@ -92,6 +93,13 @@ class Settings(metaclass=SingletonMeta):
         :return: value of that setting
         """
         return self.settings.get(key, None)
+
+    # this is method that should be able to save the settings for the first time.
+    def is_first_launch(self):
+        return self.get_setting('firstLaunch')
+
+    def set_first_launch(self, value):
+        self.update_setting('firstLaunch', value)
 
     def set_language(self, language):
         """
@@ -122,5 +130,3 @@ class Settings(metaclass=SingletonMeta):
         :param institution: new institution
         """
         self.update_setting('institution', institution)
-
-

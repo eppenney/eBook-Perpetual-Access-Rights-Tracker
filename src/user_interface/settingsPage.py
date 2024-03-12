@@ -34,6 +34,8 @@ class settingsPage(QDialog):
         backButton2 = startScreen.get_instance(self.widget)
         self.widget.addWidget(backButton2)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+
+
     """
     This was made my chatGPT yo, do not sue me. 
     -Ethan

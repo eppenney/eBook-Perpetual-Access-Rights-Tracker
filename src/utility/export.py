@@ -13,7 +13,7 @@ self.exportButton.clicked.connect(export_data(data_to_export))
 or:
 self.exportButton.clicked.connect(export_data)
 """
-from PyQt5.QtWidgets import QFileDialog, QApplication
+from PyQt6.QtWidgets import QFileDialog, QApplication
 import pandas as pd
 import sys
 
