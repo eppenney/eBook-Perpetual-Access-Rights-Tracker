@@ -49,7 +49,7 @@ def process_file(file_path):
     date.strftime("%Y_%m_%d")
 
     # Check if it is already in database. If yes (UPDATE), ask to replace old file
-    result = Scraping.compare_file([file_name, date], "local", connection)
+    result = Scraping.compare_file([file_name.split(".")[0], date], "local", connection)
     if result == "UPDATE":
         reply = QMessageBox.question(None, "Replace File", "A file with the same name is already in the local database. Would you like to replace it with the new file?",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel)
@@ -61,7 +61,7 @@ def process_file(file_path):
             return
 
     # Add file into to local_file_names table, convert file to dataframe, and insert dataframe into database
-    Scraping.update_tables([file_name, date], "local", connection, result)
+    Scraping.update_tables([file_name.split(".")[0], date], "local", connection, result)
     if (file_name.split(".")[-1] == "csv"):
         file_df = Scraping.file_to_dataframe_csv(file_path)
     elif (file_name.split(".")[-1] == "xlsx"):
@@ -69,10 +69,10 @@ def process_file(file_path):
     elif (file_name.split(".")[-1] == "tsv"):
         file_df = Scraping.file_to_dataframe_tsv(file_path)
     else:
-        QMessageBox.warning(None, "Invalid File Type", "Please select a valid CSV or TSV file.", QMessageBox.StandardButton.Ok)
+        QMessageBox.warning(None, "Invalid File Type", "Please select a valid xlsx, csv or tsv file.", QMessageBox.StandardButton.Ok)
         return
 
-    Scraping.upload_to_database(file_df, "local" + file_name, connection)
+    Scraping.upload_to_database(file_df, "local_" + file_name.split(".")[0], connection)
 
     database.close_database(connection)
 
