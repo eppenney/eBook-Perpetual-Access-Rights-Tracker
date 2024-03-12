@@ -59,13 +59,14 @@ def scrapeCRKN():
     soup = BeautifulSoup(page_text, "html.parser")
     links = soup.find_all('a', href=lambda href: href and (href.endswith('.xlsx') or href.endswith('.csv') or href.endswith('.tsv')))
 
-    # Check if links on CRKN website need to be added/updated in local database
     connection = database.connect_to_database()
 
     # List of files that need to be updated/added to the local database
     files_to_update = []
+    # All CRKN tables - by end it will just have the ones to remove
     files_to_remove = [file for file in database.get_tables(connection) if not file.startswith("local_")]
 
+    # Check if links on CRKN website need to be added/updated in local database
     for link in links:
         file_link = link.get("href")
         file_first, file_date = split_CRKN_file_name(file_link)
@@ -83,7 +84,7 @@ def scrapeCRKN():
     file_changes = len(files_to_update) + len(files_to_remove)
     if file_changes > 0:
         if file_changes == 1:
-            ans = input(f"There is {file_changes} files to update in the database. Would you like to do the update now? Y/N")
+            ans = input(f"There is {file_changes} file to update in the database. Would you like to do the update now? Y/N")
         else:
             ans = input(f"There are {file_changes} files to update in the database. Would you like to do the update now? Y/N")
         if ans == "Y":
@@ -110,7 +111,6 @@ def download_files(files, connection):
         file_type = file_link.split(".")[-1]
 
         file_first, file_date = split_CRKN_file_name(file_link)
-        update_tables([file_first, file_date], "CRKN", connection, command)
 
         # Write file to temporary local file, then convert that file into a dataframe to upload to database
         with open(f"{os.path.abspath(os.path.dirname(__file__))}/temp.{file_type}", 'wb') as file:
@@ -124,7 +124,10 @@ def download_files(files, connection):
         else:
             file_df = file_to_dataframe_csv(f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
 
-        upload_to_database(file_df, file_first, connection)
+        valid_format = check_file_format(file_df)
+        if valid_format:
+            upload_to_database(file_df, file_first, connection)
+            update_tables([file_first, file_date], "CRKN", connection, command)
 
     try:
         os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
@@ -217,8 +220,8 @@ def file_to_dataframe_excel(file):
     """
     try:
         return pd.read_excel(file, sheet_name="PA-Rights", header=2)
-    except Exception:
-        raise Exception("Unable to read Excel file.")
+    except ValueError:
+        print("Incorrect sheet name in excel file (PA-Rights did not exist).")
 
 
 def file_to_dataframe_csv(file):
@@ -231,7 +234,7 @@ def file_to_dataframe_csv(file):
     try:
         return pd.read_csv(file, header=2)
     except Exception:
-        raise Exception("Unable to read csv file.")
+        print("Unable to read csv file.")
 
 
 def file_to_dataframe_tsv(file):
@@ -244,7 +247,7 @@ def file_to_dataframe_tsv(file):
     try:
         return pd.read_table(file, header=2)
     except Exception:
-        raise Exception("Unable to read tsv file.")
+        print("Unable to read tsv file.")
 
 
 def upload_to_database(df, table_name, connection):
@@ -260,3 +263,37 @@ def upload_to_database(df, table_name, connection):
         if_exists="replace",
         index=False
     )
+
+
+def check_file_format(file_df):
+    """
+    Checks the incoming file format to see if it is correct
+    :param file_df: dataframe with file info (or None if unable to turn into dataframe
+    :return: boolean True or False if valid or not
+    """
+
+    # Failed to read the file into a dataframe
+    if file_df is None:
+        return False
+
+    # Top left cell?
+    header_row = ["Title", "Publisher", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code", "collection_name", "title_metadata_last_modified"]
+    headers = file_df.columns.to_list()
+
+    # Header row is incorrect (too short or headers don't match)
+    if len(headers) <= 8 or not headers[:8] == header_row:
+        print("The header row is incorrect")
+        return False
+
+    # Title and Y/N Column complete
+    df_series = file_df.count()
+    rows = file_df.shape[0]
+    if df_series["Title"] != rows:
+        print("Missing title data")
+        return False
+    for uni_column in df_series[8:]:
+        if uni_column != rows:
+            print("Missing Y/N data")
+            return False
+
+    return True

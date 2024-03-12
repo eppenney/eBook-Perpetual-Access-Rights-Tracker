@@ -19,6 +19,7 @@ from src.data_processing import database, Scraping
 import sys
 import datetime
 
+
 def upload_and_process_file():
     app = QApplication.instance()  # Try to get the existing application instance
     if app is None:  # If no instance exists, create a new one
@@ -46,7 +47,7 @@ def process_file(file_path):
 
     # Use as file date for local files
     date = datetime.datetime.now()
-    date.strftime("%Y_%m_%d")
+    date = date.strftime("%Y_%m_%d")
 
     # Check if it is already in database. If yes (UPDATE), ask to replace old file
     result = Scraping.compare_file([file_name, date], "local", connection)
@@ -61,7 +62,6 @@ def process_file(file_path):
             return
 
     # Add file into to local_file_names table, convert file to dataframe, and insert dataframe into database
-    Scraping.update_tables([file_name, date], "local", connection, result)
     if file_name.split(".")[-1] == "csv":
         file_df = Scraping.file_to_dataframe_csv(file_path)
     elif file_name.split(".")[-1] == "xlsx":
@@ -72,7 +72,10 @@ def process_file(file_path):
         QMessageBox.warning(None, "Invalid File Type", "Please select a valid CSV or TSV file.", QMessageBox.StandardButton.Ok)
         return
 
-    Scraping.upload_to_database(file_df, "local" + file_name, connection)
+    valid_file = Scraping.check_file_format(file_df)
+    if valid_file:
+        Scraping.upload_to_database(file_df, "local" + file_name, connection)
+        Scraping.update_tables([file_name, date], "local", connection, result)
 
     database.close_database(connection)
 
