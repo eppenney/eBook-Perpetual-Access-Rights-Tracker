@@ -1,5 +1,5 @@
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMessageBox, QComboBox, QSizePolicy, QWidget
+from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QLineEdit, QMessageBox, QComboBox, QSizePolicy, QWidget
 from PyQt6.QtGui import QIcon
 
 from src.user_interface.searchDisplay import searchDisplay
@@ -8,6 +8,7 @@ from src.data_processing.database import connect_to_database, search_by_title, s
     close_database, add_AND_query, add_OR_query, advanced_search
 from src.utility.upload import upload_and_process_file
 from src.utility.settings_manager import Settings
+from src.data_processing.Scraping import scrapeCRKN
 import os
 #from searchDisplay import display_results_in_table
 
@@ -47,12 +48,13 @@ class startScreen(QDialog):
 
         #finding the method from the class.
         self.pushButton = self.findChild(QPushButton, 'pushButton')
-        self.textEdit = self.findChild(QTextEdit, 'textEdit')
+        self.textEdit = self.findChild(QLineEdit, 'textEdit')
         self.duplicateCount = 0 #This will be tracking the number of duplicates
 
         self.txt = ""
 
         self.booleanBox = self.findChild(QComboBox, 'booleanBox')
+        self.booleanBox.hide()
 
         self.pushButton.clicked.connect(self.duplicateTextEdit)
 
@@ -66,7 +68,9 @@ class startScreen(QDialog):
         self.buttonGroup = QButtonGroup()
 
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
-        self.settingMenuButton.setIcon(QIcon("resources/hamburger_icon_updated.png"))
+        self.settingMenuButton.setIcon(QIcon("resources/Gear-icon.png"))
+        self.settingMenuButton.setGeometry(15, 15, self.settingMenuButton.width(), self.settingMenuButton.height())
+
         icon_size = self.settingMenuButton.size()
         self.settingMenuButton.setIconSize(icon_size)
         self.settingMenuButton.clicked.connect(self.settingsDisplay)
@@ -74,31 +78,43 @@ class startScreen(QDialog):
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
         self.uploadButton.clicked.connect(self.upload_button_clicked)
 
+        self.updateButton = self.findChild(QPushButton, "updateCRKN")
+        self.updateButton.clicked.connect(scrapeCRKN)
+
+        self.instituteButton = self.findChild(QPushButton, "institutionButton")
+        self.instituteText = settings_manager.get_setting("institution")
+        self.instituteButton.setText(self.instituteText)
+        self.instituteButton.clicked.connect(self.settingsDisplay)
+
         self.original_widget_values = None 
         self.original_width = 1200
         self.original_height = 800
+        self.new_width = 1200
+        self.new_height = 800
+
+        self.textOffsetX = 20
+        self.textOffsetY = 10
 
 
 
 #this method responsible for making the new text edit each time the plus sign is clicked. (Please talk to me if you want to understand the code)
 #basically we are only having limit of 5 searches at the same time
     def duplicateTextEdit(self):
-
       MAX_DUPLICATES = 5
 
       if self.duplicateCount < MAX_DUPLICATES:
         self.duplicateCount += 1  # Use the corrected attribute name
 
-        new_text_edit = QTextEdit(self)
-        newY = self.textEdit.y() + (self.textEdit.height() + 10) * self.duplicateCount
+        new_text_edit = QLineEdit(self)
+        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * self.duplicateCount
 
         # Copy properties from the original textEdit
         new_text_edit.setFont(self.textEdit.font())
         new_text_edit.setStyleSheet(self.textEdit.styleSheet())
 
-        # Set geometry for the new QTextEdit
-        new_text_edit.setGeometry(self.textEdit.x(), newY, self.textEdit.width(), self.textEdit.height())
-
+        # Set geometry for the new QLineEdit
+        
+        new_text_edit.setGeometry(self.textEdit.x() - self.textOffsetX , newY, self.textEdit.width(), self.textEdit.height())
         # If there's any specific initialization content or placeholder text
         new_text_edit.setPlaceholderText(self.textEdit.placeholderText())
 
@@ -108,13 +124,13 @@ class startScreen(QDialog):
 
         self.original_widget_values[new_text_edit] = {
                     'geometry': new_text_edit.geometry(),
-                    'font_size': new_text_edit.font().pointSize() if isinstance(new_text_edit, (QTextEdit, QComboBox)) else None
+                    'font_size': new_text_edit.font().pointSize() if isinstance(new_text_edit, (QLineEdit, QComboBox)) else None
                 }
+        
 
-        #Duplicating the QComboBox when the text editor is dublicated.
-
+        #Duplicating the QComboBox when the text editor is duplicated.
         new_boolean_box = QComboBox(self)
-        new_boolean_box.setGeometry(self.booleanBox.x(),newY,self.booleanBox.width(),self.booleanBox.height())
+        new_boolean_box.setGeometry(self.booleanBox.x() - self.textOffsetX ,newY,self.booleanBox.width(),self.booleanBox.height())
 
         new_boolean_box.setFont(self.booleanBox.font())
         new_boolean_box.setStyleSheet(self.booleanBox.styleSheet())
@@ -126,17 +142,26 @@ class startScreen(QDialog):
 
         self.original_widget_values[new_boolean_box] = {
                     'geometry': new_boolean_box.geometry(),
-                    'font_size': new_boolean_box.font().pointSize() if isinstance(new_boolean_box, (QTextEdit, QComboBox)) else None
+                    'font_size': new_boolean_box.font().pointSize() if isinstance(new_boolean_box, (QLineEdit, QComboBox)) else None
                 }
 
       else:
           QMessageBox.warning(self, "Limit reached", "You can only search {} at a time".format(MAX_DUPLICATES))
 
+    def adjustDuplicateTextEditSize(self):
+        for i in range(len(self.duplicateTextEdits)):
+            newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (i + 1)
+            self.duplicateTextEdits[i].setGeometry(self.textEdit.x() - self.textOffsetX , newY, self.textEdit.width(), self.textEdit.height())
+        for i in range(len(self.duplicateCombos)):
+            newY = self.booleanBox.y() + (self.booleanBox.height() + self.textOffsetY) * (i + 1)
+            self.duplicateCombos[i].setGeometry(self.booleanBox.x() - self.textOffsetX , newY, self.booleanBox.width(), self.booleanBox.height())
+
+
 #this method helps in removing the extra search boxes.
     def removeTextEdit(self):
         if self.duplicateTextEdits:  # Check if there are any duplicates to remove
-            last_text_edit = self.duplicateTextEdits.pop()  # Remove the last QTextEdit from the list
-            last_text_edit.deleteLater()  # Delete the QTextEdit widget
+            last_text_edit = self.duplicateTextEdits.pop()  # Remove the last QLineEdit from the list
+            last_text_edit.deleteLater()  # Delete the QLineEdit widget
 
             last_boolean_box = self.duplicateCombos.pop()
             last_boolean_box.deleteLater()
@@ -210,8 +235,11 @@ class startScreen(QDialog):
     Mar 4th
     """
     def update_all_sizes(self):
-        new_width = self.width() + 25
-        new_height = self.height()
+        self.new_width = self.width() + 25
+        self.new_height = self.height()
+
+        self.textOffsetX = int(20  * (self.new_width / self.original_width))
+        self.textOffsetY = int(10 * (self.new_height / self.original_height))
 
         if self.original_widget_values is None:
             # If it's the first run, store the original values
@@ -219,32 +247,42 @@ class startScreen(QDialog):
             for widget in self.findChildren(QWidget):
                 self.original_widget_values[widget] = {
                     'geometry': widget.geometry(),
-                    'font_size': widget.font().pointSize() if isinstance(widget, (QTextEdit, QComboBox)) else None
+                    'font_size': widget.font().pointSize() if isinstance(widget, (QLineEdit, QComboBox)) else None
                 }
 
         # Iterate through every widget loaded using loadUi
         for widget, original_values in self.original_widget_values.items():
             # Calculate new geometry and size for each widget
-            x = int(original_values['geometry'].x() * (new_width / self.original_width))
-            y = int(original_values['geometry'].y() * (new_height / self.original_height))
-            width = int(original_values['geometry'].width() * (new_width / self.original_width))
-            height = int(original_values['geometry'].height() * (new_height / self.original_height))
+            x = int(original_values['geometry'].x() * (self.new_width / self.original_width))
+            y = int(original_values['geometry'].y() * (self.new_height / self.original_height))
+            width = int(original_values['geometry'].width() * (self.new_width / self.original_width))
+            height = int(original_values['geometry'].height() * (self.new_height / self.original_height))
 
             try:
+                # If the widget is a QLineEdit or QComboBox, adjust font size
+                if isinstance(widget, (QLineEdit, QComboBox)):
+                    font = widget.font()
+                    original_font_size = original_values['font_size']
+                    if original_font_size is not None:
+                        font.setPointSize(int(original_font_size * (self.new_width / self.original_width)))
+                    widget.setFont(font)
+                """if isinstance(widget, (QLineEdit)) and widget != self.textEdit:
+                    x = self.textEdit.x() - self.textOffsetX
+                    width = self.textEdit.width()
+                    # y = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * self.duplicateCount
+                elif isinstance(widget, (QComboBox)) and widget != self.booleanBox:
+                    x = self.booleanBox.x() - self.textOffsetX
+                    width = self.booleanBox.width()
+                    # y = self.booleanBox.y() + (self.booleanBox.height() + self.textOffsetY) * self.duplicateCount"""
                 # Set the new geometry and size
                 widget.setGeometry(x, y, width, height)
             
 
-                # If the widget is a QTextEdit or QComboBox, adjust font size
-                if isinstance(widget, (QTextEdit, QComboBox)):
-                    font = widget.font()
-                    original_font_size = original_values['font_size']
-                    if original_font_size is not None:
-                        font.setPointSize(int(original_font_size * (new_width / self.original_width)))
-                    widget.setFont(font)
+                
             except RuntimeError:
                 continue
                 # print("Widget resizing error") # All these damn prints getting annoying - E
+        self.adjustDuplicateTextEditSize()
 
     def resizeEvent(self, event):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
