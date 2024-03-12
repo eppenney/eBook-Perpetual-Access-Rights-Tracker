@@ -124,11 +124,11 @@ def search_database(connection, searchType, value):
 		institution = settings_manager.get_setting('institution')
 		if searchType == 'Title':
 			value = f'%{value}%'
-			query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType} LIKE ?"
-			cursor.execute(query, (institution, value))
+			query = f"SELECT [{institution}], Title, Publisher, Platform_YOP, Platform_eISBN, OCN FROM {table} WHERE {searchType} LIKE ?"
+			cursor.execute(query, (value,))
 		else:
-			query = f"SELECT Title, Platform_eISBN, OCN, ? FROM {table} WHERE {searchType}=?"
-			cursor.execute(query, (institution, value))
+			query = f"SELECT [{institution}], Title, Publisher, Platform_YOP, Platform_eISBN, OCN FROM {table} WHERE {searchType}=?"
+			cursor.execute(query, (value,))
 		results = results + cursor.fetchall()
 	return results
 
@@ -167,6 +167,7 @@ def search_by_OCN(connection, value):
 # Functions to add AND/OR statements to queries for the advanced search
 def add_AND_query(searchType, query, term):
 	if searchType == "Title":
+		term = f'%{term}%'
 		return f"{query} AND {searchType} LIKE '{term}'"
 	else:
 		return f"{query} AND {searchType}='{term}'"
@@ -195,7 +196,7 @@ def advanced_search(connection, query):
 	# Searches for matching items through each table one by one and adds any matches to the list
 	for table in list_of_tables:
 		# original query should list the table used as 'temp' scuffed for now
-		formatted_query = query.format(table_name=table)
+		formatted_query = query.replace("table_name", table)
 
 		# execute the formatted query
 		cursor.execute(formatted_query)

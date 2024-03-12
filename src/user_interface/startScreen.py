@@ -5,8 +5,9 @@ from PyQt6.QtGui import QIcon
 from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
 from src.data_processing.database import connect_to_database, search_by_title, search_by_ISBN, search_by_OCN, \
-    close_database
+    close_database, add_AND_query, add_OR_query, advanced_search
 from src.utility.upload import upload_and_process_file
+from src.utility.settings_manager import Settings
 import os
 #from searchDisplay import display_results_in_table
 
@@ -15,6 +16,8 @@ When creating instances of startScreen, use startScreen.get_instance(widget)
 -Ethan
 Feb 27, 2024
 """
+settings_manager = Settings()
+settings_manager.load_settings()
 
 
 class startScreen(QDialog):
@@ -135,7 +138,7 @@ class startScreen(QDialog):
             last_text_edit = self.duplicateTextEdits.pop()  # Remove the last QTextEdit from the list
             last_text_edit.deleteLater()  # Delete the QTextEdit widget
 
-            last_boolean_box= self.duplicateCombos.pop()
+            last_boolean_box = self.duplicateCombos.pop()
             last_boolean_box.deleteLater()
             self.duplicateCount -= 1  # Decrement the count of duplicates
 
@@ -160,15 +163,30 @@ class startScreen(QDialog):
 
     #this method is responisible sending the text in the back end for the searching the value
     def search_button_clicked(self):
+        institution = settings_manager.get_setting('institution')
         searchText = self.textEdit.toPlainText().strip()
         searchType = "Title"
+        value = f'%{searchText}%'
+        query = f"SELECT [{institution}], Title, Publisher, Platform_YOP, Platform_eISBN, OCN FROM table_name WHERE {searchType} LIKE '{value}'"
         connection = connect_to_database()
+
+        # Creates the advanced boolean search query by adding the extra search terms/conditions on to the base query
+        # the count workaround seems mega-scuffed, there's definitely a better way of doing this
+        count = 0
+        for textBox in self.duplicateTextEdits:
+            new_value = textBox.toPlainText()
+            operator = self.duplicateCombos[count].currentText()
+            if operator == "AND":
+                query = add_AND_query(searchType, query, new_value)
+            elif operator == "OR":
+                query = add_OR_query(searchType, query, new_value)
+            count = count+1
 
         #using the if statement that will initiate the search through the database
         if searchType == "Title":
-            results = search_by_title(connection,searchText)
+            results = advanced_search(connection, query)
         elif searchType == "Platform_eISBN":
-            results = search_by_ISBN(connection, searchText)
+            results = search_by_ISBN(connection, searchText)  # likely going to be baked into advanced_search, same for OCN
         elif searchType == "OCN":
             results = search_by_OCN(connection,searchText)
         else:

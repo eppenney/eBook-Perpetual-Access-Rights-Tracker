@@ -39,7 +39,7 @@ class Settings:
 			self.settings = {
 				"language": "English",
 				"theme": "Light",
-				"institution": "",
+				"institution": "Univ. of Prince Edward Island",  # hard-coded until we auto-fetch (we don't atm afaik)
 				"results_per_page": 25,
 				"CRKN_url": "https://library.upei.ca/test-page-ebooks-perpetual-access-project",
 				"CRKN_root_url": "",
