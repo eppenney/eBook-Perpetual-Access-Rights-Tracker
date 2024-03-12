@@ -7,6 +7,7 @@ from src.user_interface.settingsPage import settingsPage
 from src.data_processing.database import connect_to_database, search_by_title, search_by_ISBN, search_by_OCN, \
     close_database
 from src.utility.upload import upload_and_process_file
+from src.utility.settings_manager import Settings
 import os
 #from searchDisplay import display_results_in_table
 
@@ -32,6 +33,7 @@ class startScreen(QDialog):
         loadUi(ui_file, self)
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
 
 
         #basic idea we are going to do is stack here where each searchbar will be pop when the negative
@@ -72,7 +74,7 @@ class startScreen(QDialog):
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
         self.uploadButton.clicked.connect(self.upload_button_clicked)
 
-        self.original_widget_values = None 
+        self.original_widget_values = None
         self.original_width = 1200
         self.original_height = 800
 
