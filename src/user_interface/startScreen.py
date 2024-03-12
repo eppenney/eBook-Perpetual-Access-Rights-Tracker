@@ -41,6 +41,7 @@ class startScreen(QDialog):
         #basic idea we are going to do is stack here where each searchbar will be pop when the negative
         self.duplicateTextEdits = []
         self.duplicateCombos = []
+        self.duplicateSearchTypes = []
 
         self.removeButton = self.findChild(QPushButton, 'removeButton') #finding child pushButton from the parent class
         self.removeButton.clicked.connect(self.removeTextEdit)
@@ -55,6 +56,8 @@ class startScreen(QDialog):
 
         self.booleanBox = self.findChild(QComboBox, 'booleanBox')
         self.booleanBox.hide()
+
+        self.booleanSearchType = self.findChild(QComboBox, 'booleanBoxRight')
 
         self.pushButton.clicked.connect(self.duplicateTextEdit)
 
@@ -92,6 +95,7 @@ class startScreen(QDialog):
         self.new_width = 1200
         self.new_height = 800
 
+        self.originalOffsetX = 20
         self.textOffsetX = 20
         self.textOffsetY = 10
 
@@ -105,45 +109,22 @@ class startScreen(QDialog):
       if self.duplicateCount < MAX_DUPLICATES:
         self.duplicateCount += 1  # Use the corrected attribute name
 
-        new_text_edit = QLineEdit(self)
-        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * self.duplicateCount
-
-        # Copy properties from the original textEdit
-        new_text_edit.setFont(self.textEdit.font())
-        new_text_edit.setStyleSheet(self.textEdit.styleSheet())
-
-        # Set geometry for the new QLineEdit
-        
-        new_text_edit.setGeometry(self.textEdit.x() - self.textOffsetX , newY, self.textEdit.width(), self.textEdit.height())
-        # If there's any specific initialization content or placeholder text
-        new_text_edit.setPlaceholderText(self.textEdit.placeholderText())
-
-        self.duplicateTextEdits.append(new_text_edit) # this will store in the system making it like a stack that way we can pop through when negative
-
-        new_text_edit.show()
-
-        self.original_widget_values[new_text_edit] = {
-                    'geometry': new_text_edit.geometry(),
-                    'font_size': new_text_edit.font().pointSize() if isinstance(new_text_edit, (QLineEdit, QComboBox)) else None
-                }
+        new_text = self.newTextEdit()
+        self.duplicateTextEdits.append(new_text) # this will store in the system making it like a stack that way we can pop through when negative
+        new_text.show()
         
 
-        #Duplicating the QComboBox when the text editor is duplicated.
-        new_boolean_box = QComboBox(self)
-        new_boolean_box.setGeometry(self.booleanBox.x() - self.textOffsetX ,newY,self.booleanBox.width(),self.booleanBox.height())
+        new_and_or_box = self.newBooleanBoxAndOr()
+        self.duplicateCombos.append(new_and_or_box)
+        new_and_or_box.show()
 
-        new_boolean_box.setFont(self.booleanBox.font())
-        new_boolean_box.setStyleSheet(self.booleanBox.styleSheet())
+        new_search_type = self.newBooleanSearchType()
+        self.duplicateSearchTypes.append(new_search_type)
+        new_search_type.show()
 
-        for i in range(self.booleanBox.count()):
-            new_boolean_box.addItem(self.booleanBox.itemText(i))
-        new_boolean_box.show()
-        self.duplicateCombos.append(new_boolean_box)
-
-        self.original_widget_values[new_boolean_box] = {
-                    'geometry': new_boolean_box.geometry(),
-                    'font_size': new_boolean_box.font().pointSize() if isinstance(new_boolean_box, (QLineEdit, QComboBox)) else None
-                }
+        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 1)
+        self.pushButton.setGeometry(self.pushButton.x(), newY, self.pushButton.width(), self.pushButton.height())
+        self.removeButton.setGeometry(self.removeButton.x(), newY, self.removeButton.width(), self.removeButton.height())
 
       else:
           QMessageBox.warning(self, "Limit reached", "You can only search {} at a time".format(MAX_DUPLICATES))
@@ -155,7 +136,70 @@ class startScreen(QDialog):
         for i in range(len(self.duplicateCombos)):
             newY = self.booleanBox.y() + (self.booleanBox.height() + self.textOffsetY) * (i + 1)
             self.duplicateCombos[i].setGeometry(self.booleanBox.x() - self.textOffsetX , newY, self.booleanBox.width(), self.booleanBox.height())
+        for i in range(len(self.duplicateSearchTypes)):
+            newY = self.booleanSearchType.y() + (self.booleanSearchType.height() - self.textOffsetY) * (i + 1)
+            self.duplicateCombos[i].setGeometry(self.booleanSearchType.x() - self.textOffsetX , newY, self.booleanSearchType.width(), self.booleanSearchType.height())
 
+    def newTextEdit(self):
+        new_text_edit = QLineEdit(self)
+        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * self.duplicateCount
+
+        # Copy properties from the original textEdit
+        new_text_edit.setFont(self.textEdit.font())
+        new_text_edit.setStyleSheet(self.textEdit.styleSheet())
+
+        # Set geometry for the new QLineEdit        
+        new_text_edit.setGeometry(self.textEdit.x() + self.booleanBox.width() , newY, self.textEdit.width() - self.booleanBox.width() - self.textOffsetX, self.textEdit.height())
+        
+        # If there's any specific initialization content or placeholder text
+        new_text_edit.setPlaceholderText(self.textEdit.placeholderText())
+
+        self.original_widget_values[new_text_edit] = {
+            'geometry': new_text_edit.geometry(),
+            'font_size': new_text_edit.font().pointSize() if isinstance(new_text_edit, (QLineEdit, QComboBox)) else None
+        }
+
+        return new_text_edit
+    
+    def newBooleanBoxAndOr(self):
+        newY = self.booleanBox.y() + (self.booleanBox.height() + self.textOffsetY) * self.duplicateCount
+
+        #Duplicating the QComboBox when the text editor is duplicated.
+        new_boolean_box = QComboBox(self)
+        new_boolean_box.setGeometry(self.booleanBox.x(),newY,self.booleanBox.width(),self.booleanBox.height())
+
+        new_boolean_box.setFont(self.booleanBox.font())
+        new_boolean_box.setStyleSheet(self.booleanBox.styleSheet())
+
+        for i in range(self.booleanBox.count()):
+            new_boolean_box.addItem(self.booleanBox.itemText(i))
+
+        self.original_widget_values[new_boolean_box] = {
+            'geometry': new_boolean_box.geometry(),
+            'font_size': new_boolean_box.font().pointSize() if isinstance(new_boolean_box, (QLineEdit, QComboBox)) else None
+        }
+
+        return new_boolean_box
+    
+    def newBooleanSearchType(self):
+        newY = self.booleanSearchType.y() + (self.booleanSearchType.height() + self.textOffsetY) * self.duplicateCount
+
+        #Duplicating the QComboBox when the text editor is duplicated.
+        new_boolean_box = QComboBox(self)
+        new_boolean_box.setGeometry(self.booleanSearchType.x() - self.textOffsetX,newY,self.booleanSearchType.width(),self.booleanSearchType.height())
+
+        new_boolean_box.setFont(self.booleanSearchType.font())
+        new_boolean_box.setStyleSheet(self.booleanSearchType.styleSheet())
+
+        for i in range(self.booleanSearchType.count()):
+            new_boolean_box.addItem(self.booleanSearchType.itemText(i))
+
+        self.original_widget_values[new_boolean_box] = {
+            'geometry': new_boolean_box.geometry(),
+            'font_size': new_boolean_box.font().pointSize() if isinstance(new_boolean_box, (QLineEdit, QComboBox)) else None
+        }
+
+        return new_boolean_box
 
 #this method helps in removing the extra search boxes.
     def removeTextEdit(self):
@@ -165,7 +209,14 @@ class startScreen(QDialog):
 
             last_boolean_box = self.duplicateCombos.pop()
             last_boolean_box.deleteLater()
+
+            last_boolean_type = self.duplicateSearchTypes.pop()
+            last_boolean_type.deleteLater()
             self.duplicateCount -= 1  # Decrement the count of duplicates
+
+            newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 1)
+            self.pushButton.setGeometry(self.pushButton.x(), newY, self.pushButton.width(), self.pushButton.height())
+            self.removeButton.setGeometry(self.removeButton.x(), newY, self.removeButton.width(), self.removeButton.height())
 
         else:
             QMessageBox.information(self, "No More Duplicates", "There are no more duplicated text fields to remove.")
@@ -189,7 +240,8 @@ class startScreen(QDialog):
     #this method is responisible sending the text in the back end for the searching the value
     def search_button_clicked(self):
         institution = settings_manager.get_setting('institution')
-        searchText = self.textEdit.toPlainText().strip()
+        searchText = self.textEdit.text().strip()
+        print(searchText)
         searchType = "Title"
         value = f'%{searchText}%'
         query = f"SELECT [{institution}], Title, Publisher, Platform_YOP, Platform_eISBN, OCN FROM table_name WHERE {searchType} LIKE '{value}'"
@@ -199,7 +251,7 @@ class startScreen(QDialog):
         # the count workaround seems mega-scuffed, there's definitely a better way of doing this
         count = 0
         for textBox in self.duplicateTextEdits:
-            new_value = textBox.toPlainText()
+            new_value = textBox.text().strip()
             operator = self.duplicateCombos[count].currentText()
             if operator == "AND":
                 query = add_AND_query(searchType, query, new_value)
@@ -238,7 +290,7 @@ class startScreen(QDialog):
         self.new_width = self.width() + 25
         self.new_height = self.height()
 
-        self.textOffsetX = int(20  * (self.new_width / self.original_width))
+        self.textOffsetX = int(self.originalOffsetX  * (self.new_width / self.original_width))
         self.textOffsetY = int(10 * (self.new_height / self.original_height))
 
         if self.original_widget_values is None:
