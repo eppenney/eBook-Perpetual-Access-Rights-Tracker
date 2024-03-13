@@ -1,6 +1,10 @@
+import urllib
+
+from PyQt6.QtCore import QTimer
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMessageBox, QComboBox, QSizePolicy, QWidget
-from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QTextEdit, QMessageBox, QComboBox, QSizePolicy, QWidget, \
+    QLabel
+from PyQt6.QtGui import QIcon, QPixmap
 
 from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
@@ -34,6 +38,14 @@ class startScreen(QDialog):
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
+        #settings up the internet connection in the icon at the end
+        self.internetConnectionLabel = self.findChild(QLabel, 'internetConnection')
+        self.updateConnectionStatus(False)
+
+        #timer clock that will work with the google time (Qtimer should be used)
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.checkInternetConnection)
+        self.timer.start(5000)
 
 
         #basic idea we are going to do is stack here where each searchbar will be pop when the negative
@@ -73,6 +85,30 @@ class startScreen(QDialog):
 
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
         self.uploadButton.clicked.connect(self.upload_button_clicked)
+
+        self.settings_manager = Settings()
+        self.displayInstitutionName()
+
+    def checkInternetConnection(self):
+        try:
+            # Attempt to connect to a known host
+            urllib.request.urlopen('http://google.com', timeout=1)
+            self.updateConnectionStatus(True)
+        except urllib.request.URLError as err:
+            self.updateConnectionStatus(False)
+
+    def updateConnectionStatus(self, isConnected):
+        if isConnected:
+            self.internetConnectionLabel.setPixmap(QPixmap('resources/green_signal.png'))
+        else:
+            self.internetConnectionLabel.setPixmap(QPixmap('resources/red_signal.png'))
+
+    def displayInstitutionName(self):
+        institution_name = self.settings_manager.get_setting('institution')
+        if institution_name:
+            self.universityName.setText(institution_name)
+        else:
+            self.universityName.setText("No Institution Selected")
 
         self.original_widget_values = None
         self.original_width = 1200
@@ -143,7 +179,7 @@ class startScreen(QDialog):
             self.duplicateCount -= 1  # Decrement the count of duplicates
 
         else:
-            QMessageBox.information(self, "No More Duplicates", "There are no more duplicated text fields to remove.")
+            QMessageBox.information(self, "No More SearchBox", "There are no more text fields to remove.")
 
 
 

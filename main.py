@@ -14,7 +14,7 @@ def main():
     settings_manager = Settings()
 
     connection_obj = connect_to_database()
-   #create_file_name_tables(connection_obj)
+    create_file_name_tables(connection_obj)
    # Calling this was causing error for me.
    # sqlite3.OperationalError: table local_file_names already exists
     # Should add check to correct this. 

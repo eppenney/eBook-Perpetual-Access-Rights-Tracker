@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1177</width>
-    <height>898</height>
+    <height>805</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(100, 167, 225)</string>
+     <string notr="true">background-color: rgb(0, 85, 127);</string>
     </property>
     <widget class="QLabel" name="label">
      <property name="geometry">
@@ -78,7 +78,7 @@ color: rgb(255, 255, 255);</string>
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>210</x>
       <y>280</y>
       <width>751</width>
       <height>51</height>
@@ -93,16 +93,16 @@ background-color: rgb(255, 255, 255);</string>
    <widget class="QPushButton" name="search">
     <property name="geometry">
      <rect>
-      <x>1030</x>
-      <y>280</y>
-      <width>150</width>
-      <height>51</height>
+      <x>540</x>
+      <y>650</y>
+      <width>141</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">font: 75 20pt &quot;Arial&quot;;
-background-color: rgb(100, 167, 225);
 border-radius:20px;
+background-color: rgb(0, 85, 127);
 color:rgb(255, 255, 255);</string>
     </property>
     <property name="text">
@@ -112,9 +112,9 @@ color:rgb(255, 255, 255);</string>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>210</y>
-      <width>431</width>
+      <x>360</x>
+      <y>160</y>
+      <width>511</width>
       <height>61</height>
      </rect>
     </property>
@@ -122,15 +122,15 @@ color:rgb(255, 255, 255);</string>
      <string notr="true">font: 75 20pt &quot;Arial&quot;;</string>
     </property>
     <property name="text">
-     <string>Please use the below search </string>
+     <string>Please select from ISBN,Title,OCN </string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>1110</x>
+      <x>1100</x>
       <y>340</y>
-      <width>51</width>
+      <width>41</width>
       <height>41</height>
      </rect>
     </property>
@@ -138,7 +138,7 @@ color:rgb(255, 255, 255);</string>
      <string notr="true">border-radius:20px;
 color: rgb(255, 255, 255);
 font: 75 12pt &quot;MS Shell Dlg 2&quot;;
-background-color: rgb(100, 167, 225);</string>
+background-color: rgb(0, 85, 127);</string>
     </property>
     <property name="text">
      <string>+</string>
@@ -147,9 +147,9 @@ background-color: rgb(100, 167, 225);</string>
    <widget class="QPushButton" name="removeButton">
     <property name="geometry">
      <rect>
-      <x>1050</x>
+      <x>1040</x>
       <y>340</y>
-      <width>51</width>
+      <width>41</width>
       <height>41</height>
      </rect>
     </property>
@@ -157,7 +157,7 @@ background-color: rgb(100, 167, 225);</string>
      <string notr="true">border-radius:20px;
 color: rgb(255, 255, 255);
 font: 75 12pt &quot;MS Shell Dlg 2&quot;;
-background-color: rgb(100, 167, 225);</string>
+background-color: rgb(0, 85, 127);</string>
     </property>
     <property name="text">
      <string>-</string>
@@ -166,7 +166,7 @@ background-color: rgb(100, 167, 225);</string>
    <widget class="QComboBox" name="booleanBox">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>70</x>
       <y>290</y>
       <width>101</width>
       <height>41</height>
@@ -175,8 +175,8 @@ background-color: rgb(100, 167, 225);</string>
     <property name="styleSheet">
      <string notr="true">color: rgb(255, 255, 255);
 font: 75 12pt &quot;MS Shell Dlg 2&quot;;
-background-color: rgb(100, 167, 225);
-border-radius:20px;</string>
+border-radius:20px;
+background-color: rgb(0, 85, 127);</string>
     </property>
     <item>
      <property name="text">
@@ -211,14 +211,87 @@ border-radius:20px;</string>
    <widget class="QLabel" name="universityName">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>860</y>
+      <x>130</x>
+      <y>761</y>
       <width>191</width>
-      <height>21</height>
+      <height>20</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);</string>
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>230</y>
+      <width>99</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(0, 85, 127);
+font: 14pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);
+border-radius:20px;
+</string>
+    </property>
+    <property name="text">
+     <string>ISBN</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_2">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>230</y>
+      <width>99</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(0, 85, 127);
+font: 14pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);
+border-radius:20px;
+</string>
+    </property>
+    <property name="text">
+     <string>OCN</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_3">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>230</y>
+      <width>99</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(0, 85, 127);
+font: 14pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);
+border-radius:20px;
+</string>
+    </property>
+    <property name="text">
+     <string>Title</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="internetConnection">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>760</y>
+      <width>59</width>
+      <height>17</height>
+     </rect>
     </property>
     <property name="text">
      <string/>
