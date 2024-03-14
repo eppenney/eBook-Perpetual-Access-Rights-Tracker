@@ -19,6 +19,7 @@ from src.data_processing import database, Scraping
 import sys
 import datetime
 
+
 def upload_and_process_file():
     app = QApplication.instance()  # Try to get the existing application instance
     if app is None:  # If no instance exists, create a new one
@@ -42,14 +43,14 @@ def process_file(file_path):
     connection = database.connect_to_database()
 
     # Remove absolute path part of file_path
-    file_name = file_path.split("/")[-1]
-
+    file_name = file_path.split("/")[-1].split(".")
     # Use as file date for local files
     date = datetime.datetime.now()
-    date.strftime("%Y_%m_%d")
+    date = date.strftime("%Y_%m_%d")
 
     # Check if it is already in database. If yes (UPDATE), ask to replace old file
-    result = Scraping.compare_file([file_name.split(".")[0], date], "local", connection)
+    result = Scraping.compare_file([file_name[0], date], "local", connection)
+
     if result == "UPDATE":
         reply = QMessageBox.question(None, "Replace File", "A file with the same name is already in the local database. Would you like to replace it with the new file?",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel)
@@ -61,18 +62,20 @@ def process_file(file_path):
             return
 
     # Add file into to local_file_names table, convert file to dataframe, and insert dataframe into database
-    Scraping.update_tables([file_name.split(".")[0], date], "local", connection, result)
-    if (file_name.split(".")[-1] == "csv"):
+    if file_name[-1] == "csv":
         file_df = Scraping.file_to_dataframe_csv(file_path)
-    elif (file_name.split(".")[-1] == "xlsx"):
+    elif file_name[-1] == "xlsx":
         file_df = Scraping.file_to_dataframe_excel(file_path)
-    elif (file_name.split(".")[-1] == "tsv"):
+    elif file_name[-1] == "tsv":
         file_df = Scraping.file_to_dataframe_tsv(file_path)
     else:
         QMessageBox.warning(None, "Invalid File Type", "Please select a valid xlsx, csv or tsv file.", QMessageBox.StandardButton.Ok)
         return
 
-    Scraping.upload_to_database(file_df, "local_" + file_name.split(".")[0], connection)
+    valid_file = Scraping.check_file_format(file_df)
+    if valid_file:
+        Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
+        Scraping.update_tables([file_name[0], date], "local", connection, result)
 
     database.close_database(connection)
 
