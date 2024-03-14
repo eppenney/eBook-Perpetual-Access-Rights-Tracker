@@ -20,87 +20,106 @@ settings_manager.get_setting('institution')
 '''
 
 
-class Settings:
-	def __init__(self, settings_file=f"{os.path.abspath(os.path.dirname(__file__))}/settings.json"):
-		self.settings = None
-		self.settings_file = settings_file
+class SingletonMeta(type):
+    """
+    A Singleton metaclass that creates a single instance of a class.
+    """
 
-		self.load_settings()
+    # Dictionary to check if a class already has an instance created
+    _instances = {}
 
-	def load_settings(self):
-		"""Load the current settings from the JSON file."""
-		try:
-			with open(self.settings_file, 'r') as file:
-				self.settings = json.load(file)
-		except FileNotFoundError:
-			# Return default settings if the file does not exist.
+    # Checks for an existing instance before creating a new one
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
 
-			# Write default settings to a new settings.json
-			self.settings = {
-				"language": "English",
-				"theme": "Light",
-				"institution": "Univ. of Prince Edward Island",  # hard-coded until we auto-fetch (we don't atm afaik)
-				"results_per_page": 25,
-				"CRKN_url": "https://library.upei.ca/test-page-ebooks-perpetual-access-project",
-				"CRKN_root_url": "",
-				"database_name": f"{os.path.abspath(os.path.dirname(__file__))}/ebook_database.db",
-				"github_link": "https://github.com"
-			}
-			self.settings["CRKN_root_url"] = "/".join(self.settings["CRKN_url"].split("/")[:3])
 
-	def save_settings(self):
-		"""Save the current settings back to the JSON file."""
-		with open(self.settings_file, 'w') as file:
-			json.dump(self.settings, file, indent=4)
+class Settings(metaclass=SingletonMeta):
+    """
+        Settings Manager class that uses the Singleton pattern to ensure that only
+        one instance manages the application settings.
+        """
 
-	def update_setting(self, key, value):
-		"""
-		Update a specific setting and save the change.
-		:param key: setting key to update
-		:param value: value for new setting
-		"""
-		self.settings[key] = value
-		self.save_settings()
+    def __init__(self, settings_file=None):
+        if not hasattr(self, 'initialized'):  # Avoid reinitialization
+            if settings_file is None:
+                settings_file = f"{os.path.abspath(os.path.dirname(__file__))}/settings.json"
+            self.settings_file = settings_file
+            self.settings = self.load_settings()
+            self.initialized = True
 
-	def get_setting(self, key):
-		"""
-		Retrieve a specific setting's value.
-		:param key: setting to get
-		:return: value of that setting
-		"""
-		return self.settings.get(key, None)
+    def load_settings(self):
+        """Load the current settings from the JSON file."""
+        try:
+            with open(self.settings_file, 'r') as file:
+                settings = json.load(file)
+        except FileNotFoundError:
+            # Write default settings to a new settings.json
+            default_db_path = os.path.join(os.path.dirname(self.settings_file), 'ebook_database.db')
+            settings = {
+                "language": "English",
+                "institution": "",
+                "results_per_page": 25,
+                "CRKN_url": "https://library.upei.ca/test-page-ebooks-perpetual-access-project",
+                "CRKN_root_url": "",
+                "database_name": default_db_path,
+                "github_link": "https://github.com"
+            }
+            #Set the CRKN root url from the CRKN url
+            url_parts = settings["CRKN_url"].split('/')
+            settings["CRKN_root_url"] = '/'.join(url_parts[:3])
+        return settings
 
-	def set_language(self, language):
-		"""
-		Set the application language.
-		:param language: new language
-		"""
-		self.update_setting('language', language)
+    def save_settings(self):
+        """Save the current settings back to the JSON file."""
+        with open(self.settings_file, 'w') as file:
+            json.dump(self.settings, file, indent=4)
 
-	def set_theme_mode(self, theme):
-		"""
-		Set the application theme mode.
-		:param theme: new theme
-		"""
-		self.update_setting('theme', theme)
+    def update_setting(self, key, value):
+        """
+        Update a specific setting and save the change.
+        :param key: setting key to update
+        :param value: value for new setting
+        """
+        self.settings[key] = value
+        self.save_settings()
 
-	def set_crkn_url(self, url):
-		"""
-		Set the CRKN URL.
-		:param url: new url
-		"""
-		self.update_setting('CRKN_url', url)
+    def get_setting(self, key):
+        """
+        Retrieve a specific setting's value.
+        :param key: setting to get
+        :return: value of that setting
+        """
+        return self.settings.get(key, None)
 
-	def set_github_link(self, link):
-		"""
-		Set the GitHub link for the project.
-		:param link: new link
-		"""
-		self.update_setting('github_link', link)
+    def set_language(self, language):
+        """
+        Set the application language.
+        :param language: new language
+        """
+        self.update_setting('language', language)
 
-	def set_institution(self, institution):
-		"""
-		Set the institution.
-		:param institution: new institution
-		"""
-		self.update_setting('institution', institution)
+    def set_crkn_url(self, url):
+        """
+        Set the CRKN URL.
+        :param url: new url
+        """
+        self.update_setting('CRKN_url', url)
+        self.settings["CRKN_root_url"] = "/".join(url.split("/")[:3])
+        self.save_settings()
+
+    def set_github_link(self, link):
+        """
+        Set the GitHub link for the project.
+        :param link: new link
+        """
+        self.update_setting('github_link', link)
+
+    def set_institution(self, institution):
+        """
+        Set the institution.
+        :param institution: new institution
+        """
+        self.update_setting('institution', institution)
+
