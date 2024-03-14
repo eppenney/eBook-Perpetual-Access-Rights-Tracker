@@ -13,7 +13,7 @@ self.exportButton.clicked.connect(export_data(data_to_export))
 or:
 self.exportButton.clicked.connect(export_data)
 """
-from PyQt5.QtWidgets import QFileDialog, QApplication
+from PyQt6.QtWidgets import QFileDialog, QApplication
 import pandas as pd
 import sys
 
@@ -39,8 +39,7 @@ def export_data(data):
         print(f"Data exported to: {save_path}")
 
 def get_save_path():
-    options = QFileDialog.Options()
-    options |= QFileDialog.ReadOnly
+    options = QFileDialog.Option.ReadOnly
     save_path, _ = QFileDialog.getSaveFileName(None, "Save Data", "", "CSV Files (*.csv);;All Files (*)", options=options)
 
     return save_path
