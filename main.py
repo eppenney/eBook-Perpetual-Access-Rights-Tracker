@@ -9,9 +9,6 @@ from src.data_processing.Scraping import scrapeCRKN
 def main():
     connection_obj = connect_to_database()
     create_file_name_tables(connection_obj)
-    # Calling this was causing error for me. 
-    # sqlite3.OperationalError: table local_file_names already exists
-    # Should add check to correct this. 
     close_database(connection_obj)
     scrapeCRKN()
     app = QApplication(sys.argv)
