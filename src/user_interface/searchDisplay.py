@@ -19,6 +19,8 @@ class searchDisplay(QDialog):
         self.widget = widget
         self.results = []
         self.original_widget_values = None
+        self.column_labels = ["Access", "Title", "Publisher", "Year of Publication", "eISBN", "OCN"]
+
 
     def backToStartScreen(self):
         from src.user_interface.startScreen import startScreen
@@ -32,8 +34,8 @@ class searchDisplay(QDialog):
         self.tableWidget.setColumnCount(len(results[0])) if results else self.tableWidget.setColumnCount(0)
 
         if results:
-            column_labels = ["Access", "Title", "Publisher", "Year of Publication", "eISBN", "OCN"]
-            self.tableWidget.setHorizontalHeaderLabels(column_labels)
+            # self.results.insert(0, column_labels)
+            self.tableWidget.setHorizontalHeaderLabels(self.column_labels)
 
         for row_number, row_data in enumerate(results):
             self.tableWidget.insertRow(row_number)
@@ -42,7 +44,7 @@ class searchDisplay(QDialog):
         self.update_all_sizes()
 
     def export_data_handler(self):
-        export_data(self.results)
+        export_data(self.results, self.column_labels)
 
     def update_all_sizes(self):
         original_width = 1200
