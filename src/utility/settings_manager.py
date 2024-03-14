@@ -123,4 +123,3 @@ class Settings(metaclass=SingletonMeta):
         """
         self.update_setting('institution', institution)
 
-

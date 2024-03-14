@@ -75,34 +75,40 @@ color: rgb(255, 255, 255);</string>
      </property>
     </widget>
    </widget>
-   <widget class="QTextEdit" name="textEdit">
+   <widget class="QLineEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>225</x>
       <y>280</y>
-      <width>751</width>
-      <height>51</height>
+      <width>750</width>
+      <height>50</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-radius: 20px;
-font: 16pt &quot;Arial&quot;;
-background-color: rgb(255, 255, 255);</string>
+     <string notr="true">
+            QLineEdit {
+                border-radius: 10px;
+                font: 16pt "Arial";
+                background-color: rgb(255, 255, 255);
+                padding-top: 1px; 
+                padding-bottom: 1px; 
+            }
+        </string>
     </property>
    </widget>
    <widget class="QPushButton" name="search">
     <property name="geometry">
      <rect>
-      <x>1030</x>
-      <y>280</y>
+      <x>525</x>
+      <y>675</y>
       <width>150</width>
-      <height>51</height>
+      <height>50</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">font: 75 20pt &quot;Arial&quot;;
 background-color: rgb(100, 167, 225);
-border-radius:20px;
+border-radius: 10px;
 color:rgb(255, 255, 255);</string>
     </property>
     <property name="text">
@@ -128,17 +134,21 @@ color:rgb(255, 255, 255);</string>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>1110</x>
-      <y>340</y>
-      <width>51</width>
-      <height>41</height>
+      <x>1050</x>
+      <y>345</y>
+      <width>50</width>
+      <height>40</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-radius:20px;
-color: rgb(255, 255, 255);
-font: 75 12pt &quot;MS Shell Dlg 2&quot;;
-background-color: rgb(100, 167, 225);</string>
+     <string notr="true">border-radius: 20px;
+        color: rgb(255, 255, 255);
+        font: 75 16pt &quot;MS Shell Dlg 2&quot;;
+        background-color: rgb(100, 167, 225);
+        text-align: center; 
+        padding-top: 0px; 
+        padding-bottom: 1px; 
+    </string>
     </property>
     <property name="text">
      <string>+</string>
@@ -147,17 +157,21 @@ background-color: rgb(100, 167, 225);</string>
    <widget class="QPushButton" name="removeButton">
     <property name="geometry">
      <rect>
-      <x>1050</x>
-      <y>340</y>
-      <width>51</width>
-      <height>41</height>
+      <x>995</x>
+      <y>345</y>
+      <width>50</width>
+      <height>40</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-radius:20px;
-color: rgb(255, 255, 255);
-font: 75 12pt &quot;MS Shell Dlg 2&quot;;
-background-color: rgb(100, 167, 225);</string>
+     <string notr="true">border-radius: 20px;
+        color: rgb(255, 255, 255);
+        font: 75 16pt &quot;MS Shell Dlg 2&quot;;
+        background-color: rgb(100, 167, 225);
+        text-align: center; 
+        padding-top: 0px; 
+        padding-bottom: 1px; 
+    </string>
     </property>
     <property name="text">
      <string>-</string>
@@ -166,17 +180,54 @@ background-color: rgb(100, 167, 225);</string>
    <widget class="QComboBox" name="booleanBox">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>290</y>
-      <width>101</width>
-      <height>41</height>
+      <x>205</x>
+      <y>280</y>
+      <width>75</width>
+      <height>50</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);
-font: 75 12pt &quot;MS Shell Dlg 2&quot;;
-background-color: rgb(100, 167, 225);
-border-radius:20px;</string>
+     <string notr="true">
+        QComboBox {
+        color: rgb(255, 255, 255);
+        font: 75 16pt "MS Shell Dlg 2";
+        background-color: rgb(100, 167, 225);
+        border-radius: 10px;
+    }
+
+    QComboBox:!editable, QComboBox::drop-down:editable {
+        color: rgb(255, 255, 255);
+        font: 75 12pt "MS Shell Dlg 2";
+        background-color: rgb(100, 167, 225);
+        border-radius: 10px;
+    }
+
+    QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+        color: rgb(255, 255, 255);
+        font: 75 12pt "MS Shell Dlg 2";
+        background-color: rgb(100, 167, 225);
+        border-bottom-right-radius: 0px;
+        border-bottom-left-radius: 0px;
+    }
+
+    QComboBox::drop-down {
+        border-left-color: darkgray;
+    }
+
+    QComboBox::down-arrow {
+        image: url(resources/dropdown_icon.png);
+        width: 21px;
+        height: 15px;
+        padding-right: 15px; 
+    }
+
+    QComboBox QAbstractItemView {
+        color: rgb(255, 255, 255);
+        background-color: rgb(100, 167, 225); 
+        border-bottom-right-radius: 20px;
+        border-bottom-left-radius: 20px;
+    }
+    </string>
     </property>
     <item>
      <property name="text">
@@ -186,6 +237,74 @@ border-radius:20px;</string>
     <item>
      <property name="text">
       <string>AND</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="booleanBoxRight">
+    <property name="geometry">
+     <rect>
+      <x>995 </x>
+      <y>280</y>
+      <width>120</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+        QComboBox {
+        color: rgb(255, 255, 255);
+        font: 75 12pt "MS Shell Dlg 2";
+        background-color: rgb(100, 167, 225);
+        border-radius: 10px;
+    }
+
+    QComboBox:!editable, QComboBox::drop-down:editable {
+        color: rgb(255, 255, 255);
+        font: 75 12pt "MS Shell Dlg 2";
+        background-color: rgb(100, 167, 225);
+        border-radius: 10px;
+    }
+
+    QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+        color: rgb(255, 255, 255);
+        font: 75 12pt "MS Shell Dlg 2";
+        background-color: rgb(100, 167, 225);
+        border-bottom-right-radius: 0px;
+        border-bottom-left-radius: 0px;
+    }
+
+    QComboBox::drop-down {
+        border-left-color: darkgray;
+    }
+
+    QComboBox::down-arrow {
+        image: url(resources/dropdown_icon.png);
+        width: 21px;
+        height: 15px;
+        padding-right: 15px; 
+    }
+
+    QComboBox QAbstractItemView {
+        color: rgb(255, 255, 255);
+        background-color: rgb(100, 167, 225); 
+        border-bottom-right-radius: 20px;
+        border-bottom-left-radius: 20px;
+    }
+    </string>
+    </property>
+    <item>
+     <property name="text">
+      <string>NAME</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>eISBN</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>OCN</string>
      </property>
     </item>
    </widget>
@@ -202,10 +321,50 @@ border-radius:20px;</string>
         <string notr="true">background-color: rgb(0, 85, 127);
             color: rgb(255, 255, 255);
             font: 14pt &quot;MS Shell Dlg 2&quot;;
-            border-radius: 20px;</string>
+            border-radius: 10px;</string>
     </property>
     <property name="text">
         <string>Upload</string>
+    </property>
+</widget>
+<widget class="QPushButton" name="updateCRKN">
+    <property name="geometry">
+        <rect>
+            <x>875</x>
+            <y>120</y>
+            <width>150</width>
+            <height>41</height>
+        </rect>
+    </property>
+    <property name="styleSheet">
+        <string notr="true">background-color: rgb(0, 85, 127);
+            color: rgb(255, 255, 255);
+            font: 14pt &quot;MS Shell Dlg 2&quot;;
+            border-radius: 10px;</string>
+    </property>
+    <property name="text">
+        <string>Update CRKN</string>
+    </property>
+</widget>
+<widget class="QPushButton" name="institutionButton">
+    <property name="geometry">
+        <rect>
+            <x>775</x>
+            <y>20</y>
+            <width>400</width>
+            <height>61</height>
+        </rect>
+    </property>
+    <property name="styleSheet">
+        <string notr="true">background-color: transparent;
+            border: none;
+            font: 14pt "Arial";
+            color: rgb(255, 255, 255);
+            text-align: right;
+        </string>
+    </property>
+    <property name="text">
+        <string>University of Prince Edward Island</string>
     </property>
 </widget>
   </widget>
