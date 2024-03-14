@@ -31,15 +31,15 @@ def export_data(data):
 
     if save_path:
         # Append ".csv" if the file doesn't have an extension
-        if not save_path.lower().endswith('.csv'):
-            save_path += '.csv'
+        if not save_path.lower().endswith('.tsv'):
+            save_path += '.tsv'
 
         # Save the DataFrame to CSV
-        df.to_csv(save_path, index=False)
+        df.to_csv(save_path, sep="\t", index=False)
         print(f"Data exported to: {save_path}")
 
 def get_save_path():
     options = QFileDialog.Option.ReadOnly
-    save_path, _ = QFileDialog.getSaveFileName(None, "Save Data", "", "CSV Files (*.csv);;All Files (*)", options=options)
+    save_path, _ = QFileDialog.getSaveFileName(None, "Save Data", "", "TSV Files (*.tsv);;All Files (*)", options=options)
 
     return save_path
