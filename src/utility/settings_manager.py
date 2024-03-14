@@ -59,7 +59,7 @@ class Settings(metaclass=SingletonMeta):
             default_db_path = os.path.join(os.path.dirname(self.settings_file), 'ebook_database.db')
             settings = {
                 "language": "English",
-                "institution": "",
+                "institution": "Univ. of Prince Edward Island",
                 "results_per_page": 25,
                 "CRKN_url": "https://library.upei.ca/test-page-ebooks-perpetual-access-project",
                 "CRKN_root_url": "",
