@@ -17,14 +17,14 @@ from PyQt6.QtWidgets import QFileDialog, QApplication
 import pandas as pd
 import sys
 
-def export_data(data):
+def export_data(data, headers):
     app = QApplication.instance()  # Try to get the existing application instance
     if app is None:  # If no instance exists, create a new one
         app = QApplication(sys.argv)
 
     # data should be a dictionary with column names as keys and lists as values
     # This can be changed if the function should expect a DataFrame instead? Will need to consult. 
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(data, columns=headers)
 
     # Get the file path to save the CSV file
     save_path = get_save_path()
