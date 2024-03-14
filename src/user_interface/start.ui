@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1177</width>
+    <width>1180</width>
     <height>805</height>
    </rect>
   </property>
@@ -128,8 +128,8 @@ color:rgb(255, 255, 255);</string>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>1100</x>
-      <y>340</y>
+      <x>1070</x>
+      <y>330</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -147,8 +147,8 @@ background-color: rgb(0, 85, 127);</string>
    <widget class="QPushButton" name="removeButton">
     <property name="geometry">
      <rect>
-      <x>1040</x>
-      <y>340</y>
+      <x>1020</x>
+      <y>330</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -224,66 +224,6 @@ background-color: rgb(0, 85, 127);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>230</y>
-      <width>99</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 85, 127);
-font: 14pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(255, 255, 255);
-border-radius:20px;
-</string>
-    </property>
-    <property name="text">
-     <string>ISBN</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_2">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>230</y>
-      <width>99</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 85, 127);
-font: 14pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(255, 255, 255);
-border-radius:20px;
-</string>
-    </property>
-    <property name="text">
-     <string>OCN</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_3">
-    <property name="geometry">
-     <rect>
-      <x>560</x>
-      <y>230</y>
-      <width>99</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 85, 127);
-font: 14pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(255, 255, 255);
-border-radius:20px;
-</string>
-    </property>
-    <property name="text">
-     <string>Title</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="internetConnection">
     <property name="geometry">
      <rect>
@@ -296,6 +236,37 @@ border-radius:20px;
     <property name="text">
      <string/>
     </property>
+   </widget>
+   <widget class="QComboBox" name="booleanBox_2">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>280</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+font: 75 12pt &quot;MS Shell Dlg 2&quot;;
+border-radius:20px;
+background-color: rgb(0, 85, 127);</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>Title</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>ISBN</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>OCN</string>
+     </property>
+    </item>
    </widget>
   </widget>
  </widget>

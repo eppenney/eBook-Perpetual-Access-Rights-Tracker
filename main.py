@@ -19,9 +19,6 @@ class ScraperThread(QThread):
         self.finished.emit()  # Emit signal when
 
 
-
-
-
 def main():
 
     settings_manager = Settings()
