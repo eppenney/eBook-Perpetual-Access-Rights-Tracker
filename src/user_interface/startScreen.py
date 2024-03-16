@@ -234,8 +234,7 @@ class startScreen(QDialog):
     def search_button_clicked(self):
         institution = settings_manager.get_setting('institution')
         searchText = self.textEdit.text().strip()
-        print(searchText)
-        searchType = "Title"
+        searchType = searchType = self.booleanSearchType.currentText()
         value = f'%{searchText}%'
         query = f"SELECT [{institution}], Title, Publisher, Platform_YOP, Platform_eISBN, OCN FROM table_name WHERE {searchType} LIKE '{value}'"
         connection = connect_to_database()
@@ -243,9 +242,11 @@ class startScreen(QDialog):
         # Creates the advanced boolean search query by adding the extra search terms/conditions on to the base query
         # the count workaround seems mega-scuffed, there's definitely a better way of doing this
         count = 0
-        for textBox in self.duplicateTextEdits:
-            new_value = textBox.text().strip()
-            operator = self.duplicateCombos[count].currentText()
+        # for textBox in self.duplicateTextEdits:
+        for i in range(len(self.duplicateTextEdits)):
+            new_value = self.duplicateTextEdits[i].text().strip()
+            operator = self.duplicateCombos[i].currentText()
+            searchType = self.duplicateSearchTypes[i].currentText()
             if operator == "AND":
                 query = add_AND_query(searchType, query, new_value)
             elif operator == "OR":
@@ -253,9 +254,10 @@ class startScreen(QDialog):
             count = count+1
 
         #using the if statement that will initiate the search through the database
-        if searchType == "Title":
+        if searchType == "Title" or True:
+            print(query)
             results = advanced_search(connection, query)
-        elif searchType == "Platform_eISBN":
+        elif searchType == "eISBN":
             results = search_by_ISBN(connection, searchText)  # likely going to be baked into advanced_search, same for OCN
         elif searchType == "OCN":
             results = search_by_OCN(connection,searchText)
