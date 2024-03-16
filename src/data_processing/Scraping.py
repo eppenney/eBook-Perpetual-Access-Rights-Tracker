@@ -59,37 +59,50 @@ def scrapeCRKN():
     soup = BeautifulSoup(page_text, "html.parser")
     links = soup.find_all('a', href=lambda href: href and (href.endswith('.xlsx') or href.endswith('.csv') or href.endswith('.tsv')))
 
+    connection = database.connect_to_database()
+
     # List of files that need to be updated/added to the local database
-    files = []
+    files_to_update = []
+    # All CRKN tables - by end it will just have the ones to remove
+    files_to_remove = [file for file in database.get_tables(connection) if not file.startswith("local_")]
 
     # Check if links on CRKN website need to be added/updated in local database
-    connection = database.connect_to_database()
     for link in links:
         file_link = link.get("href")
         file_first, file_date = split_CRKN_file_name(file_link)
         result = compare_file([file_first, file_date], "CRKN", connection)
 
         if result:
-            files.append([link, result])
-    database.close_database(connection)
+            files_to_update.append([link, result])
+
+        try:
+            files_to_remove.remove(file_first)
+        except ValueError:
+            pass
 
     # Ask user if they want to perform scraping (slightly time-consuming)
-    if len(files) > 0:
-        if len(files) == 1:
-            ans = input(f"There is {len(files)} files to update in the database. Would you like to do the update now? Y/N")
+    file_changes = len(files_to_update) + len(files_to_remove)
+    if file_changes > 0:
+        if file_changes == 1:
+            ans = input(f"There is {file_changes} file to update in the database. Would you like to do the update now? Y/N")
         else:
-            ans = input(f"There are {len(files)} files to update in the database. Would you like to do the update now? Y/N")
+            ans = input(f"There are {file_changes} files to update in the database. Would you like to do the update now? Y/N")
         if ans == "Y":
-            download_files(files)
+            if len(files_to_update) > 0:
+                download_files(files_to_update, connection)
+            if len(files_to_remove) > 0:
+                for file in files_to_remove:
+                    update_tables([file], "CRKN", connection, "DELETE")
+
+    database.close_database(connection)
 
 
-def download_files(files):
+def download_files(files, connection):
     """
     For all files that need downloading from CRKN, do so and store in local database.
     :param files: list of files to download from CRKN
+    :param connection: database connection object
     """
-
-    connection = database.connect_to_database()
 
     for [link, command] in files:
         file_link = link.get("href")
@@ -98,7 +111,6 @@ def download_files(files):
         file_type = file_link.split(".")[-1]
 
         file_first, file_date = split_CRKN_file_name(file_link)
-        update_tables([file_first, file_date], "CRKN", connection, command)
 
         # Write file to temporary local file, then convert that file into a dataframe to upload to database
         with open(f"{os.path.abspath(os.path.dirname(__file__))}/temp.{file_type}", 'wb') as file:
@@ -112,9 +124,11 @@ def download_files(files):
         else:
             file_df = file_to_dataframe_csv(f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
 
-        upload_to_database(file_df, file_first, connection)
+        valid_format = check_file_format(file_df)
+        if valid_format:
+            upload_to_database(file_df, file_first, connection)
+            update_tables([file_first, file_date], "CRKN", connection, command)
 
-    database.close_database(connection)
     try:
         os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
     except FileNotFoundError:
@@ -159,7 +173,7 @@ def update_tables(file, method, connection, command):
     :param file: file name information - [publisher, date/version number]
     :param method: CRKN or local
     :param connection: database connection object
-    :param command: INSERT INTO or UPDATE
+    :param command: INSERT INTO, UPDATE, or DELETE
     """
     if method != "CRKN" and method != "local":
         raise Exception("Incorrect method type (CRKN or local) to indicate type/location of file")
@@ -175,6 +189,12 @@ def update_tables(file, method, connection, command):
     elif command == "UPDATE":
         cursor.execute(f"UPDATE {method}_file_names SET file_date = '{file[1]}' WHERE file_name = '{file[0]}';")
         print(f"file name updated - {file[0]}, {file[1]}")
+
+    # Only applies to CRKN files
+    elif command == "DELETE":
+        # Delete record from CRKN_file_names and delete the table as well
+        cursor.execute(f"DELETE from CRKN_file_names WHERE file_name LIKE {file[0]}")
+        cursor.execute(f"DROP TABLE {file[0]}")
 
 
 def split_CRKN_file_name(file_name):
@@ -200,8 +220,8 @@ def file_to_dataframe_excel(file):
     """
     try:
         return pd.read_excel(file, sheet_name="PA-Rights", header=2)
-    except Exception:
-        raise Exception("Unable to read Excel file.")
+    except ValueError:
+        print("Incorrect sheet name in excel file (PA-Rights did not exist).")
 
 
 def file_to_dataframe_csv(file):
@@ -214,7 +234,7 @@ def file_to_dataframe_csv(file):
     try:
         return pd.read_csv(file, header=2)
     except Exception:
-        raise Exception("Unable to read csv file.")
+        print("Unable to read csv file.")
 
 
 def file_to_dataframe_tsv(file):
@@ -227,7 +247,7 @@ def file_to_dataframe_tsv(file):
     try:
         return pd.read_table(file, header=2)
     except Exception:
-        raise Exception("Unable to read tsv file.")
+        print("Unable to read tsv file.")
 
 
 def upload_to_database(df, table_name, connection):
@@ -243,3 +263,37 @@ def upload_to_database(df, table_name, connection):
         if_exists="replace",
         index=False
     )
+
+
+def check_file_format(file_df):
+    """
+    Checks the incoming file format to see if it is correct
+    :param file_df: dataframe with file info (or None if unable to turn into dataframe
+    :return: boolean True or False if valid or not
+    """
+
+    # Failed to read the file into a dataframe
+    if file_df is None:
+        return False
+
+    # Top left cell?
+    header_row = ["Title", "Publisher", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code", "collection_name", "title_metadata_last_modified"]
+    headers = file_df.columns.to_list()
+
+    # Header row is incorrect (too short or headers don't match)
+    if len(headers) <= 8 or not headers[:8] == header_row:
+        print("The header row is incorrect")
+        return False
+
+    # Title and Y/N Column complete
+    df_series = file_df.count()
+    rows = file_df.shape[0]
+    if df_series["Title"] != rows:
+        print("Missing title data")
+        return False
+    for uni_column in df_series[8:]:
+        if uni_column != rows:
+            print("Missing Y/N data")
+            return False
+
+    return True
