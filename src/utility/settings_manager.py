@@ -59,6 +59,7 @@ class Settings(metaclass=SingletonMeta):
             default_db_path = os.path.join(os.path.dirname(self.settings_file), 'ebook_database.db')
             settings = {
                 "language": "English",
+                "allow_CRKN": "True",
                 "institution": "Univ. of Prince Edward Island",
                 "results_per_page": 25,
                 "CRKN_url": "https://library.upei.ca/test-page-ebooks-perpetual-access-project",
@@ -66,7 +67,7 @@ class Settings(metaclass=SingletonMeta):
                 "database_name": default_db_path,
                 "github_link": "https://github.com"
             }
-            #Set the CRKN root url from the CRKN url
+            # Set the CRKN root url from the CRKN url
             url_parts = settings["CRKN_url"].split('/')
             settings["CRKN_root_url"] = '/'.join(url_parts[:3])
         return settings
@@ -99,6 +100,13 @@ class Settings(metaclass=SingletonMeta):
         :param language: new language
         """
         self.update_setting('language', language)
+
+    def set_allow_CRKN(self, allowCRKN):
+        """
+        Allow to use CRKN.
+        :param allowCRKN: "True" or "False"
+        """
+        self.update_setting('allowCRKN', allowCRKN)
 
     def set_crkn_url(self, url):
         """
