@@ -131,10 +131,10 @@ def search_database(connection, searchType, value):
         institution = settings_manager.get_setting('institution')
         if searchType == 'Title':
             value = f'%{value}%'
-            query = f"SELECT [{institution}], Title, Publisher, Platform_YOP, Platform_eISBN, OCN FROM {table} WHERE {searchType} LIKE ?"
+            query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM {table} WHERE {searchType} LIKE ?"
             cursor.execute(query, (value,))
         else:
-            query = f"SELECT [{institution}], Title, Publisher, Platform_YOP, Platform_eISBN, OCN FROM {table} WHERE {searchType}=?"
+            query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM {table} WHERE {searchType}=?"
             cursor.execute(query, (value,))
         results = results + cursor.fetchall()
     return results
