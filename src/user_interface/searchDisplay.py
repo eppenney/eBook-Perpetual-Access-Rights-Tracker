@@ -19,7 +19,7 @@ class searchDisplay(QDialog):
         self.widget = widget
         self.results = []
         self.original_widget_values = None
-        self.column_labels = ["Access", "Title", "Publisher", "Year of Publication", "eISBN", "OCN"]
+        self.column_labels = ["Access", "File_Name", "Platform", "Title", "Publisher", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code", "collection_name", "title_metadata_last_modified"]
 
 
     def backToStartScreen(self):
@@ -83,7 +83,7 @@ class searchDisplay(QDialog):
         table_width = int(0.8 * new_width)
         self.tableWidget.setFixedWidth(table_width)
 
-         # Calculate the width for each column
+        # Calculate the width for each column
         num_columns = self.tableWidget.columnCount()
         column_width = math.floor(table_width / num_columns) if num_columns > 0 else 0
         column_width -= 16
