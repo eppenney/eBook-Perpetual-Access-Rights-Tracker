@@ -69,7 +69,7 @@ def process_file(file_path):
         QMessageBox.warning(None, "Invalid File Type", "Please select a valid xlsx, csv or tsv file.", QMessageBox.StandardButton.Ok)
         return
 
-    valid_file = Scraping.check_file_format(file_df)
+    valid_file = Scraping.check_file_format(file_df, "local")
     if valid_file:
         Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
         Scraping.update_tables([file_name[0], date], "local", connection, result)

@@ -124,12 +124,18 @@ def download_files(files, connection):
         else:
             file_df = file_to_dataframe_csv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
 
-        valid_format = check_file_format(file_df)
+        valid_format = check_file_format(file_df, "CRKN")
         if valid_format:
             upload_to_database(file_df, file_first, connection)
             update_tables([file_first, file_date], "CRKN", connection, command)
         else:
             print("The file was not in the correct format, so it was not uploaded.")
+
+    # Putting this here, assuming all CRKN files will have the exact same institution list, so just check the last added
+    # Also, will always work, but probably poor practices with file_df
+    headers = file_df.columns.to_list()
+    insts = headers[8:]
+    settings_manager.add_CRKN_institutions(insts)
 
     try:
         os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
@@ -297,7 +303,7 @@ def upload_to_database(df, table_name, connection):
     )
 
 
-def check_file_format(file_df):
+def check_file_format(file_df, method):
     """
     Checks the incoming file format to see if it is correct
     :param file_df: dataframe with file info (or None if unable to turn into dataframe
@@ -327,5 +333,19 @@ def check_file_format(file_df):
         if uni_column != rows:
             print("Missing Y/N data")
             return False
+
+    if method == "local":
+        for uni in headers[8:-2]:
+            if uni not in settings_manager.get_setting("CRKN_institutions"):
+                if uni not in settings_manager.get_setting("local_institutions"):
+                    print(f"{uni} is not a CRKN institution and is not on the list of local institutions.")
+                    print(f"Would you like to add {uni} to the local list?")
+                    print("If no, the file will not be uploaded.")
+                    print(f"If yes, {uni} will be considered its own institution, and you can search by this institution by selecting it in the settings menu.")
+                    ans = input("Y/N?")
+                    if ans == "Y":
+                        settings_manager.add_local_institution(uni)
+                    else:
+                        return False
 
     return True
