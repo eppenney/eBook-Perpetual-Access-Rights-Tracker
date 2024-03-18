@@ -8,11 +8,11 @@ from PyQt6.QtGui import QIcon, QPixmap
 
 from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
+from src.user_interface.scraping_ui import scrapeCRKN
 from src.data_processing.database import connect_to_database, search_by_title, search_by_ISBN, search_by_OCN, \
     close_database, add_AND_query, add_OR_query, advanced_search
 from src.utility.upload import upload_and_process_file
 from src.utility.settings_manager import Settings
-from src.data_processing.Scraping import scrapeCRKN
 import os
 #from searchDisplay import display_results_in_table
 
@@ -69,7 +69,6 @@ class startScreen(QDialog):
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
         self.instituteButton = self.findChild(QPushButton, "institutionButton")
         self.updateButton = self.findChild(QPushButton, "updateCRKN")
-        self.clearButton = self.findChild(QPushButton, "clearButton")
 
         self.duplicateCount = 0 #This will be tracking the number of duplicates
         self.booleanBox.hide()
@@ -77,8 +76,6 @@ class startScreen(QDialog):
 
         self.search.clicked.connect(self.search_button_clicked)
         self.widget = widget  # Store the QStackedWidget reference
-
-        self.clearButton.clicked.connect(self.clear)
 
         # # making a group of different button to give a effect of burger menu
         self.buttonGroup = QButtonGroup()
@@ -131,8 +128,6 @@ class startScreen(QDialog):
             self.universityName.setText(institution_name)
         else:
             self.universityName.setText("No Institution Selected")
-
-
 
 #this method responsible for making the new text edit each time the plus sign is clicked. (Please talk to me if you want to understand the code)
 #basically we are only having limit of 5 searches at the same time
@@ -293,7 +288,7 @@ class startScreen(QDialog):
 
         #using the if statement that will initiate the search through the database
         if searchType == "Title" or True:
-            # print(query)
+            print(query)
             results = advanced_search(connection, query)
         elif searchType == "eISBN":
             results = search_by_ISBN(connection, searchText)  # likely going to be baked into advanced_search, same for OCN
@@ -365,8 +360,3 @@ class startScreen(QDialog):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
         super().resizeEvent(event)
         self.update_all_sizes()
-
-    def clear(self):
-        for i in range(len(self.duplicateTextEdits)):
-            self.removeTextEdit()
-        self.textEdit.clear()
