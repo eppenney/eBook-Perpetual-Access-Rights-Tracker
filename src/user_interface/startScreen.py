@@ -35,8 +35,8 @@ class startScreen(QDialog):
     
     def __init__(self, widget):
         super(startScreen, self).__init__()
-
-        ui_file = os.path.join(os.path.dirname(__file__), "english_start.ui")  # Assuming the UI file is in the same directory as the script
+        language_value = settings_manager.get_setting("language").lower()
+        ui_file = os.path.join(os.path.dirname(__file__), f"{language_value}_start.ui")  # Assuming the UI file is in the same directory as the script
         loadUi(ui_file, self)
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)

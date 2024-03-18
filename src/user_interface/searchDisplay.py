@@ -1,16 +1,17 @@
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QTableWidgetItem, QTextEdit, QComboBox, QWidget
 from src.utility.export import export_data
+from src.utility.settings_manager import Settings
 import math
-
-
 import os
-
+settings_manager = Settings()
+settings_manager.load_settings()
 # this class defines the search page please add the search page code here
 class searchDisplay(QDialog):
     def __init__(self, widget):
         super(searchDisplay, self).__init__()
-        ui_file = os.path.join(os.path.dirname(__file__), "searchDisplay.ui")
+        language_value = settings_manager.get_setting("language").lower()
+        ui_file = os.path.join(os.path.dirname(__file__), f"{language_value}_searchDisplay.ui")
         loadUi(ui_file, self)
 
         # this is the back button that will take to the startscreen from the searchdisplay

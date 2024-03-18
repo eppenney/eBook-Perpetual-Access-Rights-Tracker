@@ -365,7 +365,7 @@ color:rgb(255, 255, 255);</string>
             border-radius: 10px;</string>
     </property>
     <property name="text">
-     <string>Update CRKN</string>
+     <string>Réactualiser CRKN</string>
     </property>
    </widget>
    <widget class="QLabel" name="universityName">
