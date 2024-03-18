@@ -73,8 +73,11 @@ def process_file(file_path):
     if valid_file:
         Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
         Scraping.update_tables([file_name[0], date], "local", connection, result)
+
+        QMessageBox.information(None, "File Upload", f"Your files have been uploaded. {len(file_df)} rows have been added.", QMessageBox.StandardButton.Ok)
     else:
-        print("The file was not in the correct format, so it was not uploaded.")
+        QMessageBox.warning(None, "Invalid File Format", "The file was not in the correct format.\nUpload aborted.", QMessageBox.StandardButton.Ok)
+
 
     database.close_database(connection)
 
