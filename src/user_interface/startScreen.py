@@ -35,8 +35,8 @@ class startScreen(QDialog):
     
     def __init__(self, widget):
         super(startScreen, self).__init__()
-        language_value = settings_manager.get_setting("language").lower()
-        ui_file = os.path.join(os.path.dirname(__file__), f"{language_value}_start.ui")  # Assuming the UI file is in the same directory as the script
+        self.language_value = settings_manager.get_setting("language").lower()
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_start.ui")  # Assuming the UI file is in the same directory as the script
         loadUi(ui_file, self)
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -127,7 +127,7 @@ class startScreen(QDialog):
         if institution_name:
             self.universityName.setText(institution_name)
         else:
-            self.universityName.setText("No Institution Selected")
+            self.universityName.setText("No Institution Selected" if self.language_value == "English" else "Aucune institution sélectionnée")
 
 #this method responsible for making the new text edit each time the plus sign is clicked. (Please talk to me if you want to understand the code)
 #basically we are only having limit of 5 searches at the same time
@@ -157,7 +157,7 @@ class startScreen(QDialog):
         self.removeButton.setGeometry(self.removeButton.x(), newY, self.removeButton.width(), self.removeButton.height())
 
       else:
-          QMessageBox.warning(self, "Limit reached", "You can only search {} at a time".format(MAX_DUPLICATES))
+          QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "", f"You can only search {MAX_DUPLICATES} at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher que {MAX_DUPLICATES} à la fois.")
 
     def adjustDuplicateTextEditSize(self):
         for i in range(len(self.duplicateTextEdits)):
@@ -249,7 +249,7 @@ class startScreen(QDialog):
             self.removeButton.setGeometry(self.removeButton.x(), newY, self.removeButton.width(), self.removeButton.height())
 
         else:
-            QMessageBox.information(self, "No More Duplicates", "There are no more duplicated text fields to remove.")
+            QMessageBox.information(self, "No More Duplicates" if self.language_value == "English" else "Plus de doublons", "There are no more duplicated text fields to remove." if self.language_value == "English" else "Il n'y a plus de champs de texte en double à supprimer.")
 
     def settingsDisplay(self):
         settings = settingsPage.get_instance(self.widget)
