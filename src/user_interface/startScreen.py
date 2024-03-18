@@ -36,7 +36,7 @@ class startScreen(QDialog):
     def __init__(self, widget):
         super(startScreen, self).__init__()
 
-        ui_file = os.path.join(os.path.dirname(__file__), "start.ui")  # Assuming the UI file is in the same directory as the script
+        ui_file = os.path.join(os.path.dirname(__file__), "french_start.ui")  # Assuming the UI file is in the same directory as the script
         loadUi(ui_file, self)
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -267,7 +267,8 @@ class startScreen(QDialog):
     def search_button_clicked(self):
         institution = settings_manager.get_setting('institution')
         searchText = self.textEdit.text().strip()
-        searchType = searchType = self.booleanSearchType.currentText()
+        searchTypeIndex = self.booleanSearchType.currentIndex()
+        searchType = "Title" if searchTypeIndex == 0 else "eISBN" if searchTypeIndex == 1 else "OCN"
         value = f'%{searchText}%'
         query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM table_name WHERE {searchType} LIKE '{value}'"
         connection = connect_to_database()
@@ -278,8 +279,10 @@ class startScreen(QDialog):
         # for textBox in self.duplicateTextEdits:
         for i in range(len(self.duplicateTextEdits)):
             new_value = self.duplicateTextEdits[i].text().strip()
-            operator = self.duplicateCombos[i].currentText()
-            searchType = self.duplicateSearchTypes[i].currentText()
+            operatorIndex = self.duplicateCombos[i].currentIndex()
+            operator = "OR" if searchTypeIndex == 0 else "AND"
+            searchTypeIndex = self.duplicateSearchTypes[i].currentIndex()
+            searchType = "Title" if searchTypeIndex == 0 else "eISBN" if searchTypeIndex == 1 else "OCN"
             if operator == "AND":
                 query = add_AND_query(searchType, query, new_value)
             elif operator == "OR":

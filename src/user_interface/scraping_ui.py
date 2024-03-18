@@ -11,9 +11,7 @@ class LoadingPopup(QDialog):
         super().__init__()
         self.setWindowTitle("Scraping CRKN Database...")
         self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.CustomizeWindowHint | Qt.WindowType.WindowTitleHint)
-
-        self.scraper = ScrapingThread()
-        
+                
         layout = QVBoxLayout(self)
         
         self.progress_bar = QProgressBar(self)
@@ -31,15 +29,14 @@ class LoadingPopup(QDialog):
 
         self.timer.start(1000)
 
+        self.finished = False
+
     def update_progress(self, value):
         self.progress_bar.setValue(value)
-        if value == 100:
-            dialog = QMessageBox(self)
-            dialog.setWindowTitle("Task Completed")
-            dialog.setText("Scraping process complete")
-            dialog.setIcon(QMessageBox.Icon.Information)
-            dialog.addButton(QMessageBox.StandardButton.Ok)
-            dialog.exec()
+        if value == 100 and not self.finished:
+            self.finished = True
+            self.loading_thread = None
+            self.show_popup_once()
             self.close()
     
     def handle_file_changes(self, file_changes):
@@ -48,12 +45,8 @@ class LoadingPopup(QDialog):
         reply = QMessageBox.question(self, "Database Update", f"There {'is' if file_changes == 1 else 'are'} {file_changes} {'file' if file_changes == 1 else 'files'} to update in the database. Would you like to do the update now?",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
-            # If user wants to continue, restart the timer
             self.loading_thread.revieve_response("Y")
-            # Emit a signal to resume the thread
-            # self.resume_signal.emit()
         else:
-            # If user wants to stop, close the dialog
             self.loading_thread.revieve_response("N")
             
     def handle_error(self, error_msg):
@@ -64,3 +57,10 @@ class LoadingPopup(QDialog):
         dialog.addButton(QMessageBox.StandardButton.Ok)
         dialog.exec()
 
+    def show_popup_once(self):
+        dialog = QMessageBox(self)
+        dialog.setWindowTitle("Task Completed")
+        dialog.setText("Scraping process complete.")
+        dialog.setIcon(QMessageBox.Icon.Information)
+        dialog.addButton(QMessageBox.StandardButton.Ok)
+        dialog.exec()
