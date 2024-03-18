@@ -7,11 +7,15 @@
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox
+from src.user_interface.scraping_ui import scrapeCRKN
+from src.utility.upload import upload_and_process_file
+from src.utility.settings_manager import Settings
 import os
 
+settings_manager = Settings()
+settings_manager.load_settings()
 
 class settingsPage(QDialog):
-
     _instance = None
     @classmethod
     def get_instance(cls, arg):
@@ -21,13 +25,23 @@ class settingsPage(QDialog):
 
     def __init__(self, widget):
         super(settingsPage, self).__init__()
-        ui_file = os.path.join(os.path.dirname(__file__), "settingsPage.ui")
+        self.language_value = settings_manager.get_setting("language").lower()
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_settingsPage.ui")
         loadUi(ui_file, self)
 
         self.backButton2 = self.findChild(QPushButton, 'pushButton') #finding child pushButton from the parent class
         self.backButton2.clicked.connect(self.backToStartScreen2)
         self.widget = widget
         self.original_widget_values = None 
+
+        # Upload Button
+        self.uploadButton = self.findChild(QPushButton, 'uploadButton')
+        self.uploadButton.clicked.connect(self.upload_button_clicked)
+
+        # Update Button
+        self.updateButton = self.findChild(QPushButton, "updateCRKN")
+        self.updateButton.clicked.connect(scrapeCRKN)
+
     
     def backToStartScreen2(self):
         from src.user_interface.startScreen import startScreen
@@ -77,3 +91,6 @@ class settingsPage(QDialog):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
         super().resizeEvent(event)
         self.update_all_sizes()
+
+    def upload_button_clicked(self):
+        upload_and_process_file()

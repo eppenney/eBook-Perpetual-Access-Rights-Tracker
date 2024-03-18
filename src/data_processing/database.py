@@ -82,13 +82,13 @@ def get_tables(connection):
 
 
 def create_file_name_tables(connection):
-    """
-    Create default database tables - CRKN_file_names and local_file_names
-    Table name format: just the abbreviation
-    :param connection: database connection object
-    """
-    # cursor object to interact with database
-    cursor = connection.cursor()
+	"""
+	Create default database tables - CRKN_file_names and local_file_names
+	Table name format: just the abbreviation
+	:param connection: database connection object
+	"""
+	# cursor object to interact with database
+	cursor = connection.cursor()
 
 
 	list_of_tables = cursor.execute(
@@ -99,11 +99,11 @@ def create_file_name_tables(connection):
 		print("Table does not exist, creating new one")
 		cursor.execute("CREATE TABLE CRKN_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
 
-    # Empty list for next check
-    list_of_tables.clear()
-    list_of_tables = cursor.execute(
-        """SELECT name FROM sqlite_master WHERE type='table'
-        AND name='local_file_names'; """).fetchall()
+	# Empty list for next check
+	list_of_tables.clear()
+	list_of_tables = cursor.execute(
+		"""SELECT name FROM sqlite_master WHERE type='table'
+		AND name='local_file_names'; """).fetchall()
 
 
 	# If table does not exist, create new table for local file info
@@ -178,9 +178,7 @@ def add_AND_query(searchType, query, term):
     if searchType == "Title":
         term = f'%{term}%'
         return f"{query} AND {searchType} LIKE '{term}'"
-    elif searchType == "eISBN":
-        return query + f" AND Platform_{searchType}={term}"
-    elif searchType == "OCN":
+    else:
         return query + f" AND {searchType}={term}"
 
 
@@ -188,9 +186,7 @@ def add_OR_query(searchType, query, term):
     if searchType == "Title":
         term = f'%{term}%'
         return query + f" OR {searchType} LIKE '{term}'"
-    elif searchType == "eISBN":
-        return query + f" OR Platform_{searchType}={term}"
-    elif searchType == "OCN":
+    else:
         return query + f" OR {searchType}={term}"
 
 def advanced_search(connection, query):

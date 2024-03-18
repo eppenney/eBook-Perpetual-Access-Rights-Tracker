@@ -15,13 +15,184 @@ import requests
 import pandas as pd
 from src.utility.settings_manager import Settings
 from src.data_processing import database
+from PyQt6.QtCore import QTimer, QThread, pyqtSignal
 import os
 
 settings_manager = Settings()
 settings_manager.load_settings()
 crkn_url = settings_manager.get_setting('CRKN_url')
+"""
+Ethan Penney
+March 18, 2024
+Created a class variant of scraping functions that are threaded and emit signals in tandem with scraping_ui.py to update loading bar. 
+"""
+class ScrapingThread(QThread):
+    def __init__(self):
+        super().__init__()
 
+    def run(self):
+        self.scrapeCRKN()
 
+    progress_update = pyqtSignal(int)
+    file_changes_signal = pyqtSignal(int)
+    error_signal = pyqtSignal(str)
+
+    def scrapeCRKN(self):
+        self.progress_update.emit(0)
+        """Scrape the CRKN website for listed ebook files."""
+        error = ""
+        try:
+            # Make a request to the CRKN website
+            response = requests.get(crkn_url)
+            # Check if request was successful (status 200)
+            response.raise_for_status()
+            # If request successful, process text
+            page_text = response.text
+
+        except requests.exceptions.HTTPError as http_err:
+            # Handle HTTP errors
+            error = http_err
+            page_text = None
+        except requests.exceptions.ConnectionError as conn_err:
+            # Handle errors like refused connections
+            error = conn_err
+            page_text = None
+        except requests.exceptions.Timeout as timeout_err:
+            # Handle request timeout
+            error = timeout_err
+            page_text = None
+        except Exception as e:
+            # Handle any other exceptions
+            error = e
+            page_text = None
+        
+        self.progress_update.emit(10)
+
+        # We will need to address how to show errors to the users when they happen (something like show a pop up instead of returning); will leave like this for now
+        if page_text is None:
+            self.error_signal.emit(f"An error occurred: {error}")
+            return
+
+        # Get list of links that end in xlsx, csv, or tsv from the CRKN website link
+        soup = BeautifulSoup(page_text, "html.parser")
+        links = soup.find_all('a', href=lambda href: href and (href.endswith('.xlsx') or href.endswith('.csv') or href.endswith('.tsv')))
+
+        connection = database.connect_to_database()
+
+        # List of files that need to be updated/added to the local database
+        files_to_update = []
+        # All CRKN tables - by end it will just have the ones to remove
+        files_to_remove = [file for file in database.get_tables(connection) if not file.startswith("local_")]
+
+        # Check if links on CRKN website need to be added/updated in local database
+        i = 0
+        for link in links:
+            i += 1
+            progress = 10 + int((i / len(links)) * 20)
+            self.progress_update.emit(progress)
+            file_link = link.get("href")
+            file_first, file_date = split_CRKN_file_name(file_link)
+            result = compare_file([file_first, file_date], "CRKN", connection)
+
+            if result:
+                files_to_update.append([link, result])
+
+            try:
+                files_to_remove.remove(file_first)
+            except ValueError:
+                pass
+            
+
+        # Ask user if they want to perform scraping (slightly time-consuming)
+        file_changes = len(files_to_update) + len(files_to_remove)
+        if file_changes > 0:
+            self.file_changes_signal.emit(file_changes)
+            ans = self.wait_for_response()
+            if ans == "Y":
+                if len(files_to_update) > 0:
+                    self.download_files(files_to_update, connection)
+                if len(files_to_remove) > 0:
+                    i = 0
+                    for file in files_to_remove:
+                        i += 1
+                        progress = 90 + int((i / len(files_to_remove)) * 9)
+                        self.progress_update.emit(progress)
+                        update_tables([file], "CRKN", connection, "DELETE")
+
+        database.close_database(connection)
+        self.progress_update.emit(100)
+
+    def wait_for_response(self):
+        # This function halts the execution of the thread until response is received
+        self.response = None
+        while self.response is None:
+            self.msleep(100)  # Sleep to avoid busy waiting
+        return self.response
+    
+    def revieve_response(self, response):
+        self.response = response
+    
+    def download_files(self, files, connection):        
+        """
+        For all files that need downloading from CRKN, do so and store in local database.
+        :param files: list of files to download from CRKN
+        :param connection: database connection object
+        """
+        i = 0
+        for [link, command] in files:
+            i += 1
+            progress = 30 + int((i / len(files)) * 30)
+            self.progress_update.emit(progress)
+            file_link = link.get("href")
+
+            # Get which type of file it is (xlsx, csv, or tsv)
+            file_type = file_link.split(".")[-1]
+
+            file_first, file_date = split_CRKN_file_name(file_link)
+
+            # Write file to temporary local file, then convert that file into a dataframe to upload to database
+            with open(f"{os.path.abspath(os.path.dirname(__file__))}/temp.{file_type}", 'wb') as file:
+                response = requests.get(settings_manager.get_setting("CRKN_root_url") + file_link)
+                file.write(response.content)
+
+            if file_type == "xlsx":
+                file_df = file_to_dataframe_excel(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
+            elif file_type == "tsv":
+                file_df = file_to_dataframe_tsv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.tsv")
+            else:
+                file_df = file_to_dataframe_csv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
+
+            valid_format = check_file_format(file_df, "CRKN")
+            if valid_format:
+                upload_to_database(file_df, file_first, connection)
+                update_tables([file_first, file_date], "CRKN", connection, command)
+            else:
+                self.error_signal.emit("The file was not in the correct format, so it was not uploaded.")
+            
+            
+
+        # Putting this here, assuming all CRKN files will have the exact same institution list, so just check the last added
+        # Also, will always work, but probably poor practices with file_df
+        headers = file_df.columns.to_list()
+        insts = headers[8:]
+        settings_manager.add_CRKN_institutions(insts)
+
+        try:
+            os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
+        except FileNotFoundError:
+            pass
+        try:
+            os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
+        except FileNotFoundError:
+            pass
+        try:
+            os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.tsv")
+        except FileNotFoundError:
+            pass
+
+"""
+Non-thread version
+"""
 def scrapeCRKN():
     """Scrape the CRKN website for listed ebook files."""
     error = ""
@@ -97,7 +268,7 @@ def scrapeCRKN():
     database.close_database(connection)
 
 
-def download_files(files, connection):
+def download_files( files, connection):
     """
     For all files that need downloading from CRKN, do so and store in local database.
     :param files: list of files to download from CRKN

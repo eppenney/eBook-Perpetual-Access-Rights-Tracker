@@ -35,13 +35,25 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 85, 127);
-color: rgb(255, 255, 255);
-font: 14pt &quot;MS Shell Dlg 2&quot;;
-border-radius:20px;</string>
+     <string notr="true">
+            QPushButton {
+                font: 75 16pt "Arial";
+                background-color: rgb(0, 85, 127);
+                border-radius: 10px;
+                color: rgb(255, 255, 255);
+            }
+
+            QPushButton:hover {
+                background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(0, 65, 107); /* Even darker color when clicked */
+            }
+        </string>
     </property>
     <property name="text">
-     <string>Back</string>
+     <string>dos</string>
     </property>
    </widget>
    <widget class="QWidget" name="widget_2" native="true">
@@ -92,22 +104,22 @@ color: rgb(255, 255, 255);
     </column>
     <column>
      <property name="text">
-      <string>Title </string>
+      <string>Titre </string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>Publisher</string>
+      <string>Éditeur</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>Platform_YOP</string>
+      <string>Plateforme_YOP</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>Platform_eISBN</string>
+      <string>Plateforme_eISBN</string>
      </property>
     </column>
     <column>
@@ -117,12 +129,12 @@ color: rgb(255, 255, 255);
     </column>
     <column>
      <property name="text">
-      <string>collection_name</string>
+      <string>nom_collection</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>Last Modified</string>
+      <string>Dernière modification</string>
      </property>
     </column>
    </widget>
@@ -136,13 +148,25 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 85, 127);
-               color: rgb(255, 255, 255);
-               font: 14pt &quot;MS Shell Dlg 2&quot;;
-               border-radius:20px;</string>
+     <string notr="true">
+            QPushButton {
+                font: 75 16pt "Arial";
+                background-color: rgb(0, 85, 127);
+                border-radius: 10px;
+                color: rgb(255, 255, 255);
+            }
+
+            QPushButton:hover {
+                background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(0, 65, 107); /* Even darker color when clicked */
+            }
+        </string>
     </property>
     <property name="text">
-     <string>Export</string>
+     <string>Exporter</string>
     </property>
    </widget>
    <widget class="QLabel" name="cellName">
