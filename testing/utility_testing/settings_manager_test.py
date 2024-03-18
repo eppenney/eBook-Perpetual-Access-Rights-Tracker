@@ -18,9 +18,10 @@ class TestSettingsManager(unittest.TestCase):
         self.default_settings = {
             "language": "English",
             "institution": "Initial University",
-            "results_per_page": 25,
             "CRKN_url": "https://initial-url.com",
             "CRKN_root_url": "https://initial-url.com",
+            "CRKN_institutions": [],
+            "local_institutions": [],
             "database_name": "initial_database.db",
             "github_link": "https://github.com/initial"
         }

@@ -60,19 +60,21 @@ def process_file(file_path):
 
     # Add file into to local_file_names table, convert file to dataframe, and insert dataframe into database
     if file_name[-1] == "csv":
-        file_df = Scraping.file_to_dataframe_csv(file_path)
+        file_df = Scraping.file_to_dataframe_csv(".".join(file_name), file_path)
     elif file_name[-1] == "xlsx":
-        file_df = Scraping.file_to_dataframe_excel(file_path)
+        file_df = Scraping.file_to_dataframe_excel(".".join(file_name), file_path)
     elif file_name[-1] == "tsv":
-        file_df = Scraping.file_to_dataframe_tsv(file_path)
+        file_df = Scraping.file_to_dataframe_tsv(".".join(file_name), file_path)
     else:
         QMessageBox.warning(None, "Invalid File Type", "Please select a valid xlsx, csv or tsv file.", QMessageBox.StandardButton.Ok)
         return
 
-    valid_file = Scraping.check_file_format(file_df)
+    valid_file = Scraping.check_file_format(file_df, "local")
     if valid_file:
         Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
         Scraping.update_tables([file_name[0], date], "local", connection, result)
+    else:
+        print("The file was not in the correct format, so it was not uploaded.")
 
     database.close_database(connection)
 

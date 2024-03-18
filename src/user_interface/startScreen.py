@@ -271,7 +271,7 @@ class startScreen(QDialog):
         searchText = self.textEdit.text().strip()
         searchType = searchType = self.booleanSearchType.currentText()
         value = f'%{searchText}%'
-        query = f"SELECT [{institution}], Title, Publisher, Platform_YOP, Platform_eISBN, OCN FROM table_name WHERE {searchType} LIKE '{value}'"
+        query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM table_name WHERE {searchType} LIKE '{value}'"
         connection = connect_to_database()
 
         # Creates the advanced boolean search query by adding the extra search terms/conditions on to the base query
