@@ -14,7 +14,8 @@ Made some changes based on feedback in pull request.
  * Added file naming convention and changed to replace instead of append, 
  * Removed double file reading - remnant from previous filler code 
 """
-from PyQt6.QtWidgets import QFileDialog, QApplication, QMessageBox
+from PyQt6.QtWidgets import QFileDialog, QApplication, QMessageBox, QProgressDialog
+from PyQt6.QtCore import Qt
 from src.data_processing import database, Scraping
 import sys
 import datetime
@@ -35,20 +36,21 @@ def upload_and_process_file():
 
 
 def process_file(file_path):
-    """
-    Process and place an uploaded file in the local database.
-    :param file_path: absolute file path of uploaded file
-    """
+    app = QApplication.instance()  # Try to get the existing application instance
+    if app is None:  # If no instance exists, create a new one
+        app = QApplication(sys.argv)
+
+    progress_dialog = QProgressDialog("Processing File...", None, 0, 0)
+    progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
+    progress_dialog.setMinimumDuration(0)
+    progress_dialog.show()
 
     connection = database.connect_to_database()
 
-    # Remove absolute path part of file_path
     file_name = file_path.split("/")[-1].split(".")
-    # Use as file date for local files
     date = datetime.datetime.now()
     date = date.strftime("%Y_%m_%d")
 
-    # Check if it is already in database. If yes (UPDATE), ask to replace old file
     result = Scraping.compare_file([file_name[0], date], "local", connection)
 
     if result == "UPDATE":
@@ -56,9 +58,9 @@ def process_file(file_path):
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.No:
             database.close_database(connection)
+            progress_dialog.cancel()
             return
 
-    # Add file into to local_file_names table, convert file to dataframe, and insert dataframe into database
     if file_name[-1] == "csv":
         file_df = Scraping.file_to_dataframe_csv(".".join(file_name), file_path)
     elif file_name[-1] == "xlsx":
@@ -67,6 +69,8 @@ def process_file(file_path):
         file_df = Scraping.file_to_dataframe_tsv(".".join(file_name), file_path)
     else:
         QMessageBox.warning(None, "Invalid File Type", "Please select a valid xlsx, csv or tsv file.", QMessageBox.StandardButton.Ok)
+        database.close_database(connection)
+        progress_dialog.cancel()
         return
 
     valid_file = Scraping.check_file_format(file_df, "local")
@@ -78,8 +82,8 @@ def process_file(file_path):
     else:
         QMessageBox.warning(None, "Invalid File Format", "The file was not in the correct format.\nUpload aborted.", QMessageBox.StandardButton.Ok)
 
-
     database.close_database(connection)
+    progress_dialog.cancel()
 
 
 def remove_local_file(file_name):

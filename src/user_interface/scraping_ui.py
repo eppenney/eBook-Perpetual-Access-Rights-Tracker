@@ -1,4 +1,4 @@
-from PyQt6.QtCore import QTimer, Qt, QThread, pyqtSignal
+from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QProgressBar, QMessageBox
 from src.data_processing.Scraping import ScrapingThread
 
