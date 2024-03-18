@@ -296,7 +296,7 @@ color:rgb(255, 255, 255);</string>
     </property>
     <item>
      <property name="text">
-      <string>NAME</string>
+      <string>Title</string>
      </property>
     </item>
     <item>

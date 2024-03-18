@@ -57,52 +57,57 @@ def close_database(connection):
 
 
 def get_tables(connection):
-	"""
+    """
 	Gets the names of all tables via the CRKN and local file name tables
 	:param connection: database connection object
 	:return: list of all CRKN/local file name tables
 	"""
-	list_of_tables = connection.execute("SELECT file_name FROM CRKN_file_names;").fetchall()
-	# strip the apostrophes/parentheses from formatting
-	list_of_tables = [row[0] for row in list_of_tables]
 
-	# Need to modify the table names for the local files
-	local_tables = connection.execute("SELECT file_name FROM local_file_names;").fetchall()
-	local_tables = ["local_" + row[0] for row in local_tables]
+    list_of_tables = []
 
-	# Combine the two lists - CRKN and local file names
-	list_of_tables.extend(local_tables)
-	return list_of_tables
+    # Only show if allow_CRKN is set to true
+    allow_crkn = settings_manager.get_setting('allow_CRKN')
+    if allow_crkn == "True":
+        crkn_tables = connection.execute("SELECT file_name FROM CRKN_file_names;").fetchall()
+        # strip the apostrophes/parentheses from formatting
+        list_of_tables += [row[0] for row in crkn_tables]
+
+    # Need to modify the table names for the local files
+    local_tables = connection.execute("SELECT file_name FROM local_file_names;").fetchall()
+    local_tables = ["local_" + row[0] for row in local_tables]
+
+    # Combine the two lists - CRKN and local file names; will only show local file names if allow_CRKN is False
+    list_of_tables.extend(local_tables)
+    return list_of_tables
 
 
 def create_file_name_tables(connection):
-	"""
+    """
 	Create default database tables - CRKN_file_names and local_file_names
 	Table name format: just the abbreviation
 	:param connection: database connection object
 	"""
-	# cursor object to interact with database
-	cursor = connection.cursor()
+    # cursor object to interact with database
+    cursor = connection.cursor()
 
-	list_of_tables = cursor.execute(
-		"""SELECT name FROM sqlite_master WHERE type='table'
-		AND name='CRKN_file_names'; """).fetchall()
-
-	# If table doesn't exist, create new table for CRKN file info
-	if not list_of_tables:
-		print("Table does not exist, creating new one")
-		cursor.execute("CREATE TABLE CRKN_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
+    list_of_tables = cursor.execute(
+        """SELECT name FROM sqlite_master WHERE type='table'
+        AND name='CRKN_file_names'; """).fetchall()
+     # If table doesn't exist, create new table for CRKN file info
+    if not list_of_tables:
+        print("Table does not exist, creating new one")
+        cursor.execute("CREATE TABLE CRKN_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
 
 	# Empty list for next check
 	list_of_tables.clear()
-	list_of_tables = cursor.execute(
-		"""SELECT name FROM sqlite_master WHERE type='table'
+    list_of_tables = cursor.execute(
+        """SELECT name FROM sqlite_master WHERE type='table'
 		AND name='local_file_names'; """).fetchall()
 
-	# If table does not exist, create new table for local file info
-	if not list_of_tables:
-		print("Table does not exist, creating new one")
-		cursor.execute("CREATE TABLE local_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
+    # If table does not exist, create new table for local file info
+    if not list_of_tables:
+        print("Table does not exist, creating new one")
+        cursor.execute("CREATE TABLE local_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
 
 
 # Keeps duplicate items at the moment, not sure if we should also include the publisher to distinguish dupes,
@@ -171,17 +176,20 @@ def add_AND_query(searchType, query, term):
 	if searchType == "Title":
 		term = f'%{term}%'
 		return f"{query} AND {searchType} LIKE '{term}'"
-	else:
-		return f"{query} AND {searchType}='{term}'"
+	elif searchType == "eISBN":
+		return query + f" AND Platform_{searchType}={term}"
+	elif searchType == "OCN":
+		return query + f" AND {searchType}={term}"
 
 
 def add_OR_query(searchType, query, term):
 	if searchType == "Title":
 		term = f'%{term}%'
 		return query + f" OR {searchType} LIKE '{term}'"
-	else:
+	elif searchType == "eISBN":
+		return query + f" OR Platform_{searchType}={term}"
+	elif searchType == "OCN":
 		return query + f" OR {searchType}={term}"
-
 
 def advanced_search(connection, query):
 	"""

@@ -53,11 +53,8 @@ def process_file(file_path):
 
     if result == "UPDATE":
         reply = QMessageBox.question(None, "Replace File", "A file with the same name is already in the local database. Would you like to replace it with the new file?",
-                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel)
+                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.No:
-            database.close_database(connection)
-            return
-        elif reply == QMessageBox.StandardButton.Cancel:
             database.close_database(connection)
             return
 
