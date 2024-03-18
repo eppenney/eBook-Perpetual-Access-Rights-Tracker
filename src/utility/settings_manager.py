@@ -59,14 +59,16 @@ class Settings(metaclass=SingletonMeta):
             default_db_path = os.path.join(os.path.dirname(self.settings_file), 'ebook_database.db')
             settings = {
                 "language": "English",
+                "allow_CRKN": "True",
                 "institution": "Univ. of Prince Edward Island",
-                "results_per_page": 25,
                 "CRKN_url": "https://library.upei.ca/test-page-ebooks-perpetual-access-project",
                 "CRKN_root_url": "",
+                "CRKN_institutions": [],
+                "local_institutions": [],
                 "database_name": default_db_path,
                 "github_link": "https://github.com"
             }
-            #Set the CRKN root url from the CRKN url
+            # Set the CRKN root url from the CRKN url
             url_parts = settings["CRKN_url"].split('/')
             settings["CRKN_root_url"] = '/'.join(url_parts[:3])
         return settings
@@ -100,6 +102,13 @@ class Settings(metaclass=SingletonMeta):
         """
         self.update_setting('language', language)
 
+    def set_allow_CRKN(self, allowCRKN):
+        """
+        Allow to use CRKN.
+        :param allowCRKN: "True" or "False"
+        """
+        self.update_setting('allowCRKN', allowCRKN)
+
     def set_crkn_url(self, url):
         """
         Set the CRKN URL.
@@ -123,3 +132,35 @@ class Settings(metaclass=SingletonMeta):
         """
         self.update_setting('institution', institution)
 
+    def add_local_institution(self, institution):
+        """
+        Add institution to local list.
+        :param institution: new institution
+        """
+        self.settings["local_institutions"].append(institution)
+        self.save_settings()
+
+    def remove_local_institution(self, institution):
+        """
+        Remove institution from local list.
+        :param institution: institution to remove
+        """
+        self.settings["local_institutions"].remove(institution)
+        self.save_settings()
+
+    def add_CRKN_institutions(self, institutions):
+        """
+        Add CRKN institutions to CRKN_institutions if they are not already in it.
+        :param institutions: list of CRKN institutions from CRKN file
+        """
+        for inst in institutions:
+            if inst not in self.settings.get("CRKN_institutions"):
+                self.settings.get("CRKN_institutions").append(inst)
+        self.save_settings()
+
+    def get_institutions(self):
+        """
+        Get combined list of CRKN and local institutions
+        :return: list - containing CRKN_institutions and local_institutions
+        """
+        return self.settings.get("CRKN_institutions").extend(self.settings.get("local_institutions"))

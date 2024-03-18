@@ -1,6 +1,10 @@
+import urllib
+
+from PyQt6.QtCore import QTimer
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QLineEdit, QMessageBox, QComboBox, QSizePolicy, QWidget
-from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QLineEdit, QMessageBox, QComboBox, QSizePolicy, QWidget, \
+    QLabel
+from PyQt6.QtGui import QIcon, QPixmap
 
 from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
@@ -36,6 +40,15 @@ class startScreen(QDialog):
         loadUi(ui_file, self)
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
+        # settings up the internet connection in the icon at the end
+        self.internetConnectionLabel = self.findChild(QLabel, 'internetConnection')
+        self.updateConnectionStatus(False)
+
+        # timer clock that will work with the google time (Qtimer should be used)
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.checkInternetConnection)
+        self.timer.start(5000)
 
 
         #basic idea we are going to do is stack here where each searchbar will be pop when the negative
@@ -80,11 +93,8 @@ class startScreen(QDialog):
         # Upload Button
         self.uploadButton.clicked.connect(self.upload_button_clicked)
         self.updateButton.clicked.connect(scrapeCRKN)
-
-        #Institution
-        self.instituteText = settings_manager.get_setting("institution")
-        self.instituteButton.setText(self.instituteText)
-        self.instituteButton.clicked.connect(self.settingsDisplay)
+        self.settings_manager = Settings()
+        self.displayInstitutionName()
 
         # Resizing Stuff
         self.original_widget_values = None 
@@ -98,6 +108,31 @@ class startScreen(QDialog):
         self.textOffsetY = 10
 
         self.dupTextEdit = None
+
+#thsi is for this internet connection check and changes the color accordingly
+    def checkInternetConnection(self):
+        try:
+            # Attempt to connect to a known host
+            urllib.request.urlopen('http://google.com', timeout=1)
+            self.updateConnectionStatus(True)
+        except urllib.request.URLError as err:
+            self.updateConnectionStatus(False)
+
+    def updateConnectionStatus(self, isConnected):
+        if isConnected:
+            self.internetConnectionLabel.setPixmap(QPixmap('resources/green_signal.png'))
+        else:
+            self.internetConnectionLabel.setPixmap(QPixmap('resources/red_signal.png'))
+
+
+    def displayInstitutionName(self):
+        institution_name = self.settings_manager.get_setting('institution')
+        if institution_name:
+            self.universityName.setText(institution_name)
+        else:
+            self.universityName.setText("No Institution Selected")
+
+
 
 #this method responsible for making the new text edit each time the plus sign is clicked. (Please talk to me if you want to understand the code)
 #basically we are only having limit of 5 searches at the same time
@@ -239,7 +274,7 @@ class startScreen(QDialog):
         searchText = self.textEdit.text().strip()
         searchType = searchType = self.booleanSearchType.currentText()
         value = f'%{searchText}%'
-        query = f"SELECT [{institution}], Title, Publisher, Platform_YOP, Platform_eISBN, OCN FROM table_name WHERE {searchType} LIKE '{value}'"
+        query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM table_name WHERE {searchType} LIKE '{value}'"
         connection = connect_to_database()
 
         # Creates the advanced boolean search query by adding the extra search terms/conditions on to the base query
