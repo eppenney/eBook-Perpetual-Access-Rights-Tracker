@@ -134,7 +134,7 @@ def download_files(files, connection):
     # Putting this here, assuming all CRKN files will have the exact same institution list, so just check the last added
     # Also, will always work, but probably poor practices with file_df
     headers = file_df.columns.to_list()
-    insts = headers[8:]
+    insts = headers[8:-2]
     settings_manager.add_CRKN_institutions(insts)
 
     try:
