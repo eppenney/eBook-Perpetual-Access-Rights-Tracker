@@ -291,17 +291,7 @@ class startScreen(QDialog):
                 query = add_OR_query(searchType, query, new_value)
             count = count+1
 
-        #using the if statement that will initiate the search through the database
-        if searchType == "Title" or True:
-            print(query)
-            results = advanced_search(connection, query)
-        elif searchType == "eISBN":
-            results = search_by_ISBN(connection, searchText)  # likely going to be baked into advanced_search, same for OCN
-        elif searchType == "OCN":
-            results = search_by_OCN(connection,searchText)
-        else:
-            print("Unknown search type") #should not be needing as it is going to be dynamic
-            results = []
+        results = advanced_search(connection, query)
 
         close_database(connection)
         self.searchToDisplay(results)

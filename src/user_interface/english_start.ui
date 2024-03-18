@@ -185,14 +185,22 @@ color: rgb(255, 255, 255);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-radius: 20px;
-        color: rgb(255, 255, 255);
-        font: 75 16pt &quot;MS Shell Dlg 2&quot;;
-	background-color: rgb(0, 85, 127);
-        text-align: center; 
-        padding-top: 0px; 
-        padding-bottom: 1px; 
-    </string>
+     <string notr="true">
+            QPushButton {
+                font: 75 16pt "Arial";
+                background-color: rgb(0, 85, 127);
+                border-radius: 20px;
+                color: rgb(255, 255, 255);
+            }
+
+            QPushButton:hover {
+                background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(0, 65, 107); /* Even darker color when clicked */
+            }
+        </string>
     </property>
     <property name="text">
      <string>+</string>
@@ -208,14 +216,22 @@ color: rgb(255, 255, 255);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-radius: 20px;
-        color: rgb(255, 255, 255);
-        font: 75 16pt &quot;MS Shell Dlg 2&quot;;
-	background-color: rgb(0, 85, 127);
-        text-align: center; 
-        padding-top: 0px; 
-        padding-bottom: 1px; 
-    </string>
+     <string notr="true">
+            QPushButton {
+                font: 75 16pt "Arial";
+                background-color: rgb(0, 85, 127);
+                border-radius: 20px;
+                color: rgb(255, 255, 255);
+            }
+
+            QPushButton:hover {
+                background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(0, 65, 107); /* Even darker color when clicked */
+            }
+        </string>
     </property>
     <property name="text">
      <string>-</string>
@@ -232,46 +248,39 @@ color: rgb(255, 255, 255);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">
-        QComboBox {
-        color: rgb(255, 255, 255);
-        font: 75 16pt &quot;MS Shell Dlg 2&quot;;
-	background-color: rgb(0, 85, 127);
-        border-radius: 10px;
-    }
+            QComboBox {
+                color: rgb(255, 255, 255);
+                font: 75 16pt "MS Shell Dlg 2";
+                background-color: rgb(0, 85, 127);
+                border-radius: 10px;
+            }
 
-    QComboBox:!editable, QComboBox::drop-down:editable {
-        color: rgb(255, 255, 255);
-        font: 75 12pt &quot;MS Shell Dlg 2&quot;;
-	background-color: rgb(0, 85, 127);
-        border-radius: 10px;
-    }
+            QComboBox:hover {
+                background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+            }
 
-    QComboBox:!editable:on, QComboBox::drop-down:editable:on {
-        color: rgb(255, 255, 255);
-        font: 75 12pt &quot;MS Shell Dlg 2&quot;;
-	background-color: rgb(0, 85, 127);
-        border-bottom-right-radius: 0px;
-        border-bottom-left-radius: 0px;
-    }
+            QComboBox:pressed {
+                background-color: rgb(0, 65, 107); /* Even darker color when clicked */
+            }
 
-    QComboBox::drop-down {
-        border-left-color: darkgray;
-    }
+            QComboBox::drop-down {
+                border-left-color: darkgray;
+            }
 
-    QComboBox::down-arrow {
-        image: url(resources/dropdown_icon.png);
-        width: 21px;
-        height: 15px;
-        padding-right: 15px; 
-    }
+            QComboBox::down-arrow {
+                image: url(resources/dropdown_icon.png);
+                width: 21px;
+                height: 15px;
+                padding-right: 15px;
+            }
 
-    QComboBox QAbstractItemView {
-        color: rgb(255, 255, 255);
-	background-color: rgb(0, 85, 127);
-        border-bottom-right-radius: 20px;
-        border-bottom-left-radius: 20px;
-    }
-    </string>
+            QComboBox QAbstractItemView {
+                color: rgb(255, 255, 255);
+                background-color: rgb(0, 85, 127);
+                border-bottom-right-radius: 20px;
+                border-bottom-left-radius: 20px;
+            }
+        </string>
     </property>
     <item>
      <property name="text">
@@ -295,47 +304,39 @@ color: rgb(255, 255, 255);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">
-        QComboBox {
-        color: rgb(255, 255, 255);
-        font: 75 12pt &quot;MS Shell Dlg 2&quot;;
-        border-radius: 10px;
-	background-color: rgb(0, 85, 127);
-    }
+            QComboBox {
+                color: rgb(255, 255, 255);
+                font: 75 12pt "MS Shell Dlg 2";
+                border-radius: 10px;
+                background-color: rgb(0, 85, 127);
+            }
 
-    QComboBox:!editable, QComboBox::drop-down:editable {
-        color: rgb(255, 255, 255);
-        font: 75 12pt &quot;MS Shell Dlg 2&quot;;
-       
-	background-color: rgb(0, 85, 127);
-        border-radius: 10px;
-    }
+            QComboBox:hover {
+                background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+            }
 
-    QComboBox:!editable:on, QComboBox::drop-down:editable:on {
-        color: rgb(255, 255, 255);
-        font: 75 12pt &quot;MS Shell Dlg 2&quot;;
-	background-color: rgb(0, 85, 127);
-        border-bottom-right-radius: 0px;
-        border-bottom-left-radius: 0px;
-    }
+            QComboBox:pressed {
+                background-color: rgb(0, 65, 107); /* Even darker color when clicked */
+            }
 
-    QComboBox::drop-down {
-        border-left-color: darkgray;
-    }
+            QComboBox::drop-down {
+                border-left-color: darkgray;
+            }
 
-    QComboBox::down-arrow {
-        image: url(resources/dropdown_icon.png);
-        width: 21px;
-        height: 15px;
-        padding-right: 15px; 
-    }
+            QComboBox::down-arrow {
+                image: url(resources/dropdown_icon.png);
+                width: 21px;
+                height: 15px;
+                padding-right: 15px;
+            }
 
-    QComboBox QAbstractItemView {
-        color: rgb(255, 255, 255);
-	background-color: rgb(0, 85, 127);
-        border-bottom-right-radius: 20px;
-        border-bottom-left-radius: 20px;
-    }
-    </string>
+            QComboBox QAbstractItemView {
+                color: rgb(255, 255, 255);
+                background-color: rgb(0, 85, 127);
+                border-bottom-right-radius: 20px;
+                border-bottom-left-radius: 20px;
+            }
+        </string>
     </property>
     <item>
      <property name="text">
