@@ -10,9 +10,7 @@ from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
 from src.data_processing.database import connect_to_database, search_by_title, search_by_ISBN, search_by_OCN, \
     close_database, add_AND_query, add_OR_query, advanced_search
-from src.utility.upload import upload_and_process_file
 from src.utility.settings_manager import Settings
-from src.data_processing.Scraping import scrapeCRKN
 import os
 #from searchDisplay import display_results_in_table
 
@@ -35,8 +33,8 @@ class startScreen(QDialog):
     
     def __init__(self, widget):
         super(startScreen, self).__init__()
-
-        ui_file = os.path.join(os.path.dirname(__file__), "start.ui")  # Assuming the UI file is in the same directory as the script
+        self.language_value = settings_manager.get_setting("language").lower()
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_start.ui")  # Assuming the UI file is in the same directory as the script
         loadUi(ui_file, self)
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -66,9 +64,11 @@ class startScreen(QDialog):
         self.booleanBox = self.findChild(QComboBox, 'booleanBox')
         self.booleanSearchType = self.findChild(QComboBox, 'booleanBoxRight')
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
-        self.uploadButton = self.findChild(QPushButton, 'uploadButton')
         self.instituteButton = self.findChild(QPushButton, "institutionButton")
-        self.updateButton = self.findChild(QPushButton, "updateCRKN")
+
+        # Clear Button
+        self.clearButton = self.findChild(QPushButton, "clearButton")
+        self.clearButton.clicked.connect(self.clearSearch)
 
         self.duplicateCount = 0 #This will be tracking the number of duplicates
         self.booleanBox.hide()
@@ -87,9 +87,6 @@ class startScreen(QDialog):
         self.settingMenuButton.setIconSize(icon_size)
         self.settingMenuButton.clicked.connect(self.settingsDisplay)
 
-        # Upload Button
-        self.uploadButton.clicked.connect(self.upload_button_clicked)
-        self.updateButton.clicked.connect(scrapeCRKN)
         self.settings_manager = Settings()
         self.displayInstitutionName()
 
@@ -127,9 +124,7 @@ class startScreen(QDialog):
         if institution_name:
             self.universityName.setText(institution_name)
         else:
-            self.universityName.setText("No Institution Selected")
-
-
+            self.universityName.setText("No Institution Selected" if self.language_value == "English" else "Aucune institution sélectionnée")
 
 #this method responsible for making the new text edit each time the plus sign is clicked. (Please talk to me if you want to understand the code)
 #basically we are only having limit of 5 searches at the same time
@@ -159,7 +154,7 @@ class startScreen(QDialog):
         self.removeButton.setGeometry(self.removeButton.x(), newY, self.removeButton.width(), self.removeButton.height())
 
       else:
-          QMessageBox.warning(self, "Limit reached", "You can only search {} at a time".format(MAX_DUPLICATES))
+          QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "", f"You can only search {MAX_DUPLICATES} at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher que {MAX_DUPLICATES} à la fois.")
 
     def adjustDuplicateTextEditSize(self):
         for i in range(len(self.duplicateTextEdits)):
@@ -251,7 +246,12 @@ class startScreen(QDialog):
             self.removeButton.setGeometry(self.removeButton.x(), newY, self.removeButton.width(), self.removeButton.height())
 
         else:
-            QMessageBox.information(self, "No More Duplicates", "There are no more duplicated text fields to remove.")
+            QMessageBox.information(self, "No More Duplicates" if self.language_value == "English" else "Plus de doublons", "There are no more duplicated text fields to remove." if self.language_value == "English" else "Il n'y a plus de champs de texte en double à supprimer.")
+
+    def clearSearch(self):
+        for i in range(len(self.duplicateTextEdits)):
+            self.removeTextEdit()
+        self.textEdit.clear()
 
     def settingsDisplay(self):
         settings = settingsPage.get_instance(self.widget)
@@ -269,7 +269,8 @@ class startScreen(QDialog):
     def search_button_clicked(self):
         institution = settings_manager.get_setting('institution')
         searchText = self.textEdit.text().strip()
-        searchType = searchType = self.booleanSearchType.currentText()
+        searchTypeIndex = self.booleanSearchType.currentIndex()
+        searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
         value = f'%{searchText}%'
         query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM table_name WHERE {searchType} LIKE '{value}'"
         connection = connect_to_database()
@@ -280,32 +281,22 @@ class startScreen(QDialog):
         # for textBox in self.duplicateTextEdits:
         for i in range(len(self.duplicateTextEdits)):
             new_value = self.duplicateTextEdits[i].text().strip()
-            operator = self.duplicateCombos[i].currentText()
-            searchType = self.duplicateSearchTypes[i].currentText()
+            operatorIndex = self.duplicateCombos[i].currentIndex()
+            operator = "OR" if operatorIndex == 0 else "AND"
+            searchTypeIndex = self.duplicateSearchTypes[i].currentIndex()
+            searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
             if operator == "AND":
                 query = add_AND_query(searchType, query, new_value)
             elif operator == "OR":
                 query = add_OR_query(searchType, query, new_value)
             count = count+1
 
-        #using the if statement that will initiate the search through the database
-        if searchType == "Title" or True:
-            print(query)
-            results = advanced_search(connection, query)
-        elif searchType == "eISBN":
-            results = search_by_ISBN(connection, searchText)  # likely going to be baked into advanced_search, same for OCN
-        elif searchType == "OCN":
-            results = search_by_OCN(connection,searchText)
-        else:
-            print("Unknown search type") #should not be needing as it is going to be dynamic
-            results = []
+        results = advanced_search(connection, query)
 
         close_database(connection)
         self.searchToDisplay(results)
 
-    def upload_button_clicked(self):
-        upload_and_process_file()
-
+    
     """
     This was made my chatGPT yo, do not sue me. 
     - Ethan
