@@ -107,10 +107,22 @@ color: rgb(255, 255, 255);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 75 20pt &quot;Arial&quot;;
-	background-color: rgb(0, 85, 127);
-border-radius: 10px;
-color:rgb(255, 255, 255);</string>
+     <string notr="true">
+            QPushButton {
+                font: 75 20pt "Arial";
+                background-color: rgb(0, 85, 127);
+                border-radius: 10px;
+                color: rgb(255, 255, 255);
+            }
+
+            QPushButton:hover {
+                background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(0, 65, 107); /* Even darker color when clicked */
+            }
+        </string>
     </property>
     <property name="text">
      <string>Search </string>
@@ -126,10 +138,22 @@ color:rgb(255, 255, 255);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 75 16pt &quot;Arial&quot;;
-background-color: rgb(100, 167, 225);
-border-radius: 5px;
-color:rgb(255, 255, 255);</string>
+     <string notr="true">
+            QPushButton {
+                font: 75 16pt "Arial";
+                background-color: rgb(0, 85, 127);
+                border-radius: 10px;
+                color: rgb(255, 255, 255);
+            }
+
+            QPushButton:hover {
+                background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(0, 65, 107); /* Even darker color when clicked */
+            }
+        </string>
     </property>
     <property name="text">
      <string>Clear</string>

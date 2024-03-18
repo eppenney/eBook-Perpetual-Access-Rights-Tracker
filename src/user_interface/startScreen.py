@@ -66,6 +66,10 @@ class startScreen(QDialog):
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
         self.instituteButton = self.findChild(QPushButton, "institutionButton")
 
+        # Clear Button
+        self.clearButton = self.findChild(QPushButton, "clearButton")
+        self.clearButton.clicked.connect(self.clearSearch)
+
         self.duplicateCount = 0 #This will be tracking the number of duplicates
         self.booleanBox.hide()
         self.pushButton.clicked.connect(self.duplicateTextEdit)
@@ -243,6 +247,11 @@ class startScreen(QDialog):
 
         else:
             QMessageBox.information(self, "No More Duplicates" if self.language_value == "English" else "Plus de doublons", "There are no more duplicated text fields to remove." if self.language_value == "English" else "Il n'y a plus de champs de texte en double à supprimer.")
+
+    def clearSearch(self):
+        for i in range(len(self.duplicateTextEdits)):
+            self.removeTextEdit()
+        self.textEdit.clear()
 
     def settingsDisplay(self):
         settings = settingsPage.get_instance(self.widget)

@@ -178,9 +178,7 @@ def add_AND_query(searchType, query, term):
     if searchType == "Title":
         term = f'%{term}%'
         return f"{query} AND {searchType} LIKE '{term}'"
-    elif searchType == "eISBN":
-        return query + f" AND Platform_{searchType}={term}"
-    elif searchType == "OCN":
+    else:
         return query + f" AND {searchType}={term}"
 
 
@@ -188,9 +186,7 @@ def add_OR_query(searchType, query, term):
     if searchType == "Title":
         term = f'%{term}%'
         return query + f" OR {searchType} LIKE '{term}'"
-    elif searchType == "Platform_eISBN":
-        return query + f" OR Platform_{searchType}={term}"
-    elif searchType == "OCN":
+    else:
         return query + f" OR {searchType}={term}"
 
 def advanced_search(connection, query):
