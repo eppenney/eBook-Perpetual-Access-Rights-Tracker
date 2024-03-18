@@ -168,13 +168,11 @@ class ScrapingThread(QThread):
                 update_tables([file_first, file_date], "CRKN", connection, command)
             else:
                 self.error_signal.emit("The file was not in the correct format, so it was not uploaded.")
-            
-            
 
         # Putting this here, assuming all CRKN files will have the exact same institution list, so just check the last added
         # Also, will always work, but probably poor practices with file_df
         headers = file_df.columns.to_list()
-        insts = headers[8:]
+        insts = headers[8:-2]
         settings_manager.add_CRKN_institutions(insts)
 
         try:
@@ -500,7 +498,7 @@ def check_file_format(file_df, method):
     if df_series["Title"] != rows:
         print("Missing title data")
         return False
-    for uni_column in df_series[8:]:
+    for uni_column in df_series[8:-2]:
         if uni_column != rows:
             print("Missing Y/N data")
             return False
