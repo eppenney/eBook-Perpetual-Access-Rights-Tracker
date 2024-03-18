@@ -8,10 +8,8 @@ from PyQt6.QtGui import QIcon, QPixmap
 
 from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
-from src.user_interface.scraping_ui import scrapeCRKN
 from src.data_processing.database import connect_to_database, search_by_title, search_by_ISBN, search_by_OCN, \
     close_database, add_AND_query, add_OR_query, advanced_search
-from src.utility.upload import upload_and_process_file
 from src.utility.settings_manager import Settings
 import os
 #from searchDisplay import display_results_in_table
@@ -66,9 +64,7 @@ class startScreen(QDialog):
         self.booleanBox = self.findChild(QComboBox, 'booleanBox')
         self.booleanSearchType = self.findChild(QComboBox, 'booleanBoxRight')
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
-        self.uploadButton = self.findChild(QPushButton, 'uploadButton')
         self.instituteButton = self.findChild(QPushButton, "institutionButton")
-        self.updateButton = self.findChild(QPushButton, "updateCRKN")
 
         self.duplicateCount = 0 #This will be tracking the number of duplicates
         self.booleanBox.hide()
@@ -87,9 +83,6 @@ class startScreen(QDialog):
         self.settingMenuButton.setIconSize(icon_size)
         self.settingMenuButton.clicked.connect(self.settingsDisplay)
 
-        # Upload Button
-        self.uploadButton.clicked.connect(self.upload_button_clicked)
-        self.updateButton.clicked.connect(scrapeCRKN)
         self.settings_manager = Settings()
         self.displayInstitutionName()
 
@@ -304,9 +297,7 @@ class startScreen(QDialog):
         close_database(connection)
         self.searchToDisplay(results)
 
-    def upload_button_clicked(self):
-        upload_and_process_file()
-
+    
     """
     This was made my chatGPT yo, do not sue me. 
     - Ethan
