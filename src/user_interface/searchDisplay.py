@@ -21,6 +21,18 @@ class searchDisplay(QDialog):
         self.original_widget_values = None
         self.column_labels = ["Access", "File_Name", "Platform", "Title", "Publisher", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code", "collection_name", "title_metadata_last_modified"]
 
+        self.tableWidget.itemSelectionChanged.connect(self.updateCellNameDisplay)
+
+        # using this method to show the results of the clicked cell on the top of the page whenever clicked on cell.
+
+    def updateCellNameDisplay(self):
+        selected_items = self.tableWidget.selectedItems()
+        if selected_items:
+            text = selected_items[0].text()
+            self.cellName.setText(text)
+        else:
+            self.cellName.setText("No cell selected")
+
 
     def backToStartScreen(self):
         from src.user_interface.startScreen import startScreen
