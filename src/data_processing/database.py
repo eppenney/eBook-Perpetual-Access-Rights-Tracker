@@ -188,7 +188,7 @@ def add_OR_query(searchType, query, term):
     if searchType == "Title":
         term = f'%{term}%'
         return query + f" OR {searchType} LIKE '{term}'"
-    elif searchType == "eISBN":
+    elif searchType == "Platform_eISBN":
         return query + f" OR Platform_{searchType}={term}"
     elif searchType == "OCN":
         return query + f" OR {searchType}={term}"
