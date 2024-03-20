@@ -527,11 +527,14 @@ def check_file_format(file_df, method):
         print("The header row is incorrect")
         return False
 
-    # Title and Y/N Column complete
+    # Title, ISBN and Y/N Column complete
     df_series = file_df.count()
     rows = file_df.shape[0]
     if df_series["Title"] != rows:
         print("Missing title data")
+        return False
+    if df_series["Platform_eISBN"] != rows:
+        print("Missing ISBN data")
         return False
     for uni_column in df_series[8:-2]:
         if uni_column != rows:
