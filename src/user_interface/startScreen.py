@@ -124,7 +124,7 @@ class startScreen(QDialog):
         if institution_name:
             self.universityName.setText(institution_name)
         else:
-            self.universityName.setText("No Institution Selected" if self.language_value == "English" else "Aucune institution sélectionnée")
+            self.universityName.setText("No Institution Selected" if self.language_value == "english" else "Aucune institution sélectionnée")
 
 #this method responsible for making the new text edit each time the plus sign is clicked. (Please talk to me if you want to understand the code)
 #basically we are only having limit of 5 searches at the same time
@@ -154,7 +154,7 @@ class startScreen(QDialog):
         self.removeButton.setGeometry(self.removeButton.x(), newY, self.removeButton.width(), self.removeButton.height())
 
       else:
-          QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "", f"You can only search {MAX_DUPLICATES} at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher que {MAX_DUPLICATES} à la fois.")
+          QMessageBox.warning(self, "Limit reached" if self.language_value == "english" else "", f"You can only search {MAX_DUPLICATES} at a time" if self.language_value == "english" else f"Vous ne pouvez rechercher que {MAX_DUPLICATES} à la fois.")
 
     def adjustDuplicateTextEditSize(self):
         for i in range(len(self.duplicateTextEdits)):
@@ -246,7 +246,7 @@ class startScreen(QDialog):
             self.removeButton.setGeometry(self.removeButton.x(), newY, self.removeButton.width(), self.removeButton.height())
 
         else:
-            QMessageBox.information(self, "No More Duplicates" if self.language_value == "English" else "Plus de doublons", "There are no more duplicated text fields to remove." if self.language_value == "English" else "Il n'y a plus de champs de texte en double à supprimer.")
+            QMessageBox.information(self, "No More Duplicates" if self.language_value == "english" else "Plus de doublons", "There are no more duplicated text fields to remove." if self.language_value == "english" else "Il n'y a plus de champs de texte en double à supprimer.")
 
     def clearSearch(self):
         for i in range(len(self.duplicateTextEdits)):
