@@ -12,7 +12,7 @@ from src.data_processing.database import connect_to_database, search_by_title, s
     close_database, add_AND_query, add_OR_query, advanced_search
 from src.utility.settings_manager import Settings
 import os
-#from searchDisplay import display_results_in_table
+# From searchDisplay import display_results_in_table
 
 """
 When creating instances of startScreen, use startScreen.get_instance(widget)
@@ -48,8 +48,7 @@ class startScreen(QDialog):
         self.timer.timeout.connect(self.checkInternetConnection)
         self.timer.start(5000)
 
-
-        #basic idea we are going to do is stack here where each searchbar will be pop when the negative
+        # Basic idea we are going to do is stack here where each searchbar will be pop when the negative
         self.duplicateTextEdits = []
         self.duplicateCombos = []
         self.duplicateSearchTypes = []
@@ -58,7 +57,7 @@ class startScreen(QDialog):
         self.removeButton.clicked.connect(self.removeTextEdit)
 
 
-        #finding widgets
+        # Finding widgets
         self.pushButton = self.findChild(QPushButton, 'pushButton')
         self.textEdit = self.findChild(QLineEdit, 'textEdit')
         self.booleanBox = self.findChild(QComboBox, 'booleanBox')
@@ -70,7 +69,7 @@ class startScreen(QDialog):
         self.clearButton = self.findChild(QPushButton, "clearButton")
         self.clearButton.clicked.connect(self.clearSearch)
 
-        self.duplicateCount = 0 #This will be tracking the number of duplicates
+        self.duplicateCount = 0
         self.booleanBox.hide()
         self.pushButton.clicked.connect(self.duplicateTextEdit)
 
@@ -103,7 +102,7 @@ class startScreen(QDialog):
 
         self.dupTextEdit = None
 
-#thsi is for this internet connection check and changes the color accordingly
+    # This is for this internet connection check and changes the color accordingly
     def checkInternetConnection(self):
         try:
             # Attempt to connect to a known host
@@ -118,7 +117,6 @@ class startScreen(QDialog):
         else:
             self.internetConnectionLabel.setPixmap(QPixmap('resources/red_signal.png'))
 
-
     def displayInstitutionName(self):
         institution_name = self.settings_manager.get_setting('institution')
         if institution_name:
@@ -126,8 +124,8 @@ class startScreen(QDialog):
         else:
             self.universityName.setText("No Institution Selected" if self.language_value == "english" else "Aucune institution sélectionnée")
 
-#this method responsible for making the new text edit each time the plus sign is clicked. (Please talk to me if you want to understand the code)
-#basically we are only having limit of 5 searches at the same time
+    # This method responsible for making the new text edit each time the plus sign is clicked.
+    # Basically we are only having limit of 5 searches at the same time
     def duplicateTextEdit(self):
       if (self.dupTextEdit == None):
           self.dupTextEdit = self.newTextEdit()
@@ -191,7 +189,7 @@ class startScreen(QDialog):
     def newBooleanBoxAndOr(self):
         newY = self.booleanBox.y() + (self.booleanBox.height() + self.textOffsetY) * self.duplicateCount
 
-        #Duplicating the QComboBox when the text editor is duplicated.
+        # Duplicating the QComboBox when the text editor is duplicated.
         new_boolean_box = QComboBox(self)
         new_boolean_box.setGeometry(self.booleanBox.x(),newY,self.booleanBox.width(),self.booleanBox.height())
 
@@ -211,7 +209,7 @@ class startScreen(QDialog):
     def newBooleanSearchType(self):
         newY = self.booleanSearchType.y() + (self.booleanSearchType.height() + self.textOffsetY) * self.duplicateCount
 
-        #Duplicating the QComboBox when the text editor is duplicated.
+        # Duplicating the QComboBox when the text editor is duplicated.
         new_boolean_box = QComboBox(self)
         new_boolean_box.setGeometry(self.booleanSearchType.x() - self.textOffsetX,newY,self.booleanSearchType.width(),self.booleanSearchType.height())
 
@@ -228,7 +226,7 @@ class startScreen(QDialog):
 
         return new_boolean_box
 
-#this method helps in removing the extra search boxes.
+    # This method helps in removing the extra search boxes.
     def removeTextEdit(self):
         if self.duplicateTextEdits:  # Check if there are any duplicates to remove
             last_text_edit = self.duplicateTextEdits.pop()  # Remove the last QLineEdit from the list
@@ -264,10 +262,16 @@ class startScreen(QDialog):
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
         search.display_results_in_table(results)
 
-
-    #this method is responisible sending the text in the back end for the searching the value
+    # This method is responsible sending the text in the back end for the searching the value
     def search_button_clicked(self):
         institution = settings_manager.get_setting('institution')
+
+        # Do not search if no institution selected to search.
+        if institution == "":
+            print("No institution selected.")
+            return
+
+
         searchText = self.textEdit.text().strip()
         searchTypeIndex = self.booleanSearchType.currentIndex()
         searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
@@ -292,6 +296,12 @@ class startScreen(QDialog):
             count = count+1
 
         results = advanced_search(connection, query)
+
+        # Do not go to results page if there are no results.
+        if len(results) == 0:
+            print("There are no results for the search.")
+            close_database(connection)
+            return
 
         close_database(connection)
         self.searchToDisplay(results)
@@ -341,8 +351,6 @@ class startScreen(QDialog):
                     widget.setFont(font)
                 # Set the new geometry and size
                 widget.setGeometry(x, y, width, height)
-            
-
                 
             except RuntimeError:
                 continue
