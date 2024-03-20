@@ -47,12 +47,14 @@ def process_file(file_path):
 
     connection = database.connect_to_database()
 
+    # Get file_name and date for table information
     file_name = file_path.split("/")[-1].split(".")
     date = datetime.datetime.now()
     date = date.strftime("%Y_%m_%d")
 
     result = Scraping.compare_file([file_name[0], date], "local", connection)
 
+    # If result is update, check if they want to update it
     if result == "UPDATE":
         reply = QMessageBox.question(None, "Replace File", "A file with the same name is already in the local database. Would you like to replace it with the new file?",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
@@ -61,6 +63,7 @@ def process_file(file_path):
             progress_dialog.cancel()
             return
 
+    # Convert file into dataframe
     if file_name[-1] == "csv":
         file_df = Scraping.file_to_dataframe_csv(".".join(file_name), file_path)
     elif file_name[-1] == "xlsx":
@@ -73,6 +76,7 @@ def process_file(file_path):
         progress_dialog.cancel()
         return
 
+    # Check if in correct format, if it is, upload and update tables
     valid_file = Scraping.check_file_format(file_df, "local")
     if valid_file:
         Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
@@ -92,11 +96,6 @@ def remove_local_file(file_name):
     :param file_name: the name of the file to remove
     """
     connection = database.connect_to_database()
-    cursor = connection.cursor()
-
-    # Delete record from local_file_names and delete the table as well
-    cursor.execute(f"DELETE from local_file_names WHERE file_name LIKE {file_name}")
-    cursor.execute(f"DROP TABLE local_{file_name}")
-
+    Scraping.update_tables([file_name], "local", connection, "DELETE")
     database.close_database(connection)
 

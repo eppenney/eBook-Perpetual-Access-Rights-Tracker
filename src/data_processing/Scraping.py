@@ -1,11 +1,6 @@
 """
-Isaac Wolters
-January 26, 2024,
-
 This file includes functions for scraping from the CRKN website and uploading the new data to the database
 Some functions can also be re-used for the local file uploads (compare_file)
-
-Works well I think - should test the update functionality
 
 I tested new files and the same files, but not when the file has a newer date (to update)
 """
@@ -94,6 +89,7 @@ class ScrapingThread(QThread):
             file_first, file_date = split_CRKN_file_name(file_link)
             result = compare_file([file_first, file_date], "CRKN", connection)
 
+            # If result (update or insert into), add to update list
             if result:
                 files_to_update.append([link, result])
 
@@ -101,7 +97,6 @@ class ScrapingThread(QThread):
                 files_to_remove.remove(file_first)
             except ValueError:
                 pass
-            
 
         # Ask user if they want to perform scraping (slightly time-consuming)
         file_changes = len(files_to_update) + len(files_to_remove)
@@ -148,13 +143,15 @@ class ScrapingThread(QThread):
             # Get which type of file it is (xlsx, csv, or tsv)
             file_type = file_link.split(".")[-1]
 
+            # Platform, date/version number
             file_first, file_date = split_CRKN_file_name(file_link)
 
-            # Write file to temporary local file, then convert that file into a dataframe to upload to database
+            # Write file to temporary local file
             with open(f"{os.path.abspath(os.path.dirname(__file__))}/temp.{file_type}", 'wb') as file:
                 response = requests.get(settings_manager.get_setting("CRKN_root_url") + file_link)
                 file.write(response.content)
 
+            # Convert file into dataframe
             if file_type == "xlsx":
                 file_df = file_to_dataframe_excel(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
             elif file_type == "tsv":
@@ -162,6 +159,7 @@ class ScrapingThread(QThread):
             else:
                 file_df = file_to_dataframe_csv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
 
+            # Check if in correct format, if it is, upload and update tables
             valid_format = check_file_format(file_df, "CRKN")
             if valid_format:
                 upload_to_database(file_df, file_first, connection)
@@ -169,12 +167,12 @@ class ScrapingThread(QThread):
             else:
                 self.error_signal.emit("The file was not in the correct format, so it was not uploaded.")
 
-        # Putting this here, assuming all CRKN files will have the exact same institution list, so just check the last added
-        # Also, will always work, but probably poor practices with file_df
+        # Scrape CRKN institution list from last CRKN file
         headers = file_df.columns.to_list()
         insts = headers[8:-2]
         settings_manager.add_CRKN_institutions(insts)
 
+        # Remove temp.xlsx used for uploading files
         try:
             os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
         except FileNotFoundError:
@@ -241,6 +239,7 @@ def scrapeCRKN():
         file_first, file_date = split_CRKN_file_name(file_link)
         result = compare_file([file_first, file_date], "CRKN", connection)
 
+        # If result (update or insert into), add to update list
         if result:
             files_to_update.append([link, result])
 
@@ -266,7 +265,7 @@ def scrapeCRKN():
     database.close_database(connection)
 
 
-def download_files( files, connection):
+def download_files(files, connection):
     """
     For all files that need downloading from CRKN, do so and store in local database.
     :param files: list of files to download from CRKN
@@ -279,13 +278,15 @@ def download_files( files, connection):
         # Get which type of file it is (xlsx, csv, or tsv)
         file_type = file_link.split(".")[-1]
 
+        # Platform, date/version number
         file_first, file_date = split_CRKN_file_name(file_link)
 
-        # Write file to temporary local file, then convert that file into a dataframe to upload to database
+        # Write file to temporary local file
         with open(f"{os.path.abspath(os.path.dirname(__file__))}/temp.{file_type}", 'wb') as file:
             response = requests.get(settings_manager.get_setting("CRKN_root_url") + file_link)
             file.write(response.content)
 
+        # Convert file into dataframe
         if file_type == "xlsx":
             file_df = file_to_dataframe_excel(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
         elif file_type == "tsv":
@@ -293,6 +294,7 @@ def download_files( files, connection):
         else:
             file_df = file_to_dataframe_csv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
 
+        # Check if in correct format, if it is, upload and update tables
         valid_format = check_file_format(file_df, "CRKN")
         if valid_format:
             upload_to_database(file_df, file_first, connection)
@@ -300,12 +302,12 @@ def download_files( files, connection):
         else:
             print("The file was not in the correct format, so it was not uploaded.")
 
-    # Putting this here, assuming all CRKN files will have the exact same institution list, so just check the last added
-    # Also, will always work, but probably poor practices with file_df
+    # Scrape CRKN institution list from last CRKN file
     headers = file_df.columns.to_list()
     insts = headers[8:-2]
     settings_manager.add_CRKN_institutions(insts)
 
+    # Remove temp.xlsx used for uploading files
     try:
         os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
     except FileNotFoundError:
@@ -332,14 +334,22 @@ def compare_file(file, method, connection):
         raise Exception("Incorrect method type (CRKN or local) to indicate type/location of file")
 
     cursor = connection.cursor()
+
+    # Get list of files (only one) that matches the file name
     files = cursor.execute(f"SELECT * FROM {method}_file_names WHERE file_name = '{file[0]}'").fetchall()
+
+    # If list is empty, file doesn't exist, insert the file
     if not files:
         return "INSERT INTO"
+
+    # File is in database - check if it needs to be updated - if file_date is new, or local
     else:
         files_dates = cursor.execute(
             f"SELECT * FROM {method}_file_names WHERE file_name = '{file[0]}' and file_date = '{file[1]}'").fetchall()
         if not files_dates or method == "local":
             return "UPDATE"
+
+        # No update needed
         print(f"File already there - {file[0]}, {file[1]}")
         return False
 
@@ -348,6 +358,8 @@ def update_tables(file, method, connection, command):
     """
     Update {method}_file_names table with file information in local database.
     :param file: file name information - [publisher, date/version number]
+                 if DELETE command, can just pass publisher, but as a list ([publisher])
+                 publisher, or name of table if it is different (local files)
     :param method: CRKN or local
     :param connection: database connection object
     :param command: INSERT INTO, UPDATE, or DELETE
@@ -367,11 +379,13 @@ def update_tables(file, method, connection, command):
         cursor.execute(f"UPDATE {method}_file_names SET file_date = '{file[1]}' WHERE file_name = '{file[0]}';")
         print(f"file name updated - {file[0]}, {file[1]}")
 
-    # Only applies to CRKN files
+    # Delete file from {method}_file_names table and drop the table as well.
     elif command == "DELETE":
-        # Delete record from CRKN_file_names and delete the table as well
-        cursor.execute(f"DELETE from CRKN_file_names WHERE file_name LIKE {file[0]}")
-        cursor.execute(f"DROP TABLE {file[0]}")
+        cursor.execute(f"DELETE from {method}_file_names WHERE file_name LIKE {file[0]}")
+        if method == "CRKN":
+            cursor.execute(f"DROP TABLE {file[0]}")
+        else:
+            cursor.execute(f"DROP TABLE local_{file[0]}")
 
 
 def split_CRKN_file_name(file_name):
@@ -384,7 +398,7 @@ def split_CRKN_file_name(file_name):
     a = file.split("_")
     c = "_".join(a[3:]).split(".")[0]
 
-    # a[2] = Publisher name, c = data/update version
+    # a[2] = Platform name, c = data/update version
     return [a[2], c]
 
 
@@ -392,17 +406,24 @@ def file_to_dataframe_excel(file_name, file):
     """
     Convert Excel file to pandas dataframe.
     File can be either a file or a URL link to a file.
+    :param file_name: the file name being uploaded
     :param file: local file to convert to dataframe
     :return: dataframe
     """
     try:
         df = pd.read_excel(file, sheet_name="PA-Rights")
+
+        # Check top left cell for platform, return if missing (catch in check_file_format)
         platform = df.columns[0]
         if platform == "Unnamed: 0":
             print("No Platform listed.")
             return
+
+        # Remove top two rows, set header
         df = df.set_axis(df.values[1], axis="columns")
         df = df.drop([0, 1])
+
+        # Add platform and file_name to dataframe
         df["Platform"] = platform
         df["File_Name"] = file_name
         df = df.reset_index(drop=True)
@@ -415,17 +436,24 @@ def file_to_dataframe_csv(file_name, file):
     """
     Convert csv file to pandas dataframe.
     File can be either a file or a URL link to a file.
+    :param file_name: the file name being uploaded
     :param file: local file to convert to dataframe
     :return: dataframe
     """
     try:
         df = pd.read_csv(file)
+
+        # Check top left cell for platform, return if missing (catch in check_file_format)
         platform = df.columns[0]
         if platform == "Unnamed: 0":
             print("No Platform listed.")
             return
+
+        # Remove top two rows, set header
         df = df.set_axis(df.values[1], axis="columns")
         df = df.drop([0, 1])
+
+        # Add platform and file_name to dataframe
         df["Platform"] = platform
         df["File_Name"] = file_name
         df = df.reset_index(drop=True)
@@ -438,17 +466,24 @@ def file_to_dataframe_tsv(file_name, file):
     """
         Convert tsv file to pandas dataframe.
         File can be either a file or a URL link to a file.
+        :param file_name: the file name being uploaded
         :param file: local file to convert to dataframe
         :return: dataframe
         """
     try:
         df = pd.read_table(file)
+
+        # Check top left cell for platform, return if missing (catch in check_file_format)
         platform = df.columns[0]
         if platform == "Unnamed: 0":
             print("No Platform listed.")
             return
+
+        # Remove top two rows, set header
         df = df.set_axis(df.values[1], axis="columns")
         df = df.drop([0, 1])
+
+        # Add platform and file_name to dataframe
         df["Platform"] = platform
         df["File_Name"] = file_name
         df = df.reset_index(drop=True)
@@ -476,6 +511,7 @@ def check_file_format(file_df, method):
     """
     Checks the incoming file format to see if it is correct
     :param file_df: dataframe with file info (or None if unable to turn into dataframe
+    :param method: CRKN or local
     :return: boolean True or False if valid or not
     """
 
@@ -483,7 +519,6 @@ def check_file_format(file_df, method):
     if file_df is None:
         return False
 
-    # Top left cell?
     header_row = ["Title", "Publisher", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code", "collection_name", "title_metadata_last_modified"]
     headers = file_df.columns.to_list()
 
@@ -503,6 +538,7 @@ def check_file_format(file_df, method):
             print("Missing Y/N data")
             return False
 
+    # Check the institution names in local files - add to local list if needed/wanted
     if method == "local":
         for uni in headers[8:-2]:
             if uni not in settings_manager.get_setting("CRKN_institutions"):

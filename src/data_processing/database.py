@@ -1,15 +1,4 @@
 """
-Isaac Wolters
-January 26, 2024,
-Simple code to connect to database, close connection so that you do not need to repeat/remember code every time
-
-Also, a function to create tables for file names and dates, that I am using with the scraping functionality
-
-Cian Bottomley-Mason
-January 28, 2024,
-Basic database-wide search functionality using Isaac's scraped filename system
-Preliminary implementation of an advanced search feature
-
 DATABASE STRUCTURE:
 
 Table 1: CRKN_file_names: (file_name, file_date)
@@ -76,35 +65,34 @@ def get_tables(connection):
     local_tables = connection.execute("SELECT file_name FROM local_file_names;").fetchall()
     local_tables = ["local_" + row[0] for row in local_tables]
 
-    # Combine the two lists - CRKN and local file names; will only show local file names if allow_CRKN is False
+    # Combine the two lists - CRKN and local file names; will only include CRKN files if allow_CRKN is True
     list_of_tables.extend(local_tables)
     return list_of_tables
 
 
 def create_file_name_tables(connection):
-	"""
-	Create default database tables - CRKN_file_names and local_file_names
-	Table name format: just the abbreviation
-	:param connection: database connection object
-	"""
-	# cursor object to interact with database
-	cursor = connection.cursor()
-
+    """
+    Create default database tables - CRKN_file_names and local_file_names
+    Table name format: just the abbreviation
+    :param connection: database connection object
+    """
+    # cursor object to interact with database
+    cursor = connection.cursor()
 
     list_of_tables = cursor.execute(
         """SELECT name FROM sqlite_master WHERE type='table'
         AND name='CRKN_file_names'; """).fetchall()
-        # If table doesn't exist, create new table for CRKN file info
+
+    # If table doesn't exist, create new table for CRKN file info
     if not list_of_tables:
         print("Table does not exist, creating new one")
         cursor.execute("CREATE TABLE CRKN_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
 
-	# Empty list for next check
-	list_of_tables.clear()
-	list_of_tables = cursor.execute(
-		"""SELECT name FROM sqlite_master WHERE type='table'
-		AND name='local_file_names'; """).fetchall()
-
+    # Empty list for next check
+    list_of_tables.clear()
+    list_of_tables = cursor.execute(
+        """SELECT name FROM sqlite_master WHERE type='table'
+        AND name='local_file_names'; """).fetchall()
 
     # If table does not exist, create new table for local file info
     if not list_of_tables:
@@ -112,8 +100,6 @@ def create_file_name_tables(connection):
         cursor.execute("CREATE TABLE local_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
 
 
-# Keeps duplicate items at the moment, not sure if we should also include the publisher to distinguish dupes,
-# or should we just remove them instead (keeping whichever one has the best access, if one says Y, delete the other?)
 def search_database(connection, searchType, value):
     """
     Basic search functionality.
@@ -188,6 +174,7 @@ def add_OR_query(searchType, query, term):
         return query + f" OR {searchType} LIKE '{term}'"
     else:
         return query + f" OR {searchType}={term}"
+
 
 def advanced_search(connection, query):
     """
