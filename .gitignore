@@ -2,5 +2,5 @@
 __pycache__/
 *.pyc
 src/dataprocessing/__pycache__/
-temp.xlsx
 *.db
+*.json
