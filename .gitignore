@@ -4,4 +4,4 @@ __pycache__/
 src/dataprocessing/__pycache__/
 *.db
 *.json
-*.log
+**/*.log
