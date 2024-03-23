@@ -100,17 +100,6 @@ def create_file_name_tables(connection):
         cursor.execute("CREATE TABLE local_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
 
 
-def add_query(query, term, searchType):
-    if '*' in term:
-        term = term.replace("*", "%")
-        return query + f" OR {searchType} LIKE '{term}'"
-    else:
-        if searchType == "Title":
-            return query + f" OR LOWER({searchType}) = LOWER('{term}')"
-        else:
-            return query + f" OR {searchType} = '{term}'"
-
-
 def search_database(connection, query, terms, searchTypes):
     """
     Database searching functionality.
@@ -125,27 +114,33 @@ def search_database(connection, query, terms, searchTypes):
 
     list_of_tables = get_tables(connection)
 
-    # need to handle initial search term separately since there is no OR
-    if '*' in terms[0]:
-        term = terms[0].replace("*", "%")
-        query += f"{searchTypes[0]} LIKE '{term}'"
-    else:
-        if searchTypes[0] == "Title":
-            query += f"LOWER({searchTypes[0]}) = LOWER('{terms[0]}')"
+    # Constructs the final query with all terms
+    for i in range(len(terms)):
+        if i == 0:
+            if '*' in terms[i]:
+                terms[i] = terms[i].replace("*", "%")
+                query += f"{searchTypes[i]} LIKE ?"
+            else:
+                if searchTypes[i] == "Title":
+                    query += f"LOWER({searchTypes[i]}) = LOWER(?)"
+                else:
+                    query += f"{searchTypes[i]} = ?"
         else:
-            query += f"{searchTypes[0]} = '{terms[0]}'"
-
-    # adds all the other terms to the query if there is more than a single field filled
-    if len(terms) > 1:
-        for i in range(len(terms[1:])):
-            query = add_query(query, terms[i + 1], searchTypes[i + 1])
+            if '*' in terms[i]:
+                terms[i] = terms[i].replace("*", "%")
+                query += f" OR {searchTypes[i]} LIKE ?"
+            else:
+                if searchTypes[i] == "Title":
+                    query += f" OR LOWER({searchTypes[i]}) = LOWER(?)"
+                else:
+                    query += f" OR {searchTypes[i]} = ?"
 
     # Searches for matching items through each table one by one and adds any matches to the list
     for table in list_of_tables:
         formatted_query = query.replace("table_name", table)
 
         # executes the final fully-formatted query
-        cursor.execute(formatted_query)
+        cursor.execute(formatted_query, terms)
         results.extend(cursor.fetchall())
     return results
 
