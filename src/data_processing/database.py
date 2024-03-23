@@ -100,87 +100,24 @@ def create_file_name_tables(connection):
         cursor.execute("CREATE TABLE local_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
 
 
-def search_database(connection, searchType, value):
-    """
-    Basic search functionality.
-    :param connection: database connection object
-    :param searchType: Title, OCN, ISBN
-    :param value: value to search for
-    :return: list of items matching the search parameters from all tables
-    """
-    results = []
-    cursor = connection.cursor()
-
-    # Grabs the names of all tables via the CRKN and local file name tables
-    list_of_tables = get_tables(connection)
-
-    # Searches for matching items through each table one by one and adds any matches to the list
-    for table in list_of_tables:
-        institution = settings_manager.get_setting('institution')
-        if searchType == 'Title':
-            value = f'%{value}%'
-            query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM {table} WHERE {searchType} LIKE ?"
-            cursor.execute(query, (value,))
-        else:
-            query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM {table} WHERE {searchType}=?"
-            cursor.execute(query, (value,))
-        results = results + cursor.fetchall()
-    return results
-
-
-# Individual search functions for each search type
-def search_by_title(connection, value):
-    """
-    Search database for value by title.
-    :param connection: database connection object
-    :param value: value to search by (title/text)
-    :return: results of search in list
-    """
-    return search_database(connection, "Title", value)
-
-
-def search_by_ISBN(connection, value):
-    """
-    Search database for value by ISBN.
-    :param connection: database connection object
-    :param value: value to search by (ISBN)
-    :return: results of search in list
-    """
-    return search_database(connection, "Platform_eISBN", value)
-
-
-def search_by_OCN(connection, value):
-    """
-    Search database for value by OCN.
-    :param connection: database connection object
-    :param value: value to search by (OCN number)
-    :return: results of search in list
-    """
-    return search_database(connection, "OCN", value)
-
-
-# Functions to add AND/OR statements to queries for the advanced search
-def add_AND_query(searchType, query, term):
-    if searchType == "Title":
-        term = f'%{term}%'
-        return f"{query} AND {searchType} LIKE '{term}'"
-    else:
-        return query + f" AND {searchType}={term}"
-
-
-def add_OR_query(searchType, query, term):
-    if searchType == "Title":
-        term = f'%{term}%'
+def add_query(query, term, searchType):
+    if '*' in term:
+        term = term.replace("*", "%")
         return query + f" OR {searchType} LIKE '{term}'"
     else:
-        return query + f" OR {searchType}={term}"
+        if searchType == "Title":
+            return query + f" OR LOWER({searchType}) = LOWER('{term}')"
+        else:
+            return query + f" OR {searchType} = '{term}'"
 
 
-def advanced_search(connection, query):
+def search_database(connection, query, terms, searchTypes):
     """
-    Advanced search functionality.
+    Database searching functionality.
     :param connection: database connection object
     :param query: SQL query - Query should be generated via a base query (likely the original search term) + a combination of add AND/OR functions
+    :param terms: list of terms being searched
+    :param searchTypes: list of searchTypes for each corresponding term
     :return: list of all matching results throughout all tables
     """
     results = []
@@ -188,12 +125,27 @@ def advanced_search(connection, query):
 
     list_of_tables = get_tables(connection)
 
+    # need to handle initial search term separately since there is no OR
+    if '*' in terms[0]:
+        term = terms[0].replace("*", "%")
+        query += f"{searchTypes[0]} LIKE '{term}'"
+    else:
+        if searchTypes[0] == "Title":
+            query += f"LOWER({searchTypes[0]}) = LOWER('{terms[0]}')"
+        else:
+            query += f"{searchTypes[0]} = '{terms[0]}'"
+
+    # adds all the other terms to the query if there is more than a single field filled
+    if len(terms) > 1:
+        for i in range(len(terms[1:])):
+            query = add_query(query, terms[i + 1], searchTypes[i + 1])
+
     # Searches for matching items through each table one by one and adds any matches to the list
     for table in list_of_tables:
-        # original query should list the table used as 'temp' scuffed for now
         formatted_query = query.replace("table_name", table)
 
-        # execute the formatted query
+        # executes the final fully-formatted query
         cursor.execute(formatted_query)
         results.extend(cursor.fetchall())
     return results
+
