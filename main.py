@@ -6,17 +6,20 @@ from src.user_interface.startScreen import startScreen
 from src.data_processing.database import connect_to_database, create_file_name_tables, close_database
 from src.user_interface.scraping_ui import scrapeCRKN
 from src.utility.settings_manager import Settings
+from src.utility.logger import m_logger
 
 import os
 
 
 def main():
-
+    m_logger.info("Application started")
     settings_manager = Settings()
 
     app = QApplication(sys.argv)
     widget = QtWidgets.QStackedWidget()
     start = startScreen.get_instance(widget)  # Pass the widget to startScreen
+    widget.addWidget(start)
+
     widget.addWidget(start)
     widget.setMinimumHeight(800)
     widget.setMinimumWidth(1200)

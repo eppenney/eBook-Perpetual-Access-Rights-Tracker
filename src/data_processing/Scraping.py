@@ -11,6 +11,7 @@ import pandas as pd
 from src.utility.settings_manager import Settings
 from src.data_processing import database
 from PyQt6.QtCore import QTimer, QThread, pyqtSignal
+from src.utility.logger import m_logger
 import os
 
 settings_manager = Settings()
@@ -219,7 +220,7 @@ def scrapeCRKN():
 
     # We will need to address how to show errors to the users when they happen (something like show a pop up instead of returning); will leave like this for now
     if page_text is None:
-        print(f"An error occurred: {error}")
+        m_logger.error("An error occurred: {error}")
         return
 
     # Get list of links that end in xlsx, csv, or tsv from the CRKN website link
@@ -300,7 +301,7 @@ def download_files(files, connection):
             upload_to_database(file_df, file_first, connection)
             update_tables([file_first, file_date], "CRKN", connection, command)
         else:
-            print("The file was not in the correct format, so it was not uploaded.")
+            m_logger.error("The file was not in the correct format, so it was not uploaded.")
 
     # Scrape CRKN institution list from last CRKN file
     headers = file_df.columns.to_list()
@@ -350,7 +351,7 @@ def compare_file(file, method, connection):
             return "UPDATE"
 
         # No update needed
-        print(f"File already there - {file[0]}, {file[1]}")
+        m_logger.info("File already there - {file[0]}, {file[1]}")
         return False
 
 
@@ -372,12 +373,12 @@ def update_tables(file, method, connection, command):
     # Table does not exist, insert name and data/version
     if command == "INSERT INTO":
         cursor.execute(f"INSERT INTO {method}_file_names (file_name, file_date) VALUES ('{file[0]}', '{file[1]}')")
-        print(f"file name inserted - {file[0]}, {file[1]}")
+        m_logger.info(f"file name inserted - {file[0]}, {file[1]}")
 
     # File exists, but needs to be updated, change date/version
     elif command == "UPDATE":
         cursor.execute(f"UPDATE {method}_file_names SET file_date = '{file[1]}' WHERE file_name = '{file[0]}';")
-        print(f"file name updated - {file[0]}, {file[1]}")
+        m_logger.info(f"file name updated - {file[0]}, {file[1]}")
 
     # Delete file from {method}_file_names table and drop the table as well.
     elif command == "DELETE":
@@ -416,7 +417,7 @@ def file_to_dataframe_excel(file_name, file):
         # Check top left cell for platform, return if missing (catch in check_file_format)
         platform = df.columns[0]
         if platform == "Unnamed: 0":
-            print("No Platform listed.")
+            m_logger.error("File to Dataframe failed - No Platform listed.")
             return
 
         # Remove top two rows, set header
@@ -429,7 +430,7 @@ def file_to_dataframe_excel(file_name, file):
         df = df.reset_index(drop=True)
         return df
     except ValueError:
-        print("Incorrect sheet name in excel file (PA-Rights did not exist).")
+        m_logger.error("Incorrect sheet name in excel file (PA-Rights did not exist).")
 
 
 def file_to_dataframe_csv(file_name, file):
@@ -446,7 +447,7 @@ def file_to_dataframe_csv(file_name, file):
         # Check top left cell for platform, return if missing (catch in check_file_format)
         platform = df.columns[0]
         if platform == "Unnamed: 0":
-            print("No Platform listed.")
+            m_logger.error("File to Dataframe failed - No Platform listed.")
             return
 
         # Remove top two rows, set header
@@ -459,7 +460,7 @@ def file_to_dataframe_csv(file_name, file):
         df = df.reset_index(drop=True)
         return df
     except Exception:
-        print("Unable to read csv file.")
+        m_logger.error("File to Dataframe failed - Unable to read csv file.")
 
 
 def file_to_dataframe_tsv(file_name, file):
@@ -476,7 +477,7 @@ def file_to_dataframe_tsv(file_name, file):
         # Check top left cell for platform, return if missing (catch in check_file_format)
         platform = df.columns[0]
         if platform == "Unnamed: 0":
-            print("No Platform listed.")
+            m_logger.error("File to Dataframe failed - No Platform listed.")
             return
 
         # Remove top two rows, set header
@@ -489,7 +490,7 @@ def file_to_dataframe_tsv(file_name, file):
         df = df.reset_index(drop=True)
         return df
     except Exception:
-        print("Unable to read tsv file.")
+        m_logger.error("File to Dataframe failed - Unable to read tsv file.")
 
 
 def upload_to_database(df, table_name, connection):
@@ -524,36 +525,47 @@ def check_file_format(file_df, method):
 
     # Header row is incorrect (too short or headers don't match)
     if len(headers) <= 8 or not headers[:8] == header_row:
-        print("The header row is incorrect")
+        m_logger.error("The header row is incorrect")
         return False
 
     # Title, ISBN and Y/N Column complete
     df_series = file_df.count()
     rows = file_df.shape[0]
     if df_series["Title"] != rows:
-        print("Missing title data")
-        return False
+        m_logger.error("Missing title data")
+        # return False
     if df_series["Platform_eISBN"] != rows:
-        print("Missing ISBN data")
-        return False
+        m_logger.error("Missing ISBN data")
+        # return False
     for uni_column in df_series[8:-2]:
         if uni_column != rows:
-            print("Missing Y/N data")
+            m_logger.error("Missing Y/N data")
             return False
 
-    # Check the institution names in local files - add to local list if needed/wanted
-    if method == "local":
-        for uni in headers[8:-2]:
-            if uni not in settings_manager.get_setting("CRKN_institutions"):
-                if uni not in settings_manager.get_setting("local_institutions"):
-                    print(f"{uni} is not a CRKN institution and is not on the list of local institutions.")
-                    print(f"Would you like to add {uni} to the local list?")
-                    print("If no, the file will not be uploaded.")
-                    print(f"If yes, {uni} will be considered its own institution, and you can search by this institution by selecting it in the settings menu.")
-                    ans = input("Y/N?")
-                    if ans == "Y":
-                        settings_manager.add_local_institution(uni)
-                    else:
-                        return False
+    # # Check the institution names in local files - add to local list if needed/wanted
+    # if method == "local":
+    #     for uni in headers[8:-2]:
+    #         if uni not in settings_manager.get_setting("CRKN_institutions"):
+    #             if uni not in settings_manager.get_setting("local_institutions"):
+    #                 print(f"{uni} is not a CRKN institution and is not on the list of local institutions.")
+    #                 print(f"Would you like to add {uni} to the local list?")
+    #                 print("If no, the file will not be uploaded.")
+    #                 print(f"If yes, {uni} will be considered its own institution, and you can search by this institution by selecting it in the settings menu.")
+    #                 ans = input("Y/N?")
+    #                 if ans == "Y":
+    #                     settings_manager.add_local_institution(uni)
+    #                 else:
+    #                     return False
 
     return True
+
+def get_new_institutes(file_df):
+    if file_df is None:
+        return []
+    headers = file_df.columns.to_list()
+    new_uni = []
+    for uni in headers[8:-2]:
+        if uni not in settings_manager.get_setting("CRKN_institutions"):
+                if uni not in settings_manager.get_setting("local_institutions"):
+                    new_uni.append(uni)
+    return new_uni
