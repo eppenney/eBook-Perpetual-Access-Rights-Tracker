@@ -1,7 +1,7 @@
 import sys
 from PyQt6.uic import loadUi
 from PyQt6 import QtWidgets
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QMessageBox
 from src.user_interface.startScreen import startScreen
 from src.data_processing.database import connect_to_database, create_file_name_tables, close_database
 from src.user_interface.scraping_ui import scrapeCRKN
@@ -33,7 +33,9 @@ def main():
         close_database(connection_obj)
 
     if settings_manager.get_setting('allow_CRKN') == "True":
-        scrapeCRKN()
+        reply = QMessageBox.question(None, 'Scrape CRKN', 'Would you like to scrape CRKN before proceeding?', QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.Yes:
+            scrapeCRKN()
 
     sys.exit(app.exec())
 
