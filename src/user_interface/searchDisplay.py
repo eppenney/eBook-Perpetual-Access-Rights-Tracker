@@ -54,6 +54,7 @@ class searchDisplay(QDialog):
             self.tableWidget.insertRow(row_number)
             for column_number, data in enumerate(row_data):
                 self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+
         self.update_all_sizes()
 
     def export_data_handler(self):
@@ -93,17 +94,20 @@ class searchDisplay(QDialog):
                     font.setPointSize(int(original_font_size * (new_width / original_width)))
                 widget.setFont(font)
         
-        table_width = int(0.8 * new_width)
+        table_width = int(0.8 * new_width) - 60
         self.tableWidget.setFixedWidth(table_width)
 
         # Calculate the width for each column
         num_columns = self.tableWidget.columnCount()
-        column_width = math.floor(table_width / num_columns) if num_columns > 0 else 0
-        column_width -= 16
+        column_width = (table_width) // num_columns if num_columns > 0 else 0
 
         # Set the calculated width for each column
         for column_number in range(num_columns):
             self.tableWidget.setColumnWidth(column_number, column_width)
+
+        # self.tableWidget.setColumnWidth(0, 40)
+        self.tableWidget.setFixedWidth(num_columns * column_width + 63)
+
 
     def resizeEvent(self, event):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
