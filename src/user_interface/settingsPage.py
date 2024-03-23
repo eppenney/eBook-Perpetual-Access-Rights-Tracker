@@ -37,6 +37,14 @@ class settingsPage(QDialog):
         self.updateButton = self.findChild(QPushButton, "updateCRKN")
         self.updateButton.clicked.connect(scrapeCRKN)
 
+        self.update_CRKN_button()
+
+    def update_CRKN_button(self):
+        # Grey out the Update CRKN button if Allow_CRKN is False
+        allow_crkn = settings_manager.get_setting("allow_CRKN")
+        if allow_crkn != "True":
+            self.updateButton.setEnabled(False)
+
     def backToStartScreen2(self):
         from src.user_interface.startScreen import startScreen
         backButton2 = startScreen.get_instance(self.widget)
