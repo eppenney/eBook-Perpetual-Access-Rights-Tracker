@@ -5,3 +5,4 @@ src/dataprocessing/__pycache__/
 *.db
 *.json
 **/*.log
+src/utility/application.log
