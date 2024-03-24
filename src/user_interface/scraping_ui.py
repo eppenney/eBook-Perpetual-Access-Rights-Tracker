@@ -49,12 +49,14 @@ class LoadingPopup(QDialog):
             self.loading_thread.revieve_response("N")
             
     def handle_error(self, error_msg):
+        self.timer.stop()
         dialog = QMessageBox(self)
         dialog.setWindowTitle("Error")
         dialog.setText(error_msg)
         dialog.setIcon(QMessageBox.Icon.Critical)
         dialog.addButton(QMessageBox.StandardButton.Ok)
         dialog.exec()
+        self.finished = True
 
     def show_popup_once(self):
         dialog = QMessageBox(self)

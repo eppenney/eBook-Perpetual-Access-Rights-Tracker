@@ -5,6 +5,7 @@ Some functions can also be re-used for the local file uploads (compare_file)
 I tested new files and the same files, but not when the file has a newer date (to update)
 """
 import requests.exceptions
+import time
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
@@ -22,6 +23,7 @@ Ethan Penney
 March 18, 2024
 Created a class variant of scraping functions that are threaded and emit signals in tandem with scraping_ui.py to update loading bar. 
 """
+
 class ScrapingThread(QThread):
     def __init__(self):
         super().__init__()
@@ -33,41 +35,66 @@ class ScrapingThread(QThread):
     file_changes_signal = pyqtSignal(int)
     error_signal = pyqtSignal(str)
 
+    def retry_scrape(self, attempt, max_attempt=3):
+        """ Attempt to scrape again if connection is lost in the middle of scraping"""
+        if attempt >= max_attempt:
+            return False
+        # wait for 2 seconds before retrying
+        time.sleep(2)
+        return True
+
     def scrapeCRKN(self):
         self.progress_update.emit(0)
         """Scrape the CRKN website for listed ebook files."""
         error = ""
-        try:
-            # Make a request to the CRKN website
-            response = requests.get(crkn_url)
-            # Check if request was successful (status 200)
-            response.raise_for_status()
-            # If request successful, process text
-            page_text = response.text
+        error_message = ""
+        attempt = 0
 
-        except requests.exceptions.HTTPError as http_err:
-            # Handle HTTP errors
-            error = http_err
-            page_text = None
-        except requests.exceptions.ConnectionError as conn_err:
-            # Handle errors like refused connections
-            error = conn_err
-            page_text = None
-        except requests.exceptions.Timeout as timeout_err:
-            # Handle request timeout
-            error = timeout_err
-            page_text = None
-        except Exception as e:
-            # Handle any other exceptions
-            error = e
-            page_text = None
-        
-        self.progress_update.emit(10)
+        # Show the user scraping has started
+        self.progress_update.emit(5)
 
-        # We will need to address how to show errors to the users when they happen (something like show a pop up instead of returning); will leave like this for now
+        while attempt < 3:
+            try:
+                # Make a request to the CRKN website
+                response = requests.get(crkn_url)
+                # Check if request was successful (status 200)
+                response.raise_for_status()
+                # If request successful, process text
+                page_text = response.text
+                # Exit loop on successful scrape
+                break
+
+            except requests.exceptions.HTTPError as http_err:
+                # Handle HTTP errors
+                error_message = "Server Connection Error: Please make sure you are connected to your internet and the CRKN URL is "
+                "updated in the Settings page."
+                error = http_err
+                page_text = None
+                if not self.retry_scrape(attempt):
+                    return
+            except requests.exceptions.ConnectionError as conn_err:
+                # Handle errors like refused connections
+                error_message = "Internet Connection Error: Please make sure you are connected to your internet."
+                error = conn_err
+                page_text = None
+                if not self.retry_scrape(attempt):
+                    return
+            except requests.exceptions.Timeout as timeout_err:
+                # Handle request timeout
+                error_message = "Connection Timeout: Please try updating CRKN again."
+                error = timeout_err
+                page_text = None
+            except Exception as e:
+                # Handle any other exceptions
+                error_message = "Unexpected Error: Please try again later."
+                error = e
+                page_text = None
+            attempt += 1
+
+        # Log and display error message
         if page_text is None:
-            self.error_signal.emit(f"An error occurred: {error}")
-            m_logger.error("An error occurred: {error}")
+            m_logger.error(f"An error occurred: {error}")
+            self.error_signal.emit(error_message)
             return
 
         # Get list of links that end in xlsx, csv, or tsv from the CRKN website link
@@ -240,23 +267,31 @@ def update_tables(file, method, connection, command):
 
     cursor = connection.cursor()
 
-    # Table does not exist, insert name and data/version
-    if command == "INSERT INTO":
-        cursor.execute(f"INSERT INTO {method}_file_names (file_name, file_date) VALUES ('{file[0]}', '{file[1]}')")
-        m_logger.info(f"file name inserted - {file[0]}, {file[1]}")
+    try:
+        # Table does not exist, insert name and data/version
+        if command == "INSERT INTO":
+            cursor.execute(f"INSERT INTO {method}_file_names (file_name, file_date) VALUES ('{file[0]}', '{file[1]}')")
+            m_logger.info(f"file name inserted - {file[0]}, {file[1]}")
 
-    # File exists, but needs to be updated, change date/version
-    elif command == "UPDATE":
-        cursor.execute(f"UPDATE {method}_file_names SET file_date = '{file[1]}' WHERE file_name = '{file[0]}';")
-        m_logger.info(f"file name updated - {file[0]}, {file[1]}")
+        # File exists, but needs to be updated, change date/version
+        elif command == "UPDATE":
+            cursor.execute(f"UPDATE {method}_file_names SET file_date = '{file[1]}' WHERE file_name = '{file[0]}';")
+            m_logger.info(f"file name updated - {file[0]}, {file[1]}")
 
-    # Delete file from {method}_file_names table and drop the table as well.
-    elif command == "DELETE":
-        cursor.execute(f"DELETE from {method}_file_names WHERE file_name LIKE {file[0]}")
-        if method == "CRKN":
-            cursor.execute(f"DROP TABLE {file[0]}")
-        else:
-            cursor.execute(f"DROP TABLE local_{file[0]}")
+        # Delete file from {method}_file_names table and drop the table as well.
+        elif command == "DELETE":
+            cursor.execute(f"DELETE from {method}_file_names WHERE file_name LIKE {file[0]}")
+            if method == "CRKN":
+                cursor.execute(f"DROP TABLE {file[0]}")
+            else:
+                cursor.execute(f"DROP TABLE local_{file[0]}")
+        # Commit changes on successful operation
+        connection.commit()
+    except Exception as e:
+        # Rollback if changes fail
+        connection.rollback()
+        m_logger.error(f"Failed to {command} data for {file[0]}: {e}. Database remains unchanged")
+
 
 
 def split_CRKN_file_name(file_name):
@@ -370,12 +405,21 @@ def upload_to_database(df, table_name, connection):
     :param table_name: table to insert data into
     :param connection: database connection object
     """
-    df.to_sql(
-        name=table_name,
-        con=connection,
-        if_exists="replace",
-        index=False
-    )
+
+    try:
+        df.to_sql(
+            name=table_name,
+            con=connection,
+            if_exists="replace",
+            index=False
+        )
+        connection.commit()
+    except Exception as e:
+        # Rollback in case of error
+        connection.rollback()
+        m_logger.error(f"Failed to upload data to {table_name}: {e}. Database remains unchanged.")
+
+
 
 
 def check_file_format(file_df):
