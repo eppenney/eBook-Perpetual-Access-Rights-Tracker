@@ -1,7 +1,7 @@
 from PyQt6.QtCore import pyqtSignal, QUrl
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox
+from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox, QMessageBox
 from src.user_interface.scraping_ui import scrapeCRKN
 from src.utility.upload import upload_and_process_file
 from src.utility.settings_manager import Settings
@@ -110,7 +110,7 @@ class settingsPage(QDialog):
     def save_selected(self):
         # Get the currently selected institute from the combo box
         selected_institute = self.instituteSelection.currentText()
-        print("Selecetd is : ", selected_institute)  # Test
+        print("Selected institute:", selected_institute)  # Test
 
         # Save the selected institute using the settings manager
         settings_manager.update_setting("institution", selected_institute)
@@ -122,11 +122,25 @@ class settingsPage(QDialog):
         settings_manager.set_language(selected_language)
 
         # Get the text from the crkURL QTextEdit
-        crkn_url = self.findChild(QTextEdit, 'crknURL').toPlainText()  # Find crkURL QTextEdit widget and get its text
+        crkn_url = self.findChild(QTextEdit, 'crknURL').toPlainText()
         print("Entered CRKN URL:", crkn_url)  # Test
 
         # Update the CRKN URL setting using the settings manager
         settings_manager.set_crkn_url(crkn_url)
+
+        # Get the text from the addInstitute QTextEdit
+        add_institute_text = self.findChild(QTextEdit, 'addInstitute').toPlainText()
+        print("Entered Institute:", add_institute_text)  # Test
+        #
+        # # Check if the institute already exists
+        # all_institutes = settings_manager.get_institutions()
+        # # if add_institute_text in all_institutes:
+        # #     # Prompt the user that the institute already exists
+        # #     QMessageBox.warning(self, "Duplicate Institute", "The entered institute already exists.", QMessageBox.Ok)
+        # #     return
+
+        # Add the new institute to the settings
+        settings_manager.add_local_institution(add_institute_text)
 
     """
     This was made by ChatGPT, do not sue me. 
@@ -175,3 +189,10 @@ class settingsPage(QDialog):
 
     def upload_button_clicked(self):
         upload_and_process_file()
+
+
+
+#Error i am encountering right now is based on the adding of institute and checking out if they already exist.
+#saving currently is not working as when clicked will shit down the application.
+# I have to make the things working.
+
