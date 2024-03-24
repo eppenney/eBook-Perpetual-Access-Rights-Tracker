@@ -104,7 +104,7 @@ def search_database(connection, query, terms, searchTypes):
     """
     Database searching functionality.
     :param connection: database connection object
-    :param query: SQL query - Query should be generated via a base query (likely the original search term) + a combination of add AND/OR functions
+    :param query: SQL query - base query without any actual search terms
     :param terms: list of terms being searched
     :param searchTypes: list of searchTypes for each corresponding term
     :return: list of all matching results throughout all tables
@@ -116,24 +116,17 @@ def search_database(connection, query, terms, searchTypes):
 
     # Constructs the final query with all terms
     for i in range(len(terms)):
-        if i == 0:
-            if '*' in terms[i]:
-                terms[i] = terms[i].replace("*", "%")
-                query += f"{searchTypes[i]} LIKE ?"
-            else:
-                if searchTypes[i] == "Title":
-                    query += f"LOWER({searchTypes[i]}) = LOWER(?)"
-                else:
-                    query += f"{searchTypes[i]} = ?"
+        # initial query won't use OR
+        if i > 0:
+            query += " OR "
+        if '*' in terms[i]:
+            terms[i] = terms[i].replace("*", "%")
+            query += f"{searchTypes[i]} LIKE ?"
         else:
-            if '*' in terms[i]:
-                terms[i] = terms[i].replace("*", "%")
-                query += f" OR {searchTypes[i]} LIKE ?"
+            if searchTypes[i] == "Title":
+                query += f"LOWER({searchTypes[i]}) = LOWER(?)"
             else:
-                if searchTypes[i] == "Title":
-                    query += f" OR LOWER({searchTypes[i]}) = LOWER(?)"
-                else:
-                    query += f" OR {searchTypes[i]} = ?"
+                query += f"{searchTypes[i]} = ?"
 
     # Searches for matching items through each table one by one and adds any matches to the list
     for table in list_of_tables:
