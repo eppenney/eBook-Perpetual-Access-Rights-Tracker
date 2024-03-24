@@ -162,7 +162,7 @@ class ScrapingThread(QThread):
                 file_df = file_to_dataframe_csv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
 
             # Check if in correct format, if it is, upload and update tables
-            valid_format = check_file_format(file_df, "CRKN")
+            valid_format = check_file_format(file_df)
             if valid_format:
                 upload_to_database(file_df, file_first, connection)
                 update_tables([file_first, file_date], "CRKN", connection, command)
@@ -221,7 +221,7 @@ def compare_file(file, method, connection):
             return "UPDATE"
 
         # No update needed
-        m_logger.info("File already there - {file[0]}, {file[1]}")
+        m_logger.info(f"File already there - {file[0]}, {file[1]}")
         return False
 
 
@@ -378,11 +378,10 @@ def upload_to_database(df, table_name, connection):
     )
 
 
-def check_file_format(file_df, method):
+def check_file_format(file_df):
     """
     Checks the incoming file format to see if it is correct
     :param file_df: dataframe with file info (or None if unable to turn into dataframe
-    :param method: CRKN or local
     :return: boolean True or False if valid or not
     """
 
@@ -412,30 +411,4 @@ def check_file_format(file_df, method):
             m_logger.error("Missing Y/N data")
             return False
 
-    # # Check the institution names in local files - add to local list if needed/wanted
-    # if method == "local":
-    #     for uni in headers[8:-2]:
-    #         if uni not in settings_manager.get_setting("CRKN_institutions"):
-    #             if uni not in settings_manager.get_setting("local_institutions"):
-    #                 print(f"{uni} is not a CRKN institution and is not on the list of local institutions.")
-    #                 print(f"Would you like to add {uni} to the local list?")
-    #                 print("If no, the file will not be uploaded.")
-    #                 print(f"If yes, {uni} will be considered its own institution, and you can search by this institution by selecting it in the settings menu.")
-    #                 ans = input("Y/N?")
-    #                 if ans == "Y":
-    #                     settings_manager.add_local_institution(uni)
-    #                 else:
-    #                     return False
-
     return True
-
-def get_new_institutions(file_df):
-    if file_df is None:
-        return []
-    headers = file_df.columns.to_list()
-    new_inst = []
-    for inst in headers[8:-2]:
-        if inst not in settings_manager.get_setting("CRKN_institutions"):
-                if inst not in settings_manager.get_setting("local_institutions"):
-                    new_inst.append(inst)
-    return new_inst
