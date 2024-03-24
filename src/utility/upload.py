@@ -70,18 +70,22 @@ def process_file(file_path):
         # Check if in correct format, if it is, upload and update tables
         valid_file = Scraping.check_file_format(file_df, "local")
         if valid_file:
-            new_unis = Scraping.get_new_institutions(file_df)
-            if (len(new_unis) > 0):
-                reply = QMessageBox.question(None, "New Institutes", f"{len(new_unis)} institute name{'s' if len(new_unis) > 1 else ''} found that " + 
-                                             f"{'are' if len(new_unis) > 1 else 'is'} not a CRKN institution and {'are' if len(new_unis) > 1 else 'is'} not on the list of local institutions." + 
-                                            "\nWould you like to add them to the local list? \n'No' - The file will not be uploaded. \n'Yes' - The new institution names will be added as options" + 
+            new_institutes = Scraping.get_new_institutions(file_df)
+            if (len(new_institutes) > 0):
+                new_institutes_display = '\n'.join(new_institutes[:5])
+                if len(new_institutes) > 5:
+                    new_institutes_display += '...'
+                reply = QMessageBox.question(None, "New Institutes", f"{len(new_institutes)} institute name{'s' if len(new_institutes) > 1 else ''} found that " + 
+                                             f"{'are' if len(new_institutes) > 1 else 'is'} not a CRKN institution and {'are' if len(new_institutes) > 1 else 'is'} not on the list of local institutions.\n" + 
+                                            f"{new_institutes_display}\n" + 
+                                            "Would you like to add them to the local list? \n'No' - The file will not be uploaded. \n'Yes' - The new institution names will be added as options" + 
                                             "and available in the settings menu.",
                              QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
                 if reply == QMessageBox.StandardButton.No:
                     database.close_database(connection)
                     progress_dialog.cancel()
                     return
-            for uni in new_unis:
+            for uni in new_institutes:
                 settings_manager.add_local_institution(uni)
             Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
             Scraping.update_tables([file_name[0], date], "local", connection, result)
