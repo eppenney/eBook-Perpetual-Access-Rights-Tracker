@@ -1,6 +1,7 @@
 import json
 import os
 
+
 '''
 Baki Feb 26
 
@@ -163,4 +164,4 @@ class Settings(metaclass=SingletonMeta):
         Get combined list of CRKN and local institutions
         :return: list - containing CRKN_institutions and local_institutions
         """
-        return self.settings.get("CRKN_institutions").extend(self.settings.get("local_institutions"))
+        return self.settings.get("CRKN_institutions") + self.settings.get("local_institutions")

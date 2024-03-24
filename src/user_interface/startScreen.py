@@ -39,6 +39,7 @@ class startScreen(QDialog):
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
+
         # settings up the internet connection in the icon at the end
         self.internetConnectionLabel = self.findChild(QLabel, 'internetConnection')
         self.updateConnectionStatus(False)
@@ -64,6 +65,8 @@ class startScreen(QDialog):
         self.booleanSearchType = self.findChild(QComboBox, 'booleanBoxRight')
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
         self.instituteButton = self.findChild(QPushButton, "institutionButton")
+        self.textEdit.returnPressed.connect(self.search_button_clicked)
+
 
         # Clear Button
         self.clearButton = self.findChild(QPushButton, "clearButton")
@@ -280,7 +283,9 @@ class startScreen(QDialog):
         searchTypes = [searchType]
         query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM table_name WHERE "
         connection = connect_to_database()
-
+        if self.sender() == self.textEdit:
+            # Trigger the click event of the search button only if the sender is the textEdit
+            self.pushButton.click()
         # grabs the terms and searchTypes of each textbox for the search query:
         for i in range(len(self.duplicateTextEdits)):
             terms.append(self.duplicateTextEdits[i].text().strip())
