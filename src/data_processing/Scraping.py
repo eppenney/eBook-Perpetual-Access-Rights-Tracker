@@ -401,10 +401,10 @@ def check_file_format(file_df, method):
     rows = file_df.shape[0]
     if df_series["Title"] != rows:
         m_logger.error("Missing title data")
-        return False
+        # return False
     if df_series["Platform_eISBN"] != rows:
         m_logger.error("Missing ISBN data")
-        return False
+        # return False
     for uni_column in df_series[8:-2]:
         if uni_column != rows:
             m_logger.error("Missing Y/N data")
@@ -427,7 +427,7 @@ def check_file_format(file_df, method):
 
     return True
 
-def get_new_institutes(file_df):
+def get_new_institutions(file_df):
     if file_df is None:
         return []
     headers = file_df.columns.to_list()

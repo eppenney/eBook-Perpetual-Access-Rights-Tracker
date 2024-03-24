@@ -17,11 +17,11 @@ def upload_and_process_file():
     # options = QFileDialog.Option()
     options = QFileDialog.Option.ReadOnly
 
-    file_path, _ = QFileDialog.getOpenFileName(None, "Open File", "", "CSV TSV or Excel (*.csv *.tsv *.xlsx);;All Files (*)", options=options)
+    file_paths, _ = QFileDialog.getOpenFileNames(None, "Open File", "", "CSV TSV or Excel (*.csv *.tsv *.xlsx);;All Files (*)", options=options)
 
-    if file_path:
-        process_file(file_path)
-
+    if file_paths:
+        for file_path in file_paths:
+            process_file(file_path)
 
 def process_file(file_path):
     app = QApplication.instance()  # Try to get the existing application instance
@@ -44,7 +44,7 @@ def process_file(file_path):
 
     # If result is update, check if they want to update it
     if result == "UPDATE":
-        reply = QMessageBox.question(None, "Replace File", "A file with the same name is already in the local database. Would you like to replace it with the new file?",
+        reply = QMessageBox.question(None, "Replace File", f"{file_name[0]}\nA file with the same name is already in the local database. Would you like to replace it with the new file?",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.No:
             database.close_database(connection)
@@ -62,7 +62,7 @@ def process_file(file_path):
             file_df = Scraping.file_to_dataframe_tsv(".".join(file_name), file_path)
         else:
             m_logger.error("Invalid file type selected.")
-            QMessageBox.warning(None, "Invalid File Type", "Please select a valid xlsx, csv or tsv file.", QMessageBox.StandardButton.Ok)
+            QMessageBox.warning(None, "Invalid File Type", f"{file_name[0]}\nPlease select only valid xlsx, csv or tsv files.", QMessageBox.StandardButton.Ok)
             database.close_database(connection)
             progress_dialog.cancel()
             return
@@ -70,7 +70,7 @@ def process_file(file_path):
         # Check if in correct format, if it is, upload and update tables
         valid_file = Scraping.check_file_format(file_df, "local")
         if valid_file:
-            new_unis = Scraping.get_new_institutes(file_df)
+            new_unis = Scraping.get_new_institutions(file_df)
             if (len(new_unis) > 0):
                 reply = QMessageBox.question(None, "New Institutes", f"{len(new_unis)} institute name{'s' if len(new_unis) > 1 else ''} found that " + 
                                              f"{'are' if len(new_unis) > 1 else 'is'} not a CRKN institution and {'are' if len(new_unis) > 1 else 'is'} not on the list of local institutions." + 
@@ -86,14 +86,14 @@ def process_file(file_path):
             Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
             Scraping.update_tables([file_name[0], date], "local", connection, result)
 
-            QMessageBox.information(None, "File Upload", f"Your files have been uploaded. {len(file_df)} rows have been added.", QMessageBox.StandardButton.Ok)
+            QMessageBox.information(None, "File Upload", f"{file_name[0]}\nYour file has been uploaded. {len(file_df)} rows have been added.", QMessageBox.StandardButton.Ok)
         else:
             m_logger.error("Invalid file format.")
-            QMessageBox.warning(None, "Invalid File Format", "The file was not in the correct format.\nUpload aborted.", QMessageBox.StandardButton.Ok)
+            QMessageBox.warning(None, "Invalid File Format", f"{file_name[0]}\nThe file was not in the correct format.\nUpload aborted.", QMessageBox.StandardButton.Ok)
 
     except Exception as e:
-        m_logger.error(f"An error occurred during file processing: {str(e)}")
-        QMessageBox.critical(None, "Error", f"An error occurred during file processing: {str(e)}", QMessageBox.StandardButton.Ok)
+        m_logger.error(f"{file_name[0]}\nAn error occurred during file processing: {str(e)}")
+        QMessageBox.critical(None, "Error", f"{file_name[0]}\nAn error occurred during file processing: {str(e)}", QMessageBox.StandardButton.Ok)
 
     database.close_database(connection)
     progress_dialog.cancel()

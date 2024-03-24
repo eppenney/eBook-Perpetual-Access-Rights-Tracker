@@ -191,8 +191,8 @@ def advanced_search(connection, query):
     # Searches for matching items through each table one by one and adds any matches to the list
     for table in list_of_tables:
         # original query should list the table used as 'temp' scuffed for now
-        formatted_query = query.replace("table_name", table)
-
+        formatted_query = query.replace("table_name", f"[{table}]")
+        print(formatted_query)
         # execute the formatted query
         cursor.execute(formatted_query)
         results.extend(cursor.fetchall())
