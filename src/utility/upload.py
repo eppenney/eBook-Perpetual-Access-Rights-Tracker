@@ -75,7 +75,7 @@ def process_file(file_path):
                 new_institutions_display = '\n'.join(new_institutions[:5])
                 if len(new_institutions) > 5:
                     new_institutions_display += '...'
-                reply = QMessageBox.question(None, "New Institutes", f"{len(new_institutions)} institute name{'s' if len(new_institutions) > 1 else ''} found that " +
+                reply = QMessageBox.question(None, "New Institutions", f"{len(new_institutions)} institution name{'s' if len(new_institutions) > 1 else ''} found that " +
                                              f"{'are' if len(new_institutions) > 1 else 'is'} not a CRKN institution and {'are' if len(new_institutions) > 1 else 'is'} not on the list of local institutions.\n" +
                                             f"{new_institutions_display}\n" +
                                             "Would you like to add them to the local list? \n'No' - The file will not be uploaded. \n'Yes' - The new institution names will be added as options" + 
