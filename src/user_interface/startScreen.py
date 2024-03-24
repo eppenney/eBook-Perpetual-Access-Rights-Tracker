@@ -8,8 +8,8 @@ from PyQt6.QtGui import QIcon, QPixmap
 
 from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
-from src.data_processing.database import connect_to_database, search_by_title, search_by_ISBN, search_by_OCN, \
-    close_database, add_AND_query, add_OR_query, advanced_search
+from src.data_processing.database import connect_to_database, \
+    close_database, search_database
 from src.utility.settings_manager import Settings
 import os
 # From searchDisplay import display_results_in_table
@@ -273,33 +273,24 @@ class startScreen(QDialog):
             print("No institution selected.")
             return
 
-
         searchText = self.textEdit.text().strip()
+        terms = [searchText]
         searchTypeIndex = self.booleanSearchType.currentIndex()
         searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
-        value = f'%{searchText}%'
-        query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM table_name WHERE {searchType} LIKE '{value}'"
+        searchTypes = [searchType]
+        query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM table_name WHERE "
         connection = connect_to_database()
 
-        # Creates the advanced boolean search query by adding the extra search terms/conditions on to the base query
-        # the count workaround seems mega-scuffed, there's definitely a better way of doing this
-        count = 0
-        # for textBox in self.duplicateTextEdits:
+        # grabs the terms and searchTypes of each textbox for the search query:
         for i in range(len(self.duplicateTextEdits)):
-            new_value = self.duplicateTextEdits[i].text().strip()
-            operatorIndex = self.duplicateCombos[i].currentIndex()
-            operator = "OR" if operatorIndex == 0 else "AND"
+            terms.append(self.duplicateTextEdits[i].text().strip())
             searchTypeIndex = self.duplicateSearchTypes[i].currentIndex()
             searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
-            if operator == "AND":
-                query = add_AND_query(searchType, query, new_value)
-            elif operator == "OR":
-                query = add_OR_query(searchType, query, new_value)
-            count = count+1
-        print(query)
-        results = advanced_search(connection, query)
+            searchTypes.append(searchType)
 
-        # Do not go to results page if there are no results.
+        results = search_database(connection, query, terms, searchTypes)
+
+        # Do not go to results page if there are no results or no text in the search field.
         if len(results) == 0:
             print("There are no results for the search.")
             close_database(connection)
