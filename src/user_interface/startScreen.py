@@ -110,6 +110,8 @@ class startScreen(QDialog):
             self.updateConnectionStatus(True)
         except urllib.request.URLError as err:
             self.updateConnectionStatus(False)
+        except TimeoutError:
+            self.updateConnectionStatus(False)
 
     def updateConnectionStatus(self, isConnected):
         if isConnected:
@@ -294,7 +296,7 @@ class startScreen(QDialog):
             elif operator == "OR":
                 query = add_OR_query(searchType, query, new_value)
             count = count+1
-
+        print(query)
         results = advanced_search(connection, query)
 
         # Do not go to results page if there are no results.
