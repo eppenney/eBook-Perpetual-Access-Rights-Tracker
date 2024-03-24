@@ -433,9 +433,9 @@ def get_new_institutions(file_df):
     if file_df is None:
         return []
     headers = file_df.columns.to_list()
-    new_uni = []
-    for uni in headers[8:-2]:
-        if uni not in settings_manager.get_setting("CRKN_institutions"):
-                if uni not in settings_manager.get_setting("local_institutions"):
-                    new_uni.append(uni)
-    return new_uni
+    new_inst = []
+    for inst in headers[8:-2]:
+        if inst not in settings_manager.get_setting("CRKN_institutions"):
+                if inst not in settings_manager.get_setting("local_institutions"):
+                    new_inst.append(inst)
+    return new_inst
