@@ -64,6 +64,10 @@ class settingsPage(QDialog):
         self.languageSelection = self.findChild(QComboBox,'languageSetting')
         self.languageSelection.currentIndexChanged.connect(self.change_language)
 
+        current_crkn_url = settings_manager.get_setting("CRKN_url")
+        self.crknURL = self.findChild(QTextEdit, 'crknURL')
+        self.crknURL.setPlainText(current_crkn_url)
+
 
     def update_CRKN_button(self):
         # Grey out the Update CRKN button if Allow_CRKN is False
