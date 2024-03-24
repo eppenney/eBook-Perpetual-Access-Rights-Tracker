@@ -221,7 +221,7 @@ def compare_file(file, method, connection):
             return "UPDATE"
 
         # No update needed
-        m_logger.info("File already there - {file[0]}, {file[1]}")
+        m_logger.info(f"File already there - {file[0]}, {file[1]}")
         return False
 
 
