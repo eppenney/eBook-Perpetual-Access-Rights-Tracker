@@ -67,6 +67,7 @@ class ScrapingThread(QThread):
         # We will need to address how to show errors to the users when they happen (something like show a pop up instead of returning); will leave like this for now
         if page_text is None:
             self.error_signal.emit(f"An error occurred: {error}")
+            m_logger.error("An error occurred: {error}")
             return
 
         # Get list of links that end in xlsx, csv, or tsv from the CRKN website link
@@ -166,6 +167,7 @@ class ScrapingThread(QThread):
                 upload_to_database(file_df, file_first, connection)
                 update_tables([file_first, file_date], "CRKN", connection, command)
             else:
+                m_logger.error("The file was not in the correct format, so it was not uploaded.")
                 self.error_signal.emit("The file was not in the correct format, so it was not uploaded.")
 
         # Scrape CRKN institution list from last CRKN file
