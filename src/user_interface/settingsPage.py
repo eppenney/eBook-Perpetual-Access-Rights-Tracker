@@ -1,9 +1,3 @@
-# this class defines the settins page please provide the code for settings page here
-# all the class are sperated into different files to make the code clear and easier to integrate.
-# date : FEB 5 -> having trouble making implementing the back button as when clicked it closes the application.
-# another issue is that this approch always take to new instance of
-# main screen however might need to use another approch late but this works now.
-
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox
@@ -17,6 +11,7 @@ settings_manager.load_settings()
 
 class settingsPage(QDialog):
     _instance = None
+
     @classmethod
     def get_instance(cls, arg):
         if not cls._instance:
@@ -42,14 +37,22 @@ class settingsPage(QDialog):
         self.updateButton = self.findChild(QPushButton, "updateCRKN")
         self.updateButton.clicked.connect(scrapeCRKN)
 
-    
+        self.update_CRKN_button()
+
+    def update_CRKN_button(self):
+        # Grey out the Update CRKN button if Allow_CRKN is False
+        allow_crkn = settings_manager.get_setting("allow_CRKN")
+        if allow_crkn != "True":
+            self.updateButton.setEnabled(False)
+
     def backToStartScreen2(self):
         from src.user_interface.startScreen import startScreen
         backButton2 = startScreen.get_instance(self.widget)
         self.widget.addWidget(backButton2)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+
     """
-    This was made my chatGPT yo, do not sue me. 
+    This was made by ChatGPT, do not sue me. 
     -Ethan
     Feb 27, 2024 
     """

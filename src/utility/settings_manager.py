@@ -66,7 +66,7 @@ class Settings(metaclass=SingletonMeta):
                 "CRKN_institutions": [],
                 "local_institutions": [],
                 "database_name": default_db_path,
-                "github_link": "https://github.com"
+                "github_link": "https://github.com/eppenney/eBook-Perpetual-Access-Rights-Tracker"
             }
             # Set the CRKN root url from the CRKN url
             url_parts = settings["CRKN_url"].split('/')

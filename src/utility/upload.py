@@ -1,25 +1,13 @@
-"""
-Ethan
-Jan 24, 2024
-This simple program gives you the upload_and_process_file function. 
-Link this function to a button and it will open a file explorer and 
-save the selected csv file. 
-Process_file will likely need to be adjusted in the future based on 
-database work.
-Feb 13 
-Modified to use database system properly.
-Feb 22
-Made some changes based on feedback in pull request. 
- * Closed Database,
- * Added file naming convention and changed to replace instead of append, 
- * Removed double file reading - remnant from previous filler code 
-"""
 from PyQt6.QtWidgets import QFileDialog, QApplication, QMessageBox, QProgressDialog
 from PyQt6.QtCore import Qt
 from src.data_processing import database, Scraping
 import sys
 import datetime
+from src.utility.logger import m_logger
+from src.utility.settings_manager import Settings
 
+settings_manager = Settings()
+settings_manager.load_settings()
 
 def upload_and_process_file():
     app = QApplication.instance()  # Try to get the existing application instance
@@ -29,11 +17,11 @@ def upload_and_process_file():
     # options = QFileDialog.Option()
     options = QFileDialog.Option.ReadOnly
 
-    file_path, _ = QFileDialog.getOpenFileName(None, "Open File", "", "CSV TSV or Excel (*.csv *.tsv *.xlsx);;All Files (*)", options=options)
+    file_paths, _ = QFileDialog.getOpenFileNames(None, "Open File", "", "CSV TSV or Excel (*.csv *.tsv *.xlsx);;All Files (*)", options=options)
 
-    if file_path:
-        process_file(file_path)
-
+    if file_paths:
+        for file_path in file_paths:
+            process_file(file_path)
 
 def process_file(file_path):
     app = QApplication.instance()  # Try to get the existing application instance
@@ -56,35 +44,60 @@ def process_file(file_path):
 
     # If result is update, check if they want to update it
     if result == "UPDATE":
-        reply = QMessageBox.question(None, "Replace File", "A file with the same name is already in the local database. Would you like to replace it with the new file?",
+        reply = QMessageBox.question(None, "Replace File", f"{file_name[0]}\nA file with the same name is already in the local database. Would you like to replace it with the new file?",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.No:
             database.close_database(connection)
             progress_dialog.cancel()
             return
 
-    # Convert file into dataframe
-    if file_name[-1] == "csv":
-        file_df = Scraping.file_to_dataframe_csv(".".join(file_name), file_path)
-    elif file_name[-1] == "xlsx":
-        file_df = Scraping.file_to_dataframe_excel(".".join(file_name), file_path)
-    elif file_name[-1] == "tsv":
-        file_df = Scraping.file_to_dataframe_tsv(".".join(file_name), file_path)
-    else:
-        QMessageBox.warning(None, "Invalid File Type", "Please select a valid xlsx, csv or tsv file.", QMessageBox.StandardButton.Ok)
-        database.close_database(connection)
-        progress_dialog.cancel()
-        return
+    try:
+        m_logger.info(f"Processing file: {file_path}")
+        # Convert file into dataframe
+        if file_name[-1] == "csv":
+            file_df = Scraping.file_to_dataframe_csv(".".join(file_name), file_path)
+        elif file_name[-1] == "xlsx":
+            file_df = Scraping.file_to_dataframe_excel(".".join(file_name), file_path)
+        elif file_name[-1] == "tsv":
+            file_df = Scraping.file_to_dataframe_tsv(".".join(file_name), file_path)
+        else:
+            m_logger.error("Invalid file type selected.")
+            QMessageBox.warning(None, "Invalid File Type", f"{file_name[0]}\nPlease select only valid xlsx, csv or tsv files.", QMessageBox.StandardButton.Ok)
+            database.close_database(connection)
+            progress_dialog.cancel()
+            return
 
-    # Check if in correct format, if it is, upload and update tables
-    valid_file = Scraping.check_file_format(file_df, "local")
-    if valid_file:
-        Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
-        Scraping.update_tables([file_name[0], date], "local", connection, result)
+        # Check if in correct format, if it is, upload and update tables
+        valid_file = Scraping.check_file_format(file_df, "local")
+        if valid_file:
+            new_institutes = Scraping.get_new_institutions(file_df)
+            if (len(new_institutes) > 0):
+                new_institutes_display = '\n'.join(new_institutes[:5])
+                if len(new_institutes) > 5:
+                    new_institutes_display += '...'
+                reply = QMessageBox.question(None, "New Institutes", f"{len(new_institutes)} institute name{'s' if len(new_institutes) > 1 else ''} found that " + 
+                                             f"{'are' if len(new_institutes) > 1 else 'is'} not a CRKN institution and {'are' if len(new_institutes) > 1 else 'is'} not on the list of local institutions.\n" + 
+                                            f"{new_institutes_display}\n" + 
+                                            "Would you like to add them to the local list? \n'No' - The file will not be uploaded. \n'Yes' - The new institution names will be added as options" + 
+                                            "and available in the settings menu.",
+                             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                if reply == QMessageBox.StandardButton.No:
+                    database.close_database(connection)
+                    progress_dialog.cancel()
+                    return
+            for uni in new_institutes:
+                settings_manager.add_local_institution(uni)
+            Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
+            Scraping.update_tables([file_name[0], date], "local", connection, result)
 
-        QMessageBox.information(None, "File Upload", f"Your files have been uploaded. {len(file_df)} rows have been added.", QMessageBox.StandardButton.Ok)
-    else:
-        QMessageBox.warning(None, "Invalid File Format", "The file was not in the correct format.\nUpload aborted.", QMessageBox.StandardButton.Ok)
+            QMessageBox.information(None, "File Upload", f"{file_name[0]}\nYour file has been uploaded. {len(file_df)} rows have been added.", QMessageBox.StandardButton.Ok)
+        else:
+            m_logger.error("Invalid file format.")
+            QMessageBox.warning(None, "Invalid File Format", f"{file_name[0]}\nThe file was not in the correct format.\nUpload aborted.", QMessageBox.StandardButton.Ok)
+
+    except Exception as e:
+        m_logger.error(f"{file_name[0]}\nAn error occurred during file processing: {str(e)}")
+        QMessageBox.critical(None, "Error", f"{file_name[0]}\nAn error occurred during file processing: {str(e)}", QMessageBox.StandardButton.Ok)
 
     database.close_database(connection)
     progress_dialog.cancel()
@@ -98,4 +111,3 @@ def remove_local_file(file_name):
     connection = database.connect_to_database()
     Scraping.update_tables([file_name], "local", connection, "DELETE")
     database.close_database(connection)
-

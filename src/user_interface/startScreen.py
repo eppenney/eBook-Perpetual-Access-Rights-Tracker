@@ -110,6 +110,8 @@ class startScreen(QDialog):
             self.updateConnectionStatus(True)
         except urllib.request.URLError as err:
             self.updateConnectionStatus(False)
+        except TimeoutError:
+            self.updateConnectionStatus(False)
 
     def updateConnectionStatus(self, isConnected):
         if isConnected:
