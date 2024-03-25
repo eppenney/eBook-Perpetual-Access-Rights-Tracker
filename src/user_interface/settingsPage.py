@@ -93,10 +93,12 @@ class settingsPage(QDialog):
         settings_manager.set_language(selected_language)
 
     def backToStartScreen2(self):
-        from src.user_interface.startScreen import startScreen
-        backButton2 = startScreen.get_instance(self.widget)
-        self.widget.addWidget(backButton2)
-        self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+        # from src.user_interface.startScreen import startScreen
+        # backButton2 = startScreen.get_instance(self.widget)
+        # self.widget.addWidget(backButton2)
+        # self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+        self.widget.removeWidget(self.widget.currentWidget())
+
 
     def populate_institutes(self):
         # Clear the existing items in the combo box

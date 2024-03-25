@@ -39,10 +39,12 @@ class searchDisplay(QDialog):
 
 
     def backToStartScreen(self):
-        from src.user_interface.startScreen import startScreen
-        backButton = startScreen.get_instance(self.widget)
-        self.widget.addWidget(backButton)
-        self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+        # from src.user_interface.startScreen import startScreen
+        # backButton = startScreen.get_instance(self.widget)
+        # self.widget.addWidget(backButton)
+        # self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+        self.widget.removeWidget(self.widget.currentWidget())
+
 
     def display_results_in_table(self, results):
         self.results = results
