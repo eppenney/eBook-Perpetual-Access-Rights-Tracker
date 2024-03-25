@@ -33,6 +33,7 @@ class startScreen(QDialog):
     @classmethod
     def replace_instance(cls, arg):
         cls._instance = cls(arg)
+        return cls._instance
     
     def __init__(self, widget):
         super(startScreen, self).__init__()
