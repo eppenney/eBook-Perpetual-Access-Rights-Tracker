@@ -138,6 +138,7 @@ class settingsPage(QDialog):
 
         # Get the text from the addInstitute QTextEdit
         add_institute_text = self.findChild(QTextEdit, 'addInstitute').toPlainText()
+        add_institute_text = self.instituteSelection.currentText()
         print("Entered Institute:", add_institute_text)  # Test
         #
         # # Check if the institute already exists
@@ -155,6 +156,8 @@ class settingsPage(QDialog):
         # Reset instances classes for UI 
         startScreen.replace_instance(self.widget)
         self.widget.removeWidget(self)
+        self.widget.removeWidget(self.widget.currentWidget())
+        self.widget.addWidget(startScreen.replace_instance(self.widget))
         self.widget.addWidget(self.replace_instance(self.widget))
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
@@ -235,7 +238,7 @@ class settingsPage(QDialog):
         # Update the state of the CRKN update button
         self.update_CRKN_button()
 
-        
+
 #Error i am encountering right now is based on the adding of institute and checking out if they already exist.
 #saving currently is not working as when clicked will shit down the application.
 # I have to make the things working.
