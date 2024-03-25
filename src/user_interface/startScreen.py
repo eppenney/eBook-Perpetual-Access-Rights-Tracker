@@ -308,7 +308,7 @@ class startScreen(QDialog):
 
         # Do not go to results page if there are no results or no text in the search field.
         if len(results) == 0:
-            print("There are no results for the search.")
+            QMessageBox.information(self, "No Results Found" if self.language_value == "english" else "Aucun résultat trouvé", "There are no results for the search." if self.language_value == "english" else "Il n'y a aucun résultat pour la recherche.")
             close_database(connection)
             return
 
