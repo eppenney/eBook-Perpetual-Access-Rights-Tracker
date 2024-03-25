@@ -140,7 +140,6 @@ def search_database(connection, query, terms, searchTypes):
     # Searches for matching items through each table one by one and adds any matches to the list
     for table in list_of_tables:
         formatted_query = query.replace("table_name", f"[{table}]")
-
         # executes the final fully-formatted query
         cursor.execute(formatted_query, terms)
 
