@@ -31,6 +31,10 @@ class startScreen(QDialog):
             cls._instance = cls(arg)
         return cls._instance
     
+    @classmethod
+    def replace_instance(cls, arg):
+        cls._instance = cls(arg)
+    
     def __init__(self, widget):
         super(startScreen, self).__init__()
         self.language_value = settings_manager.get_setting("language").lower()
