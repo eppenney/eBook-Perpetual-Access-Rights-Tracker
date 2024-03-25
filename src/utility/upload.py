@@ -39,7 +39,7 @@ def process_file(file_path):
         app = QApplication(sys.argv)
 
     # Feedback pop-up
-    progress_dialog = QProgressDialog("Processing File...", None, 0, 0)
+    progress_dialog = QProgressDialog("Processing File..." if language == "english" else "Fichier en cours de traitement", None, 0, 0)
     progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
     progress_dialog.setMinimumDuration(0)
     progress_dialog.show()
@@ -74,7 +74,7 @@ def process_file(file_path):
             file_df = Scraping.file_to_dataframe_tsv(".".join(file_name), file_path)
         else:
             m_logger.error("Invalid file type selected.")
-            QMessageBox.warning(None, "Invalid File Type", f"{file_name[0]}\nPlease select only valid xlsx, csv or tsv files.", QMessageBox.StandardButton.Ok)
+            QMessageBox.warning(None, "Invalid File Type" if language == "english" else "Type de fichier invalide", f"{file_name[0]}\nSelect only valid xlsx, csv or tsv files." if language == "english" else f"{file_name[0]}\nSélectionnez uniquement les fichiers xlsx, csv ou tsv valides.", QMessageBox.StandardButton.Ok)
             database.close_database(connection)
             progress_dialog.cancel()
             return
@@ -104,7 +104,7 @@ def process_file(file_path):
             Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
             Scraping.update_tables([file_name[0], date], "local", connection, result)
 
-            QMessageBox.information(None, "File Upload", f"{file_name[0]}\nYour file has been uploaded. {len(file_df)} rows have been added.", QMessageBox.StandardButton.Ok)
+            QMessageBox.information(None, "File Upload" if language == "english" else "Téléchargement de fichiers", f"{file_name[0]}\nYour file has been uploaded. {len(file_df)} rows have been added." if language == "english" else f"{file_name[0]}\nVotre fichier a été téléchargé. {len(file_df)} lignes ont été ajoutées.", QMessageBox.StandardButton.Ok)
         else:
             m_logger.error("Invalid file format.")
             QMessageBox.warning(None, "Invalid File Format" if language == "english" else "Format de fichier invalide", f"{file_name[0]}\nThe file was not in the correct format.\nUpload aborted." if language == "english" else f"{file_name[0]}\nLe fichier n'était pas au bon format.\nTéléchargement interrompu.", QMessageBox.StandardButton.Ok)
