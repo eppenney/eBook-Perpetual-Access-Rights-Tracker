@@ -1,6 +1,7 @@
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal, QUrl
+from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox
+from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox, QMessageBox
 from src.user_interface.scraping_ui import scrapeCRKN
 from src.utility.upload import upload_and_process_file
 from src.utility.settings_manager import Settings
@@ -9,8 +10,11 @@ import os
 settings_manager = Settings()
 settings_manager.load_settings()
 
+
 class settingsPage(QDialog):
     _instance = None
+    # # Should emit signal to the settings for saving the institute
+    instituteSelected = pyqtSignal(str)
 
     @classmethod
     def get_instance(cls, arg):
@@ -24,10 +28,10 @@ class settingsPage(QDialog):
         ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_settingsPage.ui")
         loadUi(ui_file, self)
 
-        self.backButton2 = self.findChild(QPushButton, 'pushButton') #finding child pushButton from the parent class
+        self.backButton2 = self.findChild(QPushButton, 'backButton')  # finding child pushButton from the parent class
         self.backButton2.clicked.connect(self.backToStartScreen2)
         self.widget = widget
-        self.original_widget_values = None 
+        self.original_widget_values = None
 
         # Upload Button
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
@@ -39,11 +43,51 @@ class settingsPage(QDialog):
 
         self.update_CRKN_button()
 
+        # Finding the combobox for the institute
+        self.instituteSelection = self.findChild(QComboBox, 'instituteSelection')
+        print("ComboBox Found:", self.instituteSelection)
+        self.populate_institutes()
+
+        # Finding the combobox for the SaveButton
+        self.saveSettingsButton = self.findChild(QPushButton, 'saveSettings')
+        self.saveSettingsButton.setToolTip("Click to save the settings")
+        print("ComboBox Found:", self.saveSettingsButton)
+        self.saveSettingsButton.clicked.connect(self.save_selected)
+
+        # Finding the linkButton from the QPushButton class
+        self.openLinkButton = self.findChild(QPushButton, 'helpButton')
+        self.openLinkButton.setToolTip("Click to open the link")
+        self.openLinkButton.clicked.connect(self.open_link)
+
+        # Finding the languageButton from the QPushButton class
+
+        self.languageSelection = self.findChild(QComboBox,'languageSetting')
+        self.languageSelection.currentIndexChanged.connect(self.change_language)
+
+        current_crkn_url = settings_manager.get_setting("CRKN_url")
+        self.crknURL = self.findChild(QTextEdit, 'crknURL')
+        self.crknURL.setPlainText(current_crkn_url)
+
+
     def update_CRKN_button(self):
         # Grey out the Update CRKN button if Allow_CRKN is False
         allow_crkn = settings_manager.get_setting("allow_CRKN")
         if allow_crkn != "True":
             self.updateButton.setEnabled(False)
+
+    def open_link(self):
+        # Get the link from the settings manager or define it directly
+        link = settings_manager.get_setting("github_link")
+
+        # Open the link in the default web browser
+        QDesktopServices.openUrl(QUrl(link))
+
+    def change_language(self):
+        # Get the selected language from the combo box
+        selected_language = self.languageSelection.currentText()
+
+        # Update the language setting in the settings manager
+        settings_manager.set_language(selected_language)
 
     def backToStartScreen2(self):
         from src.user_interface.startScreen import startScreen
@@ -51,11 +95,59 @@ class settingsPage(QDialog):
         self.widget.addWidget(backButton2)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
+    def populate_institutes(self):
+        # Clear the existing items in the combo box
+        self.instituteSelection.clear()
+
+        # Get the list of institutes from the settings manager
+        institutes = settings_manager.get_institutions()
+        print("Institutes:", institutes)  # TEST to make sure
+
+        # Populate the combo box with institute names
+        self.instituteSelection.addItems(institutes)
+
+    # Testing to save institute working
+    def save_selected(self):
+        # Get the currently selected institute from the combo box
+        selected_institute = self.instituteSelection.currentText()
+        print("Selected institute:", selected_institute)  # Test
+
+        # Save the selected institute using the settings manager
+        settings_manager.update_setting("institution", selected_institute)
+
+        selected_language = self.languageSelection.currentText()
+        print("Selected Language:", selected_language)  # Test
+
+        # Update the language setting in the settings manager
+        settings_manager.set_language(selected_language)
+
+        # Get the text from the crkURL QTextEdit
+        crkn_url = self.findChild(QTextEdit, 'crknURL').toPlainText()
+        print("Entered CRKN URL:", crkn_url)  # Test
+
+        # Update the CRKN URL setting using the settings manager
+        settings_manager.set_crkn_url(crkn_url)
+
+        # Get the text from the addInstitute QTextEdit
+        add_institute_text = self.findChild(QTextEdit, 'addInstitute').toPlainText()
+        print("Entered Institute:", add_institute_text)  # Test
+        #
+        # # Check if the institute already exists
+        # all_institutes = settings_manager.get_institutions()
+        # # if add_institute_text in all_institutes:
+        # #     # Prompt the user that the institute already exists
+        # #     QMessageBox.warning(self, "Duplicate Institute", "The entered institute already exists.", QMessageBox.Ok)
+        # #     return
+
+        # Add the new institute to the settings
+        settings_manager.add_local_institution(add_institute_text)
+
     """
     This was made by ChatGPT, do not sue me. 
     -Ethan
     Feb 27, 2024 
     """
+
     def update_all_sizes(self):
         original_width = 1200
         original_height = 800
@@ -97,3 +189,10 @@ class settingsPage(QDialog):
 
     def upload_button_clicked(self):
         upload_and_process_file()
+
+
+
+#Error i am encountering right now is based on the adding of institute and checking out if they already exist.
+#saving currently is not working as when clicked will shit down the application.
+# I have to make the things working.
+
