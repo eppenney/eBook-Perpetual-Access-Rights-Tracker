@@ -8,13 +8,13 @@ from src.utility.settings_manager import Settings
 
 
 settings_manager = Settings()
-language = settings_manager.get_setting("language")
 
 
 def upload_and_process_file():
     """
     Upload and process local files into local database
     """
+    language = settings_manager.get_setting("language")
     app = QApplication.instance()  # Try to get the existing application instance
     if app is None:  # If no instance exists, create a new one
         app = QApplication(sys.argv)
@@ -22,7 +22,7 @@ def upload_and_process_file():
     # options = QFileDialog.Option()
     options = QFileDialog.Option.ReadOnly
 
-    file_paths, _ = QFileDialog.getOpenFileNames(None, "Open File", "", "CSV TSV or Excel (*.csv *.tsv *.xlsx);;All Files (*)", options=options)
+    file_paths, _ = QFileDialog.getOpenFileNames(None, "Open File" if language == "english" else "Ouvrir le fichier", "", "CSV TSV or Excel (*.csv *.tsv *.xlsx);;All Files (*)" if language == "english" else "CSV TSV ou Excel (*.csv *.tsv *.xlsx);;Tous les fichiers (*)", options=options)
 
     # Iterate through selected file(s) to process them
     if file_paths:
@@ -34,6 +34,7 @@ def process_file(file_path):
     """
     Process file and store in local database - similar to Scraping.download_files, but for local files
     """
+    language = settings_manager.get_setting("language")
     app = QApplication.instance()  # Try to get the existing application instance
     if app is None:  # If no instance exists, create a new one
         app = QApplication(sys.argv)
@@ -56,7 +57,8 @@ def process_file(file_path):
 
     # If result is update, check if they want to update it
     if result == "UPDATE":
-        reply = QMessageBox.question(None, "Replace File", f"{file_name[0]}\nA file with the same name is already in the local database. Would you like to replace it with the new file?",
+        reply = QMessageBox.question(None, "Replace File" if language == "english" else "Remplacer le fichier",
+                                     f"{file_name[0]}\nA file with the same name is already in the local database. Would you like to replace it with the new file?" if language == "english" else f"{file_name[0]}\nUn fichier du même nom se trouve déjà dans la base de données locale. Souhaitez-vous le remplacer par le nouveau fichier ?",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.No:
             database.close_database(connection)
