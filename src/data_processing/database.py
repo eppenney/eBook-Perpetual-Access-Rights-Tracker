@@ -59,14 +59,13 @@ def get_tables(connection):
     if allow_crkn == "True":
         crkn_tables = connection.execute("SELECT file_name FROM CRKN_file_names;").fetchall()
         # strip the apostrophes/parentheses from formatting
-        list_of_tables += [row[0] for row in crkn_tables]
+        list_of_tables.extend([row[0] for row in crkn_tables])
 
     # Need to modify the table names for the local files
     local_tables = connection.execute("SELECT file_name FROM local_file_names;").fetchall()
-    local_tables = ["local_" + row[0] for row in local_tables]
 
     # Combine the two lists - CRKN and local file names; will only include CRKN files if allow_CRKN is True
-    list_of_tables.extend(local_tables)
+    list_of_tables.extend(["local_" + row[0] for row in local_tables])
     return list_of_tables
 
 
