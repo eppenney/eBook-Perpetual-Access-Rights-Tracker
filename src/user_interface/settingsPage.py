@@ -8,7 +8,6 @@ from src.utility.settings_manager import Settings
 import os
 
 settings_manager = Settings()
-settings_manager.load_settings()
 
 
 class settingsPage(QDialog):

@@ -4,8 +4,11 @@ from src.utility.export import export_data
 from src.utility.settings_manager import Settings
 from PyQt6.QtCore import Qt
 import os
+
+
 settings_manager = Settings()
-settings_manager.load_settings()
+
+
 # this class defines the search page please add the search page code here
 class searchDisplay(QDialog):
     def __init__(self, widget):

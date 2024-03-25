@@ -16,13 +16,13 @@ from src.utility.logger import m_logger
 import os
 
 settings_manager = Settings()
-settings_manager.load_settings()
 crkn_url = settings_manager.get_setting('CRKN_url')
 """
 Ethan Penney
 March 18, 2024
 Created a class variant of scraping functions that are threaded and emit signals in tandem with scraping_ui.py to update loading bar. 
 """
+
 
 class ScrapingThread(QThread):
     def __init__(self):
@@ -216,9 +216,6 @@ class ScrapingThread(QThread):
         except FileNotFoundError:
             pass
 
-"""
-Non-thread version
-"""
 
 def compare_file(file, method, connection):
     """
@@ -418,8 +415,6 @@ def upload_to_database(df, table_name, connection):
         # Rollback in case of error
         connection.rollback()
         m_logger.error(f"Failed to upload data to {table_name}: {e}. Database remains unchanged.")
-
-
 
 
 def check_file_format(file_df):

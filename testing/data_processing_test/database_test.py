@@ -50,7 +50,6 @@ def test_connect_to_database_mock(mock_sqlite3):
     mock_connection = MagicMock()
     mock_sqlite3.connect.return_value = mock_connection
     settings_manager = Settings()
-    settings_manager.load_settings()
 
     # Call the function
     connection = database.connect_to_database()

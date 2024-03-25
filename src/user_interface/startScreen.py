@@ -20,7 +20,6 @@ When creating instances of startScreen, use startScreen.get_instance(widget)
 Feb 27, 2024
 """
 settings_manager = Settings()
-settings_manager.load_settings()
 
 
 class startScreen(QDialog):

@@ -23,7 +23,6 @@ from src.utility.logger import m_logger
 from src.utility.settings_manager import Settings
 
 settings_manager = Settings()
-settings_manager.load_settings()
 
 
 def connect_to_database():
@@ -139,10 +138,16 @@ def search_database(connection, query, terms, searchTypes):
 
     # Searches for matching items through each table one by one and adds any matches to the list
     for table in list_of_tables:
-        formatted_query = query.replace("table_name", f"[{table}]")
-        # executes the final fully-formatted query
-        cursor.execute(formatted_query, terms)
+        # Get institutions from each table
+        institutions = cursor.execute(f'select * from {table}')
+        institutions = [description[0] for description in institutions.description[8:-2]]
 
-        results.extend(cursor.fetchall())
+        # Only search table if it has the institution
+        if settings_manager.get_setting("institution") in institutions:
+            formatted_query = query.replace("table_name", f"[{table}]")
+            # executes the final fully-formatted query
+            cursor.execute(formatted_query, terms)
+
+            results.extend(cursor.fetchall())
     return results
 

@@ -7,7 +7,7 @@ from src.utility.logger import m_logger
 from src.utility.settings_manager import Settings
 
 settings_manager = Settings()
-settings_manager.load_settings()
+
 
 def upload_and_process_file():
     app = QApplication.instance()  # Try to get the existing application instance
