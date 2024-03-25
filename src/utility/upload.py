@@ -8,6 +8,7 @@ from src.utility.settings_manager import Settings
 
 
 settings_manager = Settings()
+language = settings_manager.get_setting("language")
 
 
 def upload_and_process_file():
@@ -106,11 +107,11 @@ def process_file(file_path):
             QMessageBox.information(None, "File Upload", f"{file_name[0]}\nYour file has been uploaded. {len(file_df)} rows have been added.", QMessageBox.StandardButton.Ok)
         else:
             m_logger.error("Invalid file format.")
-            QMessageBox.warning(None, "Invalid File Format", f"{file_name[0]}\nThe file was not in the correct format.\nUpload aborted.", QMessageBox.StandardButton.Ok)
+            QMessageBox.warning(None, "Invalid File Format" if language == "english" else "Format de fichier invalide", f"{file_name[0]}\nThe file was not in the correct format.\nUpload aborted." if language == "english" else f"{file_name[0]}\nLe fichier n'était pas au bon format.\nTéléchargement interrompu.", QMessageBox.StandardButton.Ok)
 
     except Exception as e:
         m_logger.error(f"{file_name[0]}\nAn error occurred during file processing: {str(e)}")
-        QMessageBox.critical(None, "Error", f"{file_name[0]}\nAn error occurred during file processing: {str(e)}", QMessageBox.StandardButton.Ok)
+        QMessageBox.critical(None, "Error" if language == "english" else "Erreur", f"{file_name[0]}\nAn error occurred during file processing: {str(e)}" if language == "english" else f"{file_name[0]}\nUne erreur s'est produite lors du traitement du fichier: {str(e)}", QMessageBox.StandardButton.Ok)
 
     database.close_database(connection)
     progress_dialog.cancel()
