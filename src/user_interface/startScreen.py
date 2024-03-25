@@ -284,7 +284,7 @@ class startScreen(QDialog):
 
         # Do not search if no institution selected to search.
         if institution == "":
-            print("No institution selected.")
+            QMessageBox.information(self, "No institution selected" if self.language_value == "english" else "Aucun établissement sélectionné", "You have no institute selected. Please select an institute on the settings page." if self.language_value == "english" else "Vous n'avez sélectionné aucun institut. Veuillez sélectionner un institut sur la page des paramètres.")
             return
 
         searchText = self.textEdit.text().strip()

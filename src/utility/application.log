@@ -1503,3 +1503,376 @@
 2024-03-25 00:39:32,721 - PyQt6.uic.uiparser - DEBUG - new topwidget <src.user_interface.searchDisplay.searchDisplay object at 0x00000206AE660AF0>
 2024-03-25 00:39:32,721 - PyQt6.uic.uiparser - DEBUG - pop widget searchDisplay Dialog
 2024-03-25 00:39:32,722 - PyQt6.uic.uiparser - DEBUG - new topwidget None
+2024-03-25 00:42:14,083 - root - INFO - Application started
+2024-03-25 00:42:14,108 - PyQt6.uic.uiparser - DEBUG - toplevel widget is startScreen
+2024-03-25 00:42:14,108 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,108 - PyQt6.uic.properties - DEBUG - setting property windowTitle
+2024-03-25 00:42:14,108 - PyQt6.uic.uiparser - DEBUG - push startScreen Dialog
+2024-03-25 00:42:14,109 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,109 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,110 - PyQt6.uic.uiparser - DEBUG - push QWidget widget
+2024-03-25 00:42:14,110 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,110 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,110 - PyQt6.uic.uiparser - DEBUG - push QWidget widget_2
+2024-03-25 00:42:14,110 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,111 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,111 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:14,111 - PyQt6.uic.uiparser - DEBUG - push QLabel label
+2024-03-25 00:42:14,111 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel label
+2024-03-25 00:42:14,111 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029679A0>
+2024-03-25 00:42:14,112 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,112 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,112 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:14,112 - PyQt6.uic.uiparser - DEBUG - push QPushButton settingButton1
+2024-03-25 00:42:14,112 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton settingButton1
+2024-03-25 00:42:14,112 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029679A0>
+2024-03-25 00:42:14,113 - PyQt6.uic.uiparser - DEBUG - pop widget QWidget widget_2
+2024-03-25 00:42:14,113 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x0000020902967910>
+2024-03-25 00:42:14,117 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,118 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,118 - PyQt6.uic.uiparser - DEBUG - push QLineEdit textEdit
+2024-03-25 00:42:14,118 - PyQt6.uic.uiparser - DEBUG - pop widget QLineEdit textEdit
+2024-03-25 00:42:14,118 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x0000020902967910>
+2024-03-25 00:42:14,119 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,119 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,119 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:14,120 - PyQt6.uic.uiparser - DEBUG - push QPushButton search
+2024-03-25 00:42:14,120 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton search
+2024-03-25 00:42:14,120 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x0000020902967910>
+2024-03-25 00:42:14,120 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,120 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,121 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:14,121 - PyQt6.uic.uiparser - DEBUG - push QPushButton clearButton
+2024-03-25 00:42:14,121 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton clearButton
+2024-03-25 00:42:14,121 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x0000020902967910>
+2024-03-25 00:42:14,121 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,121 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,122 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:14,122 - PyQt6.uic.uiparser - DEBUG - push QLabel label_2
+2024-03-25 00:42:14,122 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel label_2
+2024-03-25 00:42:14,122 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x0000020902967910>
+2024-03-25 00:42:14,122 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,122 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,123 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:14,123 - PyQt6.uic.uiparser - DEBUG - push QPushButton pushButton
+2024-03-25 00:42:14,123 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton pushButton
+2024-03-25 00:42:14,123 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x0000020902967910>
+2024-03-25 00:42:14,123 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,123 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,124 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:14,124 - PyQt6.uic.uiparser - DEBUG - push QPushButton removeButton
+2024-03-25 00:42:14,124 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton removeButton
+2024-03-25 00:42:14,124 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x0000020902967910>
+2024-03-25 00:42:14,125 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,125 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,125 - PyQt6.uic.uiparser - DEBUG - push QComboBox booleanBox
+2024-03-25 00:42:14,126 - PyQt6.uic.uiparser - DEBUG - pop widget QComboBox booleanBox
+2024-03-25 00:42:14,126 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x0000020902967910>
+2024-03-25 00:42:14,126 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,127 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,127 - PyQt6.uic.uiparser - DEBUG - push QComboBox booleanBoxRight
+2024-03-25 00:42:14,127 - PyQt6.uic.uiparser - DEBUG - pop widget QComboBox booleanBoxRight
+2024-03-25 00:42:14,127 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x0000020902967910>
+2024-03-25 00:42:14,128 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,128 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:14,128 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:14,128 - PyQt6.uic.uiparser - DEBUG - push QLabel universityName
+2024-03-25 00:42:14,128 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel universityName
+2024-03-25 00:42:14,128 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x0000020902967910>
+2024-03-25 00:42:14,129 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:14,129 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:14,129 - PyQt6.uic.uiparser - DEBUG - push QLabel internetConnection
+2024-03-25 00:42:14,129 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel internetConnection
+2024-03-25 00:42:14,129 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x0000020902967910>
+2024-03-25 00:42:14,129 - PyQt6.uic.uiparser - DEBUG - pop widget QWidget widget
+2024-03-25 00:42:14,129 - PyQt6.uic.uiparser - DEBUG - new topwidget <src.user_interface.startScreen.startScreen object at 0x00000209029667A0>
+2024-03-25 00:42:14,131 - PyQt6.uic.uiparser - DEBUG - pop widget startScreen Dialog
+2024-03-25 00:42:14,131 - PyQt6.uic.uiparser - DEBUG - new topwidget None
+2024-03-25 00:42:16,345 - PyQt6.uic.uiparser - DEBUG - toplevel widget is settingsPage
+2024-03-25 00:42:16,346 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,346 - PyQt6.uic.properties - DEBUG - setting property windowTitle
+2024-03-25 00:42:16,346 - PyQt6.uic.uiparser - DEBUG - push settingsPage Dialog
+2024-03-25 00:42:16,346 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,346 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,346 - PyQt6.uic.uiparser - DEBUG - push QWidget widget
+2024-03-25 00:42:16,347 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,347 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,347 - PyQt6.uic.uiparser - DEBUG - push QWidget widget_2
+2024-03-25 00:42:16,347 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,347 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,348 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:16,348 - PyQt6.uic.uiparser - DEBUG - push QLabel label
+2024-03-25 00:42:16,348 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel label
+2024-03-25 00:42:16,349 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B0EE0>
+2024-03-25 00:42:16,349 - PyQt6.uic.uiparser - DEBUG - pop widget QWidget widget_2
+2024-03-25 00:42:16,349 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,349 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,349 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,349 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:16,349 - PyQt6.uic.uiparser - DEBUG - push QPushButton backButton
+2024-03-25 00:42:16,349 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton backButton
+2024-03-25 00:42:16,349 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,349 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,351 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,351 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:16,351 - PyQt6.uic.uiparser - DEBUG - push QPushButton uploadButton
+2024-03-25 00:42:16,351 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton uploadButton
+2024-03-25 00:42:16,351 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,352 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,352 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,352 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:16,352 - PyQt6.uic.uiparser - DEBUG - push QPushButton updateCRKN
+2024-03-25 00:42:16,352 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton updateCRKN
+2024-03-25 00:42:16,352 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,352 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,353 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,353 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:16,353 - PyQt6.uic.uiparser - DEBUG - push QLabel UniversityLabel_5
+2024-03-25 00:42:16,353 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel UniversityLabel_5
+2024-03-25 00:42:16,353 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,354 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,354 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,354 - PyQt6.uic.uiparser - DEBUG - push QComboBox instituteSelection
+2024-03-25 00:42:16,354 - PyQt6.uic.uiparser - DEBUG - pop widget QComboBox instituteSelection
+2024-03-25 00:42:16,354 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,354 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,355 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,355 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:16,355 - PyQt6.uic.uiparser - DEBUG - push QLabel UniversityLabel_6
+2024-03-25 00:42:16,355 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel UniversityLabel_6
+2024-03-25 00:42:16,355 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,355 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,355 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,356 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:16,356 - PyQt6.uic.uiparser - DEBUG - push QLabel UniversityLabel_7
+2024-03-25 00:42:16,356 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel UniversityLabel_7
+2024-03-25 00:42:16,356 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,356 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,356 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,357 - PyQt6.uic.uiparser - DEBUG - push QComboBox languageSetting
+2024-03-25 00:42:16,357 - PyQt6.uic.uiparser - DEBUG - pop widget QComboBox languageSetting
+2024-03-25 00:42:16,358 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,358 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,358 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,358 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:16,358 - PyQt6.uic.uiparser - DEBUG - push QLabel UniversityLabel_8
+2024-03-25 00:42:16,358 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel UniversityLabel_8
+2024-03-25 00:42:16,358 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,359 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,359 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,359 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:16,359 - PyQt6.uic.uiparser - DEBUG - push QPushButton saveSettings
+2024-03-25 00:42:16,359 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton saveSettings
+2024-03-25 00:42:16,359 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,360 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,360 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,360 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:16,360 - PyQt6.uic.uiparser - DEBUG - push QPushButton helpButton
+2024-03-25 00:42:16,360 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton helpButton
+2024-03-25 00:42:16,360 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,361 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,361 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,362 - PyQt6.uic.uiparser - DEBUG - push QTextEdit crknURL
+2024-03-25 00:42:16,362 - PyQt6.uic.uiparser - DEBUG - pop widget QTextEdit crknURL
+2024-03-25 00:42:16,362 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,362 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,362 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,363 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:16,363 - PyQt6.uic.uiparser - DEBUG - push QPushButton manageDatabase
+2024-03-25 00:42:16,363 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton manageDatabase
+2024-03-25 00:42:16,363 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,363 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:16,363 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:16,364 - PyQt6.uic.uiparser - DEBUG - push QTextEdit addInstitute
+2024-03-25 00:42:16,364 - PyQt6.uic.uiparser - DEBUG - pop widget QTextEdit addInstitute
+2024-03-25 00:42:16,364 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B03A0>
+2024-03-25 00:42:16,364 - PyQt6.uic.uiparser - DEBUG - pop widget QWidget widget
+2024-03-25 00:42:16,365 - PyQt6.uic.uiparser - DEBUG - new topwidget <src.user_interface.settingsPage.settingsPage object at 0x00000209029675B0>
+2024-03-25 00:42:16,365 - PyQt6.uic.uiparser - DEBUG - pop widget settingsPage Dialog
+2024-03-25 00:42:16,365 - PyQt6.uic.uiparser - DEBUG - new topwidget None
+2024-03-25 00:42:21,835 - PyQt6.uic.uiparser - DEBUG - toplevel widget is startScreen
+2024-03-25 00:42:21,836 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,836 - PyQt6.uic.properties - DEBUG - setting property windowTitle
+2024-03-25 00:42:21,836 - PyQt6.uic.uiparser - DEBUG - push startScreen Dialog
+2024-03-25 00:42:21,836 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,836 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,836 - PyQt6.uic.uiparser - DEBUG - push QWidget widget
+2024-03-25 00:42:21,837 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,837 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,837 - PyQt6.uic.uiparser - DEBUG - push QWidget widget_2
+2024-03-25 00:42:21,837 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,837 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,837 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,837 - PyQt6.uic.uiparser - DEBUG - push QLabel label
+2024-03-25 00:42:21,837 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel label
+2024-03-25 00:42:21,838 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1E10>
+2024-03-25 00:42:21,838 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,838 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,838 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,838 - PyQt6.uic.uiparser - DEBUG - push QPushButton settingButton1
+2024-03-25 00:42:21,838 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton settingButton1
+2024-03-25 00:42:21,839 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1E10>
+2024-03-25 00:42:21,839 - PyQt6.uic.uiparser - DEBUG - pop widget QWidget widget_2
+2024-03-25 00:42:21,839 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1D80>
+2024-03-25 00:42:21,839 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,839 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,839 - PyQt6.uic.uiparser - DEBUG - push QLineEdit textEdit
+2024-03-25 00:42:21,839 - PyQt6.uic.uiparser - DEBUG - pop widget QLineEdit textEdit
+2024-03-25 00:42:21,841 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1D80>
+2024-03-25 00:42:21,841 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,841 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,841 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,841 - PyQt6.uic.uiparser - DEBUG - push QPushButton search
+2024-03-25 00:42:21,841 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton search
+2024-03-25 00:42:21,842 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1D80>
+2024-03-25 00:42:21,842 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,842 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,842 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,842 - PyQt6.uic.uiparser - DEBUG - push QPushButton clearButton
+2024-03-25 00:42:21,842 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton clearButton
+2024-03-25 00:42:21,842 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1D80>
+2024-03-25 00:42:21,843 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,843 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,843 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,843 - PyQt6.uic.uiparser - DEBUG - push QLabel label_2
+2024-03-25 00:42:21,843 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel label_2
+2024-03-25 00:42:21,843 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1D80>
+2024-03-25 00:42:21,843 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,844 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,844 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,844 - PyQt6.uic.uiparser - DEBUG - push QPushButton pushButton
+2024-03-25 00:42:21,844 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton pushButton
+2024-03-25 00:42:21,844 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1D80>
+2024-03-25 00:42:21,844 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,844 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,845 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,845 - PyQt6.uic.uiparser - DEBUG - push QPushButton removeButton
+2024-03-25 00:42:21,845 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton removeButton
+2024-03-25 00:42:21,845 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1D80>
+2024-03-25 00:42:21,845 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,845 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,846 - PyQt6.uic.uiparser - DEBUG - push QComboBox booleanBox
+2024-03-25 00:42:21,847 - PyQt6.uic.uiparser - DEBUG - pop widget QComboBox booleanBox
+2024-03-25 00:42:21,847 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1D80>
+2024-03-25 00:42:21,847 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,847 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,847 - PyQt6.uic.uiparser - DEBUG - push QComboBox booleanBoxRight
+2024-03-25 00:42:21,848 - PyQt6.uic.uiparser - DEBUG - pop widget QComboBox booleanBoxRight
+2024-03-25 00:42:21,848 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1D80>
+2024-03-25 00:42:21,848 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,849 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,849 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,849 - PyQt6.uic.uiparser - DEBUG - push QLabel universityName
+2024-03-25 00:42:21,849 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel universityName
+2024-03-25 00:42:21,849 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1D80>
+2024-03-25 00:42:21,849 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,850 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,850 - PyQt6.uic.uiparser - DEBUG - push QLabel internetConnection
+2024-03-25 00:42:21,850 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel internetConnection
+2024-03-25 00:42:21,850 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B1D80>
+2024-03-25 00:42:21,850 - PyQt6.uic.uiparser - DEBUG - pop widget QWidget widget
+2024-03-25 00:42:21,851 - PyQt6.uic.uiparser - DEBUG - new topwidget <src.user_interface.startScreen.startScreen object at 0x00000209029B25F0>
+2024-03-25 00:42:21,851 - PyQt6.uic.uiparser - DEBUG - pop widget startScreen Dialog
+2024-03-25 00:42:21,851 - PyQt6.uic.uiparser - DEBUG - new topwidget None
+2024-03-25 00:42:21,856 - PyQt6.uic.uiparser - DEBUG - toplevel widget is settingsPage
+2024-03-25 00:42:21,856 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,856 - PyQt6.uic.properties - DEBUG - setting property windowTitle
+2024-03-25 00:42:21,856 - PyQt6.uic.uiparser - DEBUG - push settingsPage Dialog
+2024-03-25 00:42:21,856 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,856 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,857 - PyQt6.uic.uiparser - DEBUG - push QWidget widget
+2024-03-25 00:42:21,857 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,857 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,857 - PyQt6.uic.uiparser - DEBUG - push QWidget widget_2
+2024-03-25 00:42:21,857 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,857 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,857 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,857 - PyQt6.uic.uiparser - DEBUG - push QLabel label
+2024-03-25 00:42:21,857 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel label
+2024-03-25 00:42:21,858 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B3010>
+2024-03-25 00:42:21,858 - PyQt6.uic.uiparser - DEBUG - pop widget QWidget widget_2
+2024-03-25 00:42:21,858 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,858 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,858 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,858 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,859 - PyQt6.uic.uiparser - DEBUG - push QPushButton backButton
+2024-03-25 00:42:21,859 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton backButton
+2024-03-25 00:42:21,860 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,860 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,860 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,860 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,860 - PyQt6.uic.uiparser - DEBUG - push QPushButton uploadButton
+2024-03-25 00:42:21,860 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton uploadButton
+2024-03-25 00:42:21,860 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,861 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,861 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,861 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,861 - PyQt6.uic.uiparser - DEBUG - push QPushButton updateCRKN
+2024-03-25 00:42:21,861 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton updateCRKN
+2024-03-25 00:42:21,861 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,862 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,862 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,862 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,862 - PyQt6.uic.uiparser - DEBUG - push QLabel UniversityLabel_5
+2024-03-25 00:42:21,863 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel UniversityLabel_5
+2024-03-25 00:42:21,863 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,863 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,863 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,863 - PyQt6.uic.uiparser - DEBUG - push QComboBox instituteSelection
+2024-03-25 00:42:21,863 - PyQt6.uic.uiparser - DEBUG - pop widget QComboBox instituteSelection
+2024-03-25 00:42:21,863 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,864 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,864 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,864 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,864 - PyQt6.uic.uiparser - DEBUG - push QLabel UniversityLabel_6
+2024-03-25 00:42:21,864 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel UniversityLabel_6
+2024-03-25 00:42:21,864 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,865 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,865 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,865 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,865 - PyQt6.uic.uiparser - DEBUG - push QLabel UniversityLabel_7
+2024-03-25 00:42:21,865 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel UniversityLabel_7
+2024-03-25 00:42:21,865 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,866 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,866 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,866 - PyQt6.uic.uiparser - DEBUG - push QComboBox languageSetting
+2024-03-25 00:42:21,867 - PyQt6.uic.uiparser - DEBUG - pop widget QComboBox languageSetting
+2024-03-25 00:42:21,867 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,867 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,867 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,868 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,868 - PyQt6.uic.uiparser - DEBUG - push QLabel UniversityLabel_8
+2024-03-25 00:42:21,868 - PyQt6.uic.uiparser - DEBUG - pop widget QLabel UniversityLabel_8
+2024-03-25 00:42:21,868 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,868 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,868 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,869 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,869 - PyQt6.uic.uiparser - DEBUG - push QPushButton saveSettings
+2024-03-25 00:42:21,869 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton saveSettings
+2024-03-25 00:42:21,869 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,869 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,870 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,870 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,870 - PyQt6.uic.uiparser - DEBUG - push QPushButton helpButton
+2024-03-25 00:42:21,870 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton helpButton
+2024-03-25 00:42:21,871 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,871 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,871 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,872 - PyQt6.uic.uiparser - DEBUG - push QTextEdit crknURL
+2024-03-25 00:42:21,872 - PyQt6.uic.uiparser - DEBUG - pop widget QTextEdit crknURL
+2024-03-25 00:42:21,872 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,872 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,872 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,873 - PyQt6.uic.properties - DEBUG - setting property text
+2024-03-25 00:42:21,873 - PyQt6.uic.uiparser - DEBUG - push QPushButton manageDatabase
+2024-03-25 00:42:21,873 - PyQt6.uic.uiparser - DEBUG - pop widget QPushButton manageDatabase
+2024-03-25 00:42:21,873 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,873 - PyQt6.uic.properties - DEBUG - setting property geometry
+2024-03-25 00:42:21,873 - PyQt6.uic.properties - DEBUG - setting property styleSheet
+2024-03-25 00:42:21,874 - PyQt6.uic.uiparser - DEBUG - push QTextEdit addInstitute
+2024-03-25 00:42:21,874 - PyQt6.uic.uiparser - DEBUG - pop widget QTextEdit addInstitute
+2024-03-25 00:42:21,874 - PyQt6.uic.uiparser - DEBUG - new topwidget <PyQt6.QtWidgets.QWidget object at 0x00000209029B2290>
+2024-03-25 00:42:21,874 - PyQt6.uic.uiparser - DEBUG - pop widget QWidget widget
+2024-03-25 00:42:21,874 - PyQt6.uic.uiparser - DEBUG - new topwidget <src.user_interface.settingsPage.settingsPage object at 0x00000209029B2320>
+2024-03-25 00:42:21,875 - PyQt6.uic.uiparser - DEBUG - pop widget settingsPage Dialog
+2024-03-25 00:42:21,875 - PyQt6.uic.uiparser - DEBUG - new topwidget None
