@@ -30,7 +30,7 @@ def connect_to_database():
     Connect to local database.
     :return: database connection object
     """
-    print("Connecting to the database")
+    m_logger.info(f"Opening connection to the database.")
     database_name = settings_manager.get_setting('database_name')
     return sqlite3.connect(database_name)
 
@@ -40,33 +40,44 @@ def close_database(connection):
     Close connection to local database.
     :param connection: database connection object
     """
-    print("Closing connection to the database")
+    m_logger.info(f"Closing connection to the database.")
     connection.commit()
     connection.close()
 
 
-def get_tables(connection):
+def get_CRKN_tables(connection):
     """
-    Gets the names of all tables via the CRKN and local file name tables
+    Get list of CRKN table names if allow_CKRN is True, else empty list
     :param connection: database connection object
-    :return: list of all CRKN/local file name tables
+    :return: list of CRKN table names, or empty list
     """
-
-    list_of_tables = []
-
-    # Only show if allow_CRKN is set to true
+    # Only get if allow_CRKN is set to true, else empty list
     allow_crkn = settings_manager.get_setting('allow_CRKN')
     if allow_crkn == "True":
         crkn_tables = connection.execute("SELECT file_name FROM CRKN_file_names;").fetchall()
         # strip the apostrophes/parentheses from formatting
-        list_of_tables.extend([row[0] for row in crkn_tables])
+        return [row[0] for row in crkn_tables]
+    return []
 
-    # Need to modify the table names for the local files
+
+def get_local_tables(connection):
+    """
+    Get list of local table names
+    :param connection: database connection object
+    :return: list of local table names
+    """
     local_tables = connection.execute("SELECT file_name FROM local_file_names;").fetchall()
+    # Need to modify the table names for the local files
+    return ["local_" + row[0] for row in local_tables]
 
-    # Combine the two lists - CRKN and local file names; will only include CRKN files if allow_CRKN is True
-    list_of_tables.extend(["local_" + row[0] for row in local_tables])
-    return list_of_tables
+
+def get_tables(connection):
+    """
+    Gets the names of all tables via the CRKN and local file name tables. Uses two helper functions.
+    :param connection: database connection object
+    :return: list of all CRKN/local file name tables, depending on allow_CRKN value
+    """
+    return get_CRKN_tables(connection) + get_local_tables(connection)
 
 
 def create_file_name_tables(connection):
@@ -86,7 +97,7 @@ def create_file_name_tables(connection):
 
         # If table doesn't exist, create new table for CRKN file info
         if not list_of_tables:
-            print("Table does not exist, creating new one")
+            m_logger.info("CRKN_file_names table does not exist, creating new one")
             cursor.execute("CREATE TABLE CRKN_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
 
         # Empty list for next check
@@ -97,7 +108,7 @@ def create_file_name_tables(connection):
 
         # If table does not exist, create new table for local file info
         if not list_of_tables:
-            print("Table does not exist, creating new one")
+            m_logger.info("local_file_names table does not exist, creating new one")
             cursor.execute("CREATE TABLE local_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
         # Commit changes
         connection.commit()
@@ -149,4 +160,3 @@ def search_database(connection, query, terms, searchTypes):
 
             results.extend(cursor.fetchall())
     return results
-
