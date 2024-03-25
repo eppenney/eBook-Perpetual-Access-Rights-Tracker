@@ -39,11 +39,13 @@ class searchDisplay(QDialog):
 
 
     def backToStartScreen(self):
+        print("Size of widget stack:", self.widget.count())
         # from src.user_interface.startScreen import startScreen
         # backButton = startScreen.get_instance(self.widget)
         # self.widget.addWidget(backButton)
         # self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
         self.widget.removeWidget(self.widget.currentWidget())
+        print("Size of widget stack:", self.widget.count())
 
 
     def display_results_in_table(self, results):

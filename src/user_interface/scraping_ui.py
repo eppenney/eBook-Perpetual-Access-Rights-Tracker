@@ -57,6 +57,7 @@ class LoadingPopup(QDialog):
         dialog.addButton(QMessageBox.StandardButton.Ok)
         dialog.exec()
         self.finished = True
+        self.close()
 
     def show_popup_once(self):
         dialog = QMessageBox(self)
