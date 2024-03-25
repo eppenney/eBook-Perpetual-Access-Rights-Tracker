@@ -1,4 +1,4 @@
-from PyQt6.QtCore import pyqtSignal, QUrl
+from PyQt6.QtCore import pyqtSignal, QUrl, Qt
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox, QMessageBox
@@ -155,6 +155,12 @@ class settingsPage(QDialog):
         self.widget.addWidget(self.replace_instance(self.widget))
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
+    def keyPressEvent(self, event):
+        # Override keyPressEvent method to ignore Escape key event
+        if event.key() == Qt.Key.Key_Escape:
+            event.ignore()  # Ignore the Escape key event
+        else:
+            super().keyPressEvent(event)
         
 
     """

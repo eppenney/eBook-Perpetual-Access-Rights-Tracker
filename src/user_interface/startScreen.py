@@ -1,6 +1,6 @@
 import urllib
 
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, Qt
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QLineEdit, QMessageBox, QComboBox, QSizePolicy, QWidget, \
     QLabel
@@ -370,3 +370,10 @@ class startScreen(QDialog):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
         super().resizeEvent(event)
         self.update_all_sizes()
+
+    def keyPressEvent(self, event):
+        # Override keyPressEvent method to ignore Escape key event
+        if event.key() == Qt.Key.Key_Escape:
+            event.ignore()  # Ignore the Escape key event
+        else:
+            super().keyPressEvent(event)

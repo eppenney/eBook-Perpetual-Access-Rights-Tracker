@@ -113,4 +113,9 @@ class searchDisplay(QDialog):
         super().resizeEvent(event)
         self.update_all_sizes()
 
-
+    def keyPressEvent(self, event):
+        # Override keyPressEvent method to ignore Escape key event
+        if event.key() == Qt.Key.Key_Escape:
+            event.ignore()  # Ignore the Escape key event
+        else:
+            super().keyPressEvent(event)
