@@ -19,6 +19,7 @@ Other Tables:
 """
 
 import sqlite3
+from src.utility.logger import m_logger
 from src.utility.settings_manager import Settings
 
 settings_manager = Settings()
@@ -76,28 +77,36 @@ def create_file_name_tables(connection):
     Table name format: just the abbreviation
     :param connection: database connection object
     """
-    # cursor object to interact with database
-    cursor = connection.cursor()
 
-    list_of_tables = cursor.execute(
-        """SELECT name FROM sqlite_master WHERE type='table'
-        AND name='CRKN_file_names'; """).fetchall()
+    try:
+        # cursor object to interact with database
+        cursor = connection.cursor()
 
-    # If table doesn't exist, create new table for CRKN file info
-    if not list_of_tables:
-        print("Table does not exist, creating new one")
-        cursor.execute("CREATE TABLE CRKN_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
+        list_of_tables = cursor.execute(
+            """SELECT name FROM sqlite_master WHERE type='table'
+            AND name='CRKN_file_names'; """).fetchall()
 
-    # Empty list for next check
-    list_of_tables.clear()
-    list_of_tables = cursor.execute(
-        """SELECT name FROM sqlite_master WHERE type='table'
-        AND name='local_file_names'; """).fetchall()
+        # If table doesn't exist, create new table for CRKN file info
+        if not list_of_tables:
+            print("Table does not exist, creating new one")
+            cursor.execute("CREATE TABLE CRKN_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
 
-    # If table does not exist, create new table for local file info
-    if not list_of_tables:
-        print("Table does not exist, creating new one")
-        cursor.execute("CREATE TABLE local_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
+        # Empty list for next check
+        list_of_tables.clear()
+        list_of_tables = cursor.execute(
+            """SELECT name FROM sqlite_master WHERE type='table'
+            AND name='local_file_names'; """).fetchall()
+
+        # If table does not exist, create new table for local file info
+        if not list_of_tables:
+            print("Table does not exist, creating new one")
+            cursor.execute("CREATE TABLE local_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
+        # Commit changes
+        connection.commit()
+    except sqlite3.Error as e:
+        m_logger.error(f"A database error occured: {e}")
+        # Rollback changes
+        connection.rollback()
 
 
 def search_database(connection, query, terms, searchTypes):
