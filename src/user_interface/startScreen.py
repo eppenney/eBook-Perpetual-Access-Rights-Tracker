@@ -273,7 +273,7 @@ class startScreen(QDialog):
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
     def searchToDisplay(self,results):
-        search = searchDisplay(self.widget)
+        search = searchDisplay.replace_instance(self.widget)
         self.widget.addWidget(search)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
         search.display_results_in_table(results)

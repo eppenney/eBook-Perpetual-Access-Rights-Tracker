@@ -11,6 +11,18 @@ settings_manager = Settings()
 
 # this class defines the search page please add the search page code here
 class searchDisplay(QDialog):
+    _instance = None
+    @classmethod
+    def get_instance(cls, arg):
+        if not cls._instance:
+            cls._instance = cls(arg)
+        return cls._instance
+    
+    @classmethod
+    def replace_instance(cls, arg):
+        cls._instance = cls(arg)
+        return cls._instance
+
     def __init__(self, widget):
         super(searchDisplay, self).__init__()
         language_value = settings_manager.get_setting("language").lower()
