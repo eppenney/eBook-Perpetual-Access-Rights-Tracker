@@ -2,10 +2,13 @@ from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QTableWidgetItem, QTextEdit, QComboBox, QWidget
 from src.utility.export import export_data
 from src.utility.settings_manager import Settings
-import math
+from PyQt6.QtCore import Qt
 import os
+
+
 settings_manager = Settings()
-settings_manager.load_settings()
+
+
 # this class defines the search page please add the search page code here
 class searchDisplay(QDialog):
     def __init__(self, widget):
@@ -94,19 +97,18 @@ class searchDisplay(QDialog):
                     font.setPointSize(int(original_font_size * (new_width / original_width)))
                 widget.setFont(font)
         
-        table_width = int(0.8 * new_width) - 60
+        table_width = int(0.8 * new_width)
         self.tableWidget.setFixedWidth(table_width)
 
         # Calculate the width for each column
         num_columns = self.tableWidget.columnCount()
-        column_width = (table_width) // num_columns if num_columns > 0 else 0
+        column_width = (self.tableWidget.viewport().width()) // num_columns if num_columns > 0 else 0
 
         # Set the calculated width for each column
         for column_number in range(num_columns):
             self.tableWidget.setColumnWidth(column_number, column_width)
 
-        # self.tableWidget.setColumnWidth(0, 40)
-        self.tableWidget.setFixedWidth(num_columns * column_width + 63)
+        self.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
 
 
     def resizeEvent(self, event):
@@ -114,4 +116,9 @@ class searchDisplay(QDialog):
         super().resizeEvent(event)
         self.update_all_sizes()
 
-
+    def keyPressEvent(self, event):
+        # Override keyPressEvent method to ignore Escape key event
+        if event.key() == Qt.Key.Key_Escape:
+            event.ignore()  # Ignore the Escape key event
+        else:
+            super().keyPressEvent(event)
