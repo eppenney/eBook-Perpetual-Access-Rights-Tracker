@@ -2,14 +2,14 @@
 DATABASE STRUCTURE:
 
 Table 1: CRKN_file_names: (file_name, file_date)
-        - Contains a list of all of the tables that contain CRKN file data
+        - Contains a list of all the tables that contain CRKN file data
         - file_name = first part of file link name on CRKN website
         - file_date = date and version number of file link name on CRKN website
 
 Table 2: local_file_names: (file_name, file_date)
         - Contains a list of all the tables that contain local file data
         - NOTE: Does not include "local_" that is at the beginning of the actual tables
-        - file_name = entire file name that is uploaded
+        - file_name = entire file name that is uploaded (without the extension)
         - file_date = the actual date that the file was uploaded to the database
 
 Other Tables:
