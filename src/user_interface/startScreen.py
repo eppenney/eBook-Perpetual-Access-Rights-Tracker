@@ -37,9 +37,7 @@ class startScreen(QDialog):
         self.language_value = settings_manager.get_setting("language").lower()
         ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_start.ui")  # Assuming the UI file is in the same directory as the script
         loadUi(ui_file, self)
-
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-
 
         # settings up the internet connection in the icon at the end
         self.internetConnectionLabel = self.findChild(QLabel, 'internetConnection')
@@ -55,9 +53,6 @@ class startScreen(QDialog):
         self.duplicateCombos = []
         self.duplicateSearchTypes = []
 
-        
-
-
         # Finding widgets
         self.textEdit = self.findChild(QLineEdit, 'textEdit')
         self.booleanBox = self.findChild(QComboBox, 'booleanBox')
@@ -65,7 +60,6 @@ class startScreen(QDialog):
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
         self.instituteButton = self.findChild(QPushButton, "institutionButton")
         self.textEdit.returnPressed.connect(self.search_button_clicked)
-
 
         # Clear Button
         self.clearButton = self.findChild(QPushButton, "clearButton")
@@ -94,7 +88,6 @@ class startScreen(QDialog):
         self.settingMenuButton.setIconSize(icon_size)
         self.settingMenuButton.clicked.connect(self.settingsDisplay)
 
-        self.settings_manager = Settings()
         self.displayInstitutionName()
 
         # Resizing Stuff
@@ -128,7 +121,7 @@ class startScreen(QDialog):
             self.internetConnectionLabel.setPixmap(QPixmap('resources/red_signal.png'))
 
     def displayInstitutionName(self):
-        institution_name = self.settings_manager.get_setting('institution')
+        institution_name = settings_manager.get_setting('institution')
         if institution_name:
             self.universityName.setText(institution_name)
         else:

@@ -167,10 +167,10 @@ color: rgb(255, 255, 255);
 color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
-     <string>Select Institute</string>
+     <string>Select institution</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="instituteSelection">
+   <widget class="QComboBox" name="institutionSelection">
     <property name="geometry">
      <rect>
       <x>300</x>
@@ -228,7 +228,7 @@ QComboBox::down-arrow {
 color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
-     <string>Add Institute</string>
+     <string>Add institution</string>
     </property>
    </widget>
    <widget class="QLabel" name="UniversityLabel_7">
@@ -453,7 +453,7 @@ QTextEdit:hover {
      <string>Manage Local Database</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="addInstitute">
+   <widget class="QTextEdit" name="addinstitution">
     <property name="geometry">
      <rect>
       <x>320</x>
