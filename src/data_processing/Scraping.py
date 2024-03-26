@@ -39,8 +39,8 @@ class ScrapingThread(QThread):
         """ Attempt to scrape again if connection is lost in the middle of scraping"""
         if attempt >= max_attempt:
             return False
-        # wait for 2 seconds before retrying
-        time.sleep(2)
+        # wait for 1 second before retrying
+        time.sleep(1)
         return True
 
     def scrapeCRKN(self):
@@ -162,45 +162,69 @@ class ScrapingThread(QThread):
         :param files: list of files to download from CRKN
         :param connection: database connection object
         """
-        i = 0
-        for [link, command] in files:
-            i += 1
-            progress = 30 + int((i / len(files)) * 30)
-            self.progress_update.emit(progress)
-            file_link = link.get("href")
+        try:
+            i = 0
+            for [link, command] in files:
+                i += 1
+                progress = 30 + int((i / len(files)) * 30)
+                self.progress_update.emit(progress)
+                file_link = link.get("href")
 
-            # Get which type of file it is (xlsx, csv, or tsv)
-            file_type = file_link.split(".")[-1]
+                # Get which type of file it is (xlsx, csv, or tsv)
+                file_type = file_link.split(".")[-1]
 
-            # Platform, date/version number
-            file_first, file_date = split_CRKN_file_name(file_link)
+                # Platform, date/version number
+                file_first, file_date = split_CRKN_file_name(file_link)
 
-            # Write file to temporary local file
-            with open(f"{os.path.abspath(os.path.dirname(__file__))}/temp.{file_type}", 'wb') as file:
-                response = requests.get(settings_manager.get_setting("CRKN_root_url") + file_link)
-                file.write(response.content)
+                # Write file to temporary local file
+                with open(f"{os.path.abspath(os.path.dirname(__file__))}/temp.{file_type}", 'wb') as file:
+                    response = requests.get(settings_manager.get_setting("CRKN_root_url") + file_link)
+                    file.write(response.content)
 
-            # Convert file into dataframe
-            if file_type == "xlsx":
-                file_df = file_to_dataframe_excel(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
-            elif file_type == "tsv":
-                file_df = file_to_dataframe_tsv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.tsv")
-            else:
-                file_df = file_to_dataframe_csv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
+                # Convert file into dataframe
+                if file_type == "xlsx":
+                    file_df = file_to_dataframe_excel(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
+                elif file_type == "tsv":
+                    file_df = file_to_dataframe_tsv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.tsv")
+                else:
+                    file_df = file_to_dataframe_csv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
 
-            # Check if in correct format, if it is, upload and update tables
-            valid_format = check_file_format(file_df)
-            if valid_format:
-                upload_to_database(file_df, file_first, connection)
-                update_tables([file_first, file_date], "CRKN", connection, command)
-            else:
-                m_logger.error("The file was not in the correct format, so it was not uploaded.")
-                self.error_signal.emit("The file was not in the correct format, so it was not uploaded.")
+                # Check if in correct format, if it is, upload and update tables
+                valid_format = check_file_format(file_df)
+                if valid_format:
+                    upload_to_database(file_df, file_first, connection)
+                    update_tables([file_first, file_date], "CRKN", connection, command)
+                else:
+                    m_logger.error("The file was not in the correct format, so it was not uploaded.")
+                    self.error_signal.emit("The file was not in the correct format, so it was not uploaded.")
 
-        # Scrape CRKN institution list from last CRKN file
-        headers = file_df.columns.to_list()
-        insts = headers[8:-2]
-        settings_manager.add_CRKN_institutions(insts)
+            # Scrape CRKN institution list from last CRKN file
+            headers = file_df.columns.to_list()
+            insts = headers[8:-2]
+            settings_manager.add_CRKN_institutions(insts)
+
+        # Handle connection loss in middle of scraping
+        except requests.exceptions.HTTPError as http_err:
+            # Handle HTTP errors
+            error_message = "Server Connection Error: Please make sure you are connected to your internet and the CRKN URL is "
+            "updated in the Settings page."
+            error = http_err
+            print(f"{http_err} - download_files stopped")
+        except requests.exceptions.ConnectionError as conn_err:
+            # Handle errors like refused connections
+            error_message = "Internet Connection Error: Please make sure you are connected to your internet."
+            error = conn_err
+            print(f"{conn_err} - download_files stopped")
+        except requests.exceptions.Timeout as timeout_err:
+            # Handle request timeout
+            error_message = "Connection Timeout: Please try updating CRKN again."
+            error = timeout_err
+            print(f"{timeout_err} - download_files stopped")
+        except Exception as e:
+            # Handle any other exceptions
+            error_message = "Unexpected Error: Please try again later."
+            error = e
+            print(f"{e} - download_files stopped")
 
         # Remove temp.xlsx used for uploading files
         try:

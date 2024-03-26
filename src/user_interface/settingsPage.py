@@ -22,8 +22,14 @@ class settingsPage(QDialog):
         return cls._instance
     
     @classmethod
-    def replace_instance(cls, arg):
-        cls._instance = cls(arg)
+    def replace_instance(cls, arg1):
+        if cls._instance:
+            # Remove the previous instance's reference from its parent widget
+            cls._instance.setParent(None)
+            # Explicitly delete the previous instance
+            del cls._instance
+            print("Deleting instance")
+        cls._instance = cls(arg1)
         return cls._instance
 
     def __init__(self, widget):
@@ -72,6 +78,8 @@ class settingsPage(QDialog):
         self.crknURL = self.findChild(QTextEdit, 'crknURL')
         self.crknURL.setPlainText(current_crkn_url)
 
+        self.set_current_settings_values()
+
     def update_CRKN_button(self):
         # Grey out the Update CRKN button if Allow_CRKN is False
         allow_crkn = settings_manager.get_setting("allow_CRKN")
@@ -93,10 +101,12 @@ class settingsPage(QDialog):
         settings_manager.set_language(selected_language)
 
     def backToStartScreen2(self):
-        from src.user_interface.startScreen import startScreen
-        backButton2 = startScreen.get_instance(self.widget)
-        self.widget.addWidget(backButton2)
-        self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+        # from src.user_interface.startScreen import startScreen
+        # backButton2 = startScreen.get_instance(self.widget)
+        # self.widget.addWidget(backButton2)
+        # self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+        self.widget.removeWidget(self.widget.currentWidget())
+
 
     def populate_institutes(self):
         # Clear the existing items in the combo box
@@ -134,6 +144,7 @@ class settingsPage(QDialog):
 
         # Get the text from the addInstitute QTextEdit
         add_institute_text = self.findChild(QTextEdit, 'addInstitute').toPlainText()
+        add_institute_text = self.instituteSelection.currentText()
         print("Entered Institute:", add_institute_text)  # Test
         #
         # # Check if the institute already exists
@@ -151,6 +162,8 @@ class settingsPage(QDialog):
         # Reset instances classes for UI 
         startScreen.replace_instance(self.widget)
         self.widget.removeWidget(self)
+        self.widget.removeWidget(self.widget.currentWidget())
+        self.widget.addWidget(startScreen.replace_instance(self.widget))
         self.widget.addWidget(self.replace_instance(self.widget))
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
@@ -210,6 +223,26 @@ class settingsPage(QDialog):
     def upload_button_clicked(self):
         upload_and_process_file()
 
+
+    def set_current_settings_values(self):
+        # Set the current language selection
+        current_language = settings_manager.get_setting("language")
+        language_index = self.languageSelection.findText(current_language, Qt.MatchFlag.MatchFixedString)
+        if language_index >= 0:
+            self.languageSelection.setCurrentIndex(language_index)
+
+        # Set the current CRKN URL
+        current_crkn_url = settings_manager.get_setting("CRKN_url")
+        self.crknURL.setPlainText(current_crkn_url)
+
+        # Set the current institute selection
+        current_institute = settings_manager.get_setting("institution")
+        institute_index = self.instituteSelection.findText(current_institute, Qt.MatchFlag.MatchFixedString)
+        if institute_index >= 0:
+            self.instituteSelection.setCurrentIndex(institute_index)
+
+        # Update the state of the CRKN update button
+        self.update_CRKN_button()
 
 
 #Error i am encountering right now is based on the adding of institute and checking out if they already exist.

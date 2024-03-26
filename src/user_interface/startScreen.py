@@ -5,14 +5,11 @@ from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QLineEdit, QMessageBox, QComboBox, QSizePolicy, QWidget, \
     QLabel
 from PyQt6.QtGui import QIcon, QPixmap
-
-from src.user_interface.searchDisplay import searchDisplay
 from src.user_interface.settingsPage import settingsPage
 from src.data_processing.database import connect_to_database, \
     close_database, search_database
 from src.utility.settings_manager import Settings
 import os
-# From searchDisplay import display_results_in_table
 
 """
 When creating instances of startScreen, use startScreen.get_instance(widget)
@@ -33,6 +30,7 @@ class startScreen(QDialog):
     @classmethod
     def replace_instance(cls, arg):
         cls._instance = cls(arg)
+        return cls._instance
     
     def __init__(self, widget):
         super(startScreen, self).__init__()
@@ -272,10 +270,11 @@ class startScreen(QDialog):
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
     def searchToDisplay(self,results):
-        search = searchDisplay(self.widget)
+        from src.user_interface.searchDisplay import searchDisplay
+        search = searchDisplay.replace_instance(self.widget, results)
         self.widget.addWidget(search)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
-        search.display_results_in_table(results)
+        # search.display_results_in_table(results) 
 
     # This method is responsible sending the text in the back end for the searching the value
     def search_button_clicked(self):
