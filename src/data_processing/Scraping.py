@@ -155,7 +155,7 @@ class ScrapingThread(QThread):
             self.msleep(100)  # Sleep to avoid busy waiting
         return self.response
     
-    def revieve_response(self, response):
+    def recieve_response(self, response):
         self.response = response
     
     def download_files(self, files, connection):        
@@ -212,25 +212,25 @@ class ScrapingThread(QThread):
             error_message = "Server Connection Error: Connection to the server was lost. Some files may have been scraped, but not all files."
             m_logger.error(error_message)
             self.error_signal.emit(error_message)
-            # QMessageBox.warning(None, "Server Connection Error" if language == "english" else "Erreur de connexion au serveur", error_message if language == "english" else "Erreur de connexion au serveur\nLa connexion au serveur a été perdue. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
+            # QMessageBox.warning(None, "Server Connection Error" if language == "English" else "Erreur de connexion au serveur", error_message if language == "English" else "Erreur de connexion au serveur\nLa connexion au serveur a été perdue. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
         except requests.exceptions.ConnectionError as conn_err:
             # Handle errors like refused connections
             error_message = "Internet Connection Error: Connection to the internet was lost. Some files may have been scraped, but not all files."
             m_logger.error(error_message)
             self.error_signal.emit(error_message)
-            # QMessageBox.warning(None, "Internet Connection Error" if language == "english" else "Erreur de connexion internet", error_message if language == "english" else "Erreur de connexion internet\nLa connexion à Internet a été perdue. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
+            # QMessageBox.warning(None, "Internet Connection Error" if language == "English" else "Erreur de connexion internet", error_message if language == "English" else "Erreur de connexion internet\nLa connexion à Internet a été perdue. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
         except requests.exceptions.Timeout as timeout_err:
             # Handle request timeout
             error_message = "Connection Timeout: The connection was too slow. Some files may have been scraped, but not all files."
             m_logger.error(error_message)
             self.error_signal.emit(error_message)
-            # QMessageBox.warning(None, "Connection Timeout" if language == "english" else "Délai d'attente", error_message if language == "english" else "Délai d'attente\nLa connexion était trop lente. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
+            # QMessageBox.warning(None, "Connection Timeout" if language == "English" else "Délai d'attente", error_message if language == "English" else "Délai d'attente\nLa connexion était trop lente. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
         except Exception as e:
             # Handle any other exceptions
             error_message = "Unexpected Error: Please try again later. Some files may have been scraped, but not all files."
             m_logger.error(error_message)
             self.error_signal.emit(error_message)
-            # QMessageBox.warning(None, "Unexpected Error" if language == "english" else "Erreur inattendue", error_message if language == "english" else "Erreur inattendue\nRéessayez plus tard. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
+            # QMessageBox.warning(None, "Unexpected Error" if language == "English" else "Erreur inattendue", error_message if language == "English" else "Erreur inattendue\nRéessayez plus tard. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
 
         # Remove temp.xlsx used for uploading files
         try:

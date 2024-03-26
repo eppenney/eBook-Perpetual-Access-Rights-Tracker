@@ -60,6 +60,7 @@ class startScreen(QDialog):
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
         self.instituteButton = self.findChild(QPushButton, "institutionButton")
         self.textEdit.returnPressed.connect(self.search_button_clicked)
+        self.institutionName = self.findChild(QLabel, "institutionName")
 
         # Clear Button
         self.clearButton = self.findChild(QPushButton, "clearButton")
@@ -123,9 +124,9 @@ class startScreen(QDialog):
     def displayInstitutionName(self):
         institution_name = settings_manager.get_setting('institution')
         if institution_name:
-            self.universityName.setText(institution_name)
+            self.institutionName.setText(institution_name)
         else:
-            self.universityName.setText("No Institution Selected" if self.language_value == "english" else "Aucune institution sélectionnée")
+            self.institutionName.setText("No Institution Selected" if self.language_value == "English" else "Aucune institution sélectionnée")
 
     # This method responsible for making the new text edit each time the plus sign is clicked.
     # Basically we are only having limit of 5 searches at the same time
@@ -155,7 +156,7 @@ class startScreen(QDialog):
         self.removeFieldButton.setGeometry(self.removeFieldButton.x(), newY, self.removeFieldButton.width(), self.removeFieldButton.height())
 
       else:
-          QMessageBox.warning(self, "Limit reached" if self.language_value == "english" else "", f"You can only search {MAX_DUPLICATES} at a time" if self.language_value == "english" else f"Vous ne pouvez rechercher que {MAX_DUPLICATES} à la fois.")
+          QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "", f"You can only search {MAX_DUPLICATES} at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher que {MAX_DUPLICATES} à la fois.")
 
     def adjustDuplicateTextEditSize(self):
         for i in range(len(self.duplicateTextEdits)):
@@ -250,7 +251,7 @@ class startScreen(QDialog):
             self.removeFieldButton.setGeometry(self.removeFieldButton.x(), newY, self.removeFieldButton.width(), self.removeFieldButton.height())
 
         else:
-            QMessageBox.information(self, "No More Duplicates" if self.language_value == "english" else "Plus de doublons", "There are no more duplicated text fields to remove." if self.language_value == "english" else "Il n'y a plus de champs de texte en double à supprimer.")
+            QMessageBox.information(self, "No More Duplicates" if self.language_value == "English" else "Plus de doublons", "There are no more duplicated text fields to remove." if self.language_value == "English" else "Il n'y a plus de champs de texte en double à supprimer.")
 
     def clearSearch(self):
         for i in range(len(self.duplicateTextEdits)):
@@ -276,7 +277,7 @@ class startScreen(QDialog):
 
         # Do not search if no institution selected to search.
         if institution == "":
-            QMessageBox.information(self, "No institution selected" if self.language_value == "english" else "Aucun établissement sélectionné", "You have no institute selected. Please select an institute on the settings page." if self.language_value == "english" else "Vous n'avez sélectionné aucun institut. Veuillez sélectionner un institut sur la page des paramètres.")
+            QMessageBox.information(self, "No institution selected" if self.language_value == "English" else "Aucun établissement sélectionné", "You have no institute selected. Please select an institute on the settings page." if self.language_value == "English" else "Vous n'avez sélectionné aucun institut. Veuillez sélectionner un institut sur la page des paramètres.")
             return
 
         searchText = self.textEdit.text().strip()
@@ -300,7 +301,7 @@ class startScreen(QDialog):
 
         # Do not go to results page if there are no results or no text in the search field.
         if len(results) == 0:
-            QMessageBox.information(self, "No Results Found" if self.language_value == "english" else "Aucun résultat trouvé", "There are no results for the search." if self.language_value == "english" else "Il n'y a aucun résultat pour la recherche.")
+            QMessageBox.information(self, "No Results Found" if self.language_value == "English" else "Aucun résultat trouvé", "There are no results for the search." if self.language_value == "English" else "Il n'y a aucun résultat pour la recherche.")
             close_database(connection)
             return
 

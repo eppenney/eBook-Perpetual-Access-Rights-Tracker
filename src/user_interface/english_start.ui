@@ -354,7 +354,7 @@ color: rgb(255, 255, 255);</string>
      </property>
     </item>
    </widget>
-   <widget class="QLabel" name="universityName">
+   <widget class="QLabel" name="institutionName">
     <property name="geometry">
      <rect>
       <x>100</x>

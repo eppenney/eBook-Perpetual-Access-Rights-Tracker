@@ -76,7 +76,7 @@ class settingsPage(QDialog):
         # Finding the languageButton from the QPushButton class
         self.languageSelection = self.findChild(QComboBox,'languageSetting') 
         self.languageSelection.activated.connect(self.save_language)
-        self.languageSelection.setCurrentIndex(0 if settings_manager.get_setting("language" == "english") else 1)
+        self.languageSelection.setCurrentIndex(0 if settings_manager.get_setting("language") == "English" else 1)
 
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL = self.findChild(QTextEdit, 'crknURL')
@@ -130,7 +130,7 @@ class settingsPage(QDialog):
 
     def save_language(self):
         selected_language = self.languageSetting.currentIndex()
-        settings_manager.set_language("english" if selected_language == 0 else "french")   
+        settings_manager.set_language("English" if selected_language == 0 else "French")   
         self.reset_app() 
     
     def save_institution(self):
