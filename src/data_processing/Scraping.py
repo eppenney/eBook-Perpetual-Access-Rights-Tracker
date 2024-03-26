@@ -14,7 +14,6 @@ from src.data_processing import database
 from PyQt6.QtCore import QTimer, QThread, pyqtSignal
 from src.utility.logger import m_logger
 import os
-from PyQt6.QtWidgets import QMessageBox
 
 settings_manager = Settings()
 
@@ -167,6 +166,7 @@ class ScrapingThread(QThread):
         language = settings_manager.get_setting("language")
         try:
             i = 0
+            scraped_institutions = False
             for [link, command] in files:
                 i += 1
                 progress = 30 + int((i / len(files)) * 30)
@@ -194,17 +194,18 @@ class ScrapingThread(QThread):
 
                 # Check if in correct format, if it is, upload and update tables
                 valid_format = check_file_format(file_df)
-                if valid_format:
+                if valid_format is True:
                     upload_to_database(file_df, file_first, connection)
                     update_tables([file_first, file_date], "CRKN", connection, command)
+                    if not scraped_institutions:
+                        # Scrape CRKN institution list from valid CRKN file once
+                        headers = file_df.columns.to_list()
+                        insts = headers[8:-2]
+                        settings_manager.add_CRKN_institutions(insts)
+                        scraped_institutions = True
                 else:
-                    m_logger.error("The file was not in the correct format, so it was not uploaded.")
-                    self.error_signal.emit("The file was not in the correct format, so it was not uploaded.")
-
-            # Scrape CRKN institution list from last CRKN file
-            headers = file_df.columns.to_list()
-            insts = headers[8:-2]
-            settings_manager.add_CRKN_institutions(insts)
+                    m_logger.error(f"The file was not in the correct format, so it was not uploaded. {valid_format}")
+                    self.error_signal.emit(f"The file was not in the correct format, so it was not uploaded.\n{valid_format}")
 
         # Handle connection loss in middle of scraping
         except requests.exceptions.HTTPError as http_err:
@@ -212,25 +213,21 @@ class ScrapingThread(QThread):
             error_message = "Server Connection Error: Connection to the server was lost. Some files may have been scraped, but not all files."
             m_logger.error(error_message)
             self.error_signal.emit(error_message)
-            # QMessageBox.warning(None, "Server Connection Error" if language == "english" else "Erreur de connexion au serveur", error_message if language == "english" else "Erreur de connexion au serveur\nLa connexion au serveur a été perdue. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
         except requests.exceptions.ConnectionError as conn_err:
             # Handle errors like refused connections
             error_message = "Internet Connection Error: Connection to the internet was lost. Some files may have been scraped, but not all files."
             m_logger.error(error_message)
             self.error_signal.emit(error_message)
-            # QMessageBox.warning(None, "Internet Connection Error" if language == "english" else "Erreur de connexion internet", error_message if language == "english" else "Erreur de connexion internet\nLa connexion à Internet a été perdue. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
         except requests.exceptions.Timeout as timeout_err:
             # Handle request timeout
             error_message = "Connection Timeout: The connection was too slow. Some files may have been scraped, but not all files."
             m_logger.error(error_message)
             self.error_signal.emit(error_message)
-            # QMessageBox.warning(None, "Connection Timeout" if language == "english" else "Délai d'attente", error_message if language == "english" else "Délai d'attente\nLa connexion était trop lente. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
         except Exception as e:
             # Handle any other exceptions
             error_message = "Unexpected Error: Please try again later. Some files may have been scraped, but not all files."
             m_logger.error(error_message)
             self.error_signal.emit(error_message)
-            # QMessageBox.warning(None, "Unexpected Error" if language == "english" else "Erreur inattendue", error_message if language == "english" else "Erreur inattendue\nRéessayez plus tard. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
 
         # Remove temp.xlsx used for uploading files
         try:
@@ -343,7 +340,7 @@ def file_to_dataframe_excel(file_name, file):
     File can be either a file or a URL link to a file.
     :param file_name: the file name being uploaded
     :param file: local file to convert to dataframe
-    :return: dataframe
+    :return: dataframe, or error string
     """
     try:
         df = pd.read_excel(file, sheet_name="PA-Rights")
@@ -352,7 +349,7 @@ def file_to_dataframe_excel(file_name, file):
         platform = df.columns[0]
         if platform == "Unnamed: 0":
             m_logger.error("File to Dataframe failed - No Platform listed.")
-            return
+            return "No Platform"
 
         # Remove top two rows, set header
         df = df.set_axis(df.values[1], axis="columns")
@@ -365,7 +362,7 @@ def file_to_dataframe_excel(file_name, file):
         return df
     except ValueError:
         m_logger.error("Incorrect sheet name in excel file (PA-Rights did not exist).")
-        return
+        return "PA-Rights"
 
 
 def file_to_dataframe_csv(file_name, file):
@@ -374,7 +371,7 @@ def file_to_dataframe_csv(file_name, file):
     File can be either a file or a URL link to a file.
     :param file_name: the file name being uploaded
     :param file: local file to convert to dataframe
-    :return: dataframe
+    :return: dataframe, or error string
     """
     try:
         df = pd.read_csv(file)
@@ -383,7 +380,7 @@ def file_to_dataframe_csv(file_name, file):
         platform = df.columns[0]
         if platform == "Unnamed: 0":
             m_logger.error("File to Dataframe failed - No Platform listed.")
-            return
+            return "No Platform"
 
         # Remove top two rows, set header
         df = df.set_axis(df.values[1], axis="columns")
@@ -396,7 +393,7 @@ def file_to_dataframe_csv(file_name, file):
         return df
     except Exception:
         m_logger.error("File to Dataframe failed - Unable to read csv file.")
-        return
+        return "PA-Rights"
 
 
 def file_to_dataframe_tsv(file_name, file):
@@ -405,7 +402,7 @@ def file_to_dataframe_tsv(file_name, file):
         File can be either a file or a URL link to a file.
         :param file_name: the file name being uploaded
         :param file: local file to convert to dataframe
-        :return: dataframe
+        :return: dataframe, or error string
         """
     try:
         df = pd.read_table(file)
@@ -414,7 +411,7 @@ def file_to_dataframe_tsv(file_name, file):
         platform = df.columns[0]
         if platform == "Unnamed: 0":
             m_logger.error("File to Dataframe failed - No Platform listed.")
-            return
+            return "No Platform"
 
         # Remove top two rows, set header
         df = df.set_axis(df.values[1], axis="columns")
@@ -427,7 +424,7 @@ def file_to_dataframe_tsv(file_name, file):
         return df
     except Exception:
         m_logger.error("File to Dataframe failed - Unable to read tsv file.")
-        return
+        return "PA-Rights"
 
 
 def upload_to_database(df, table_name, connection):
@@ -456,12 +453,16 @@ def check_file_format(file_df):
     """
     Checks the incoming file format to see if it is correct
     :param file_df: dataframe with file info (or None if unable to turn into dataframe
-    :return: boolean True or False if valid or not
+    :return: True if valid, error string if not
     """
 
     # Failed to read the file into a dataframe
     if file_df is None:
         return False
+    elif file_df == "No Platform":
+        return "No Platform listed in cell A1."
+    elif file_df == "PA-Rights":
+        return "The 'PA-Rights' sheet does not exist."
 
     header_row = ["Title", "Publisher", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code", "collection_name", "title_metadata_last_modified"]
     headers = file_df.columns.to_list()
@@ -469,20 +470,20 @@ def check_file_format(file_df):
     # Header row is incorrect (too short or headers don't match)
     if len(headers) <= 8 or not headers[:8] == header_row:
         m_logger.error("The header row is incorrect")
-        return False
+        return "The header row is incorrect."
 
     # Title, ISBN and Y/N Column complete
     df_series = file_df.count()
     rows = file_df.shape[0]
     if df_series["Title"] != rows:
         m_logger.error("Missing title data")
-        return False
+        return "Missing title data."
     # if df_series["Platform_eISBN"] != rows:
     #     m_logger.error("Missing ISBN data")
-    #     return False
+    #     return "Missing Platform_eISBN data."
     for institution_column in df_series[8:-2]:
         if institution_column != rows:
             m_logger.error("Missing Y/N data")
-            return False
+            return "Missing Y/N data"
 
     return True

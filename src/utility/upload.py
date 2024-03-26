@@ -47,17 +47,18 @@ def process_file(file_path):
     connection = database.connect_to_database()
 
     # Get file_name and date for table information
-    file_name = file_path.split("/")[-1].split(".")
+    file_name_with_ext = file_path.split("/")[-1]
+    file_name = file_name_with_ext.split(".")
+
     date = datetime.datetime.now()
     date = date.strftime("%Y_%m_%d")
 
     # Check if local file is already in database
     result = Scraping.compare_file([file_name[0], date], "local", connection)
-
     # If result is update, check if they want to update it
     if result == "UPDATE":
         reply = QMessageBox.question(None, "Replace File" if language == "english" else "Remplacer le fichier",
-                                     f"{file_name[0]}\nA file with the same name is already in the local database. Would you like to replace it with the new file?" if language == "english" else f"{file_name[0]}\nUn fichier du même nom se trouve déjà dans la base de données locale. Souhaitez-vous le remplacer par le nouveau fichier ?",
+                                     f"{file_name_with_ext}\nA file with the same name is already in the local database. Would you like to replace it with the new file?" if language == "english" else f"{file_name_with_ext}\nUn fichier du même nom se trouve déjà dans la base de données locale. Souhaitez-vous le remplacer par le nouveau fichier ?",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.No:
             database.close_database(connection)
@@ -75,14 +76,14 @@ def process_file(file_path):
             file_df = Scraping.file_to_dataframe_tsv(".".join(file_name), file_path)
         else:
             m_logger.error("Invalid file type selected.")
-            QMessageBox.warning(None, "Invalid File Type" if language == "english" else "Type de fichier invalide", f"{file_name[0]}\nSelect only valid xlsx, csv or tsv files." if language == "english" else f"{file_name[0]}\nSélectionnez uniquement les fichiers xlsx, csv ou tsv valides.", QMessageBox.StandardButton.Ok)
+            QMessageBox.warning(None, "Invalid File Type" if language == "english" else "Type de fichier invalide", f"{file_name_with_ext}\nSelect only valid xlsx, csv or tsv files." if language == "english" else f"{file_name_with_ext}\nSélectionnez uniquement les fichiers xlsx, csv ou tsv valides.", QMessageBox.StandardButton.Ok)
             database.close_database(connection)
             progress_dialog.cancel()
             return
 
         # Check if in correct format, if it is, upload and update tables
         valid_file = Scraping.check_file_format(file_df)
-        if valid_file:
+        if valid_file is True:
             # If there are new institutions, check if the user wants to add them.
             # If yes, upload and add, if not, cancel upload of file
             new_institutions = get_new_institutions(file_df)
@@ -105,14 +106,14 @@ def process_file(file_path):
             Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
             Scraping.update_tables([file_name[0], date], "local", connection, result)
 
-            QMessageBox.information(None, "File Upload" if language == "english" else "Téléchargement de fichiers", f"{file_name[0]}\nYour file has been uploaded. {len(file_df)} rows have been added." if language == "english" else f"{file_name[0]}\nVotre fichier a été téléchargé. {len(file_df)} lignes ont été ajoutées.", QMessageBox.StandardButton.Ok)
+            QMessageBox.information(None, "File Upload" if language == "english" else "Téléchargement de fichiers", f"{file_name_with_ext}\nYour file has been uploaded. {len(file_df)} rows have been added." if language == "english" else f"{file_name_with_ext}\nVotre fichier a été téléchargé. {len(file_df)} lignes ont été ajoutées.", QMessageBox.StandardButton.Ok)
         else:
-            m_logger.error("Invalid file format.")
-            QMessageBox.warning(None, "Invalid File Format" if language == "english" else "Format de fichier invalide", f"{file_name[0]}\nThe file was not in the correct format.\nUpload aborted." if language == "english" else f"{file_name[0]}\nLe fichier n'était pas au bon format.\nTéléchargement interrompu.", QMessageBox.StandardButton.Ok)
+            m_logger.error(f"{file_name_with_ext} - Invalid file format. - {valid_file}")
+            QMessageBox.warning(None, "Invalid File Format" if language == "english" else "Format de fichier invalide", f"{file_name_with_ext}\n{valid_file}\nUpload aborted." if language == "english" else f"{file_name_with_ext}\n{valid_file}\nTéléchargement interrompu.", QMessageBox.StandardButton.Ok)
 
     except Exception as e:
-        m_logger.error(f"{file_name[0]}\nAn error occurred during file processing: {str(e)}")
-        QMessageBox.critical(None, "Error" if language == "english" else "Erreur", f"{file_name[0]}\nAn error occurred during file processing: {str(e)}" if language == "english" else f"{file_name[0]}\nUne erreur s'est produite lors du traitement du fichier: {str(e)}", QMessageBox.StandardButton.Ok)
+        m_logger.error(f"{file_name_with_ext} - An error occurred during file processing: {str(e)}")
+        QMessageBox.critical(None, "Error" if language == "english" else "Erreur", f"{file_name_with_ext}\nAn error occurred during file processing: {str(e)}" if language == "english" else f"{file_name_with_ext}\nUne erreur s'est produite lors du traitement du fichier: {str(e)}", QMessageBox.StandardButton.Ok)
 
     database.close_database(connection)
     progress_dialog.cancel()
