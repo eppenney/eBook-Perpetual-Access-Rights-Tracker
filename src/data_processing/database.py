@@ -160,3 +160,18 @@ def search_database(connection, query, terms, searchTypes):
 
             results.extend(cursor.fetchall())
     return results
+def get_table_data(connection, table_name):
+    """
+    Retrieve information from a specific table in the database.
+    :param connection: database connection object
+    :param table_name: name of the table to fetch data from
+    :return: list of tuples containing data from the specified table
+    """
+    try:
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM [{table_name}];")
+        table_data = cursor.fetchall()
+        return table_data
+    except sqlite3.Error as e:
+        m_logger.error(f"An error occurred while fetching data from the table: {e}")
+        return []

@@ -477,8 +477,8 @@ def check_file_format(file_df):
     # if df_series["Platform_eISBN"] != rows:
     #     m_logger.error("Missing ISBN data")
     #     return False
-    for uni_column in df_series[8:-2]:
-        if uni_column != rows:
+    for institution_column in df_series[8:-2]:
+        if institution_column != rows:
             m_logger.error("Missing Y/N data")
             return False
 
