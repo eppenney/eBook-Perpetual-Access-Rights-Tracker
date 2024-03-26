@@ -256,6 +256,7 @@ class startScreen(QDialog):
         for i in range(len(self.duplicateTextEdits)):
             self.removeTextEdit()
         self.textEdit.clear()
+        self.booleanSearchType.setCurrentIndex(0)
 
     def settingsDisplay(self):
         settings = settingsPage.get_instance(self.widget)
