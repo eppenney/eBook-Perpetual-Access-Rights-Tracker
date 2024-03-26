@@ -8,6 +8,7 @@ from src.utility.settings_manager import Settings
 
 
 settings_manager = Settings()
+language = settings_manager.get_setting("language")
 
 
 def upload_and_process_file():
@@ -21,7 +22,9 @@ def upload_and_process_file():
 
     options = QFileDialog.Option.ReadOnly
 
-    file_paths, _ = QFileDialog.getOpenFileNames(None, "Open File" if language == "english" else "Ouvrir le fichier", "", "CSV TSV or Excel (*.csv *.tsv *.xlsx);;All Files (*)" if language == "english" else "CSV TSV ou Excel (*.csv *.tsv *.xlsx);;Tous les fichiers (*)", options=options)
+    file_paths, _ = QFileDialog.getOpenFileNames(None, "Open File" if language == "english" else "Ouvrir le fichier", "", 
+                                                "CSV TSV or Excel (*.csv *.tsv *.xlsx);;All Files (*)" if language == "english" else
+                                                "CSV TSV ou Excel (*.csv *.tsv *.xlsx);;Tous les fichiers (*)", options=options)
 
     # Iterate through selected file(s) to process them
     if file_paths:
@@ -32,8 +35,8 @@ def upload_and_process_file():
 def process_file(file_path):
     """
     Process file and store in local database - similar to Scraping.download_files, but for local files
+    :param file_path: string containing the path to the file 
     """
-    language = settings_manager.get_setting("language")
     app = QApplication.instance()  # Try to get the existing application instance
     if app is None:  # If no instance exists, create a new one
         app = QApplication(sys.argv)
@@ -65,50 +68,51 @@ def process_file(file_path):
             return
 
     try:
-        m_logger.info(f"Processing file: {file_path}")
-        # Convert file into dataframe
-        if file_name[-1] == "csv":
-            file_df = Scraping.file_to_dataframe_csv(".".join(file_name), file_path)
-        elif file_name[-1] == "xlsx":
-            file_df = Scraping.file_to_dataframe_excel(".".join(file_name), file_path)
-        elif file_name[-1] == "tsv":
-            file_df = Scraping.file_to_dataframe_tsv(".".join(file_name), file_path)
-        else:
-            m_logger.error("Invalid file type selected.")
-            QMessageBox.warning(None, "Invalid File Type" if language == "english" else "Type de fichier invalide", f"{file_name[0]}\nSelect only valid xlsx, csv or tsv files." if language == "english" else f"{file_name[0]}\nSélectionnez uniquement les fichiers xlsx, csv ou tsv valides.", QMessageBox.StandardButton.Ok)
+        # Get our dataframe, check if it's good
+        file_df = file_to_df(file_name, file_path)
+        if (file_df is None):
             database.close_database(connection)
             progress_dialog.cancel()
             return
 
-        # Check if in correct format, if it is, upload and update tables
+        # Check if in correct format
         valid_file = Scraping.check_file_format(file_df)
-        if valid_file:
-            # If there are new institutions, check if the user wants to add them.
-            # If yes, upload and add, if not, cancel upload of file
-            new_institutions = get_new_institutions(file_df)
-            if len(new_institutions) > 0:
-                new_institutions_display = '\n'.join(new_institutions[:5])
-                if len(new_institutions) > 5:
-                    new_institutions_display += '...'
-                reply = QMessageBox.question(None, "New Institutions", f"{len(new_institutions)} institution name{'s' if len(new_institutions) > 1 else ''} found that " +
-                                             f"{'are' if len(new_institutions) > 1 else 'is'} not a CRKN institution and {'are' if len(new_institutions) > 1 else 'is'} not on the list of local institutions.\n" +
-                                            f"{new_institutions_display}\n" +
-                                            "Would you like to add them to the local list? \n'No' - The file will not be uploaded. \n'Yes' - The new institution names will be added as options" + 
-                                            "and available in the settings menu.",
-                             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-                if reply == QMessageBox.StandardButton.No:
-                    database.close_database(connection)
-                    progress_dialog.cancel()
-                    return
-            for uni in new_institutions:
-                settings_manager.add_local_institution(uni)
-            Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
-            Scraping.update_tables([file_name[0], date], "local", connection, result)
-
-            QMessageBox.information(None, "File Upload" if language == "english" else "Téléchargement de fichiers", f"{file_name[0]}\nYour file has been uploaded. {len(file_df)} rows have been added." if language == "english" else f"{file_name[0]}\nVotre fichier a été téléchargé. {len(file_df)} lignes ont été ajoutées.", QMessageBox.StandardButton.Ok)
-        else:
+        if not valid_file:
             m_logger.error("Invalid file format.")
-            QMessageBox.warning(None, "Invalid File Format" if language == "english" else "Format de fichier invalide", f"{file_name[0]}\nThe file was not in the correct format.\nUpload aborted." if language == "english" else f"{file_name[0]}\nLe fichier n'était pas au bon format.\nTéléchargement interrompu.", QMessageBox.StandardButton.Ok)
+            QMessageBox.warning(None, "Invalid File Format" if language == "english" else "Format de fichier invalide", 
+                                f"{file_name[0]}\nThe file was not in the correct format.\nUpload aborted." if language == "english" else 
+                                f"{file_name[0]}\nLe fichier n'était pas au bon format.\nTéléchargement interrompu.", QMessageBox.StandardButton.Ok)
+            database.close_database(connection)
+            progress_dialog.cancel()   
+            return
+        
+        # If there are new institutions, check if the user wants to add them.
+        # If no, cancel upload of file
+        new_institutions = get_new_institutions(file_df)
+        if len(new_institutions) > 0: # Get a display string of 5 institutions
+            new_institutions_display = '\n'.join(new_institutions[:5]) 
+            if len(new_institutions) > 5:
+                new_institutions_display += '...'
+            reply = QMessageBox.question(None, "New Institutions", f"{len(new_institutions)} institution name{'s' if len(new_institutions) > 1 else ''} found that " +
+                                        f"{'are' if len(new_institutions) > 1 else 'is'} not a CRKN institution and {'are' if len(new_institutions) > 1 else 'is'} not on the list of local institutions.\n" +
+                                        f"{new_institutions_display}\n" +
+                                        "Would you like to add them to the local list? \n'No' - The file will not be uploaded. \n'Yes' - The new institution names will be added as options" + 
+                                        "and available in the settings menu.",
+                                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            if reply == QMessageBox.StandardButton.No:
+                database.close_database(connection)
+                progress_dialog.cancel()
+                return
+            
+        # Add new institutions
+        for institution in new_institutions:
+            settings_manager.add_local_institution(institution)
+
+        Scraping.upload_to_database(file_df, "local_" + file_name[0], connection)
+        Scraping.update_tables([file_name[0], date], "local", connection, result)
+
+        QMessageBox.information(None, "File Upload" if language == "english" else "Téléchargement de fichiers", f"{file_name[0]}\nYour file has been uploaded. {len(file_df)} rows have been added." if language == "english" else f"{file_name[0]}\nVotre fichier a été téléchargé. {len(file_df)} lignes ont été ajoutées.", QMessageBox.StandardButton.Ok)
+            
 
     except Exception as e:
         m_logger.error(f"{file_name[0]}\nAn error occurred during file processing: {str(e)}")
@@ -148,3 +152,24 @@ def get_new_institutions(file_df):
                 # If not in either list, add to new list
                 new_inst.append(inst)
     return new_inst
+
+def file_to_df(file_name, file_path):
+    """
+    Convert a file to a dataframe
+    :param file_name: An array of format ['filename', 'file_extension']
+    :param file_path: A string containing the file path.
+    :return: Dataframe or None
+    """
+    m_logger.info(f"Processing file: {file_path}")
+    # Convert file into dataframe
+    if file_name[-1] == "csv":
+        file_df = Scraping.file_to_dataframe_csv(".".join(file_name), file_path)
+    elif file_name[-1] == "xlsx":
+        file_df = Scraping.file_to_dataframe_excel(".".join(file_name), file_path)
+    elif file_name[-1] == "tsv":
+        file_df = Scraping.file_to_dataframe_tsv(".".join(file_name), file_path)
+    else:
+        m_logger.error("Invalid file type selected.")
+        QMessageBox.warning(None, "Invalid File Type" if language == "english" else "Type de fichier invalide", f"{file_name[0]}\nSelect only valid xlsx, csv or tsv files." if language == "english" else f"{file_name[0]}\nSélectionnez uniquement les fichiers xlsx, csv ou tsv valides.", QMessageBox.StandardButton.Ok)
+        return None
+    return file_df
