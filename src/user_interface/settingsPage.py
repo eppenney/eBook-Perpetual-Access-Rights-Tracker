@@ -72,6 +72,12 @@ class settingsPage(QDialog):
         self.crknURL = self.findChild(QTextEdit, 'crknURL')
         self.crknURL.setPlainText(current_crkn_url)
 
+        # Finding the addInstituteButton
+        self.addInstituteButton = self.findChild(QPushButton, 'addInstituteButton')
+        print('ComboBox Found:',self.addInstituteButton)
+        self.addInstituteButton.setToolTip("Click to add the institute")
+        self.addInstituteButton.clicked.connect(self.add_institute)
+
     def update_CRKN_button(self):
         # Grey out the Update CRKN button if Allow_CRKN is False
         allow_crkn = settings_manager.get_setting("allow_CRKN")
@@ -91,6 +97,39 @@ class settingsPage(QDialog):
 
         # Update the language setting in the settings manager
         settings_manager.set_language(selected_language)
+
+    def add_institute(self):
+        add_institute_text = self.findChild(QTextEdit,
+                                            'addInstitute').toPlainText().strip()  # Strip leading/trailing whitespace
+        print("Entered Institute:", add_institute_text)  # Test
+
+        if add_institute_text == "":
+            print("Empty text detected. Showing message box.")
+            # Prompt the user to enter text if the text box is empty
+            QMessageBox.information(self, "Empty Input", "Please enter the institute name.")
+            return
+        else:
+            print("Text is not empty. Proceeding to add institute.")
+
+        all_institutes = settings_manager.get_institutions()
+        print("All Institutes:", all_institutes)  # Test
+        if add_institute_text in all_institutes:
+            # Prompt the user that the institute already exists
+            print("Institute already exists!")
+            QMessageBox.warning(self, "Duplicate Institute", "The entered institute already exists.")
+            return
+
+        # Add the new institute to the settings
+        try:
+            settings_manager.add_local_institution(add_institute_text)
+        except Exception as e:
+            # Display an error message if an exception occurs
+            QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
+            return
+
+        # Re-populate institutes in the combo box
+        self.populate_institutes()
+
 
     def backToStartScreen2(self):
         from src.user_interface.startScreen import startScreen
@@ -132,20 +171,6 @@ class settingsPage(QDialog):
         # Update the CRKN URL setting using the settings manager
         settings_manager.set_crkn_url(crkn_url)
 
-        # Get the text from the addInstitute QTextEdit
-        add_institute_text = self.findChild(QTextEdit, 'addInstitute').toPlainText()
-        print("Entered Institute:", add_institute_text)  # Test
-        #
-        # # Check if the institute already exists
-        # all_institutes = settings_manager.get_institutions()
-        # # if add_institute_text in all_institutes:
-        # #     # Prompt the user that the institute already exists
-        # #     QMessageBox.warning(self, "Duplicate Institute", "The entered institute already exists.", QMessageBox.Ok)
-        # #     return
-
-        # Add the new institute to the settings
-        settings_manager.add_local_institution(add_institute_text)
-        
         self.hide()
         
         # Reset instances classes for UI 

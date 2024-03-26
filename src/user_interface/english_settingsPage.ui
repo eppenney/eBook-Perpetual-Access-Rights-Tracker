@@ -456,7 +456,7 @@ QTextEdit:hover {
    <widget class="QTextEdit" name="addInstitute">
     <property name="geometry">
      <rect>
-      <x>320</x>
+      <x>310</x>
       <y>460</y>
       <width>581</width>
       <height>51</height>
@@ -484,6 +484,37 @@ QTextEdit:focus {
 QTextEdit:hover {
     border: 1px solid #999; /* Border color on hover */
 }</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="addInstituteButton">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>460</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+            QPushButton {
+                font: 75 16pt &quot;Arial&quot;;
+                background-color: rgb(0, 85, 127);
+                border-radius: 10px;
+                color: rgb(255, 255, 255);
+            }
+
+            QPushButton:hover {
+                background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(0, 65, 107); /* Even darker color when clicked */
+            }
+        </string>
+    </property>
+    <property name="text">
+     <string>Add</string>
     </property>
    </widget>
   </widget>
