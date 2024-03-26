@@ -1,21 +1,7 @@
-"""
-Ethan
-Jan 24, 2024
-This simple program gives you the export_data function. 
-Link this function to a button and it will open a file explorer and 
-export the passed parameter data to the location selected in a csv file.
-Usage will need to use a lambda function, as for some reason linking button
-functions doesn't let you pass parameters by default. Luckily Lambda is simple in python
-So, correct usage should look something like this:
-self.exportButton.clicked.connect(lambda: export_data(data_to_export))
-As opposed to:
-self.exportButton.clicked.connect(export_data(data_to_export))
-or:
-self.exportButton.clicked.connect(export_data)
-"""
 from PyQt6.QtWidgets import QFileDialog, QApplication
 import pandas as pd
 import sys
+from src.utility.logger import m_logger
 
 
 def export_data(data, headers):
@@ -40,7 +26,7 @@ def export_data(data, headers):
 
         # Save the DataFrame to TSV
         df.to_csv(save_path, sep="\t", index=False)
-        print(f"Data exported to: {save_path}")
+        m_logger.info(f"Data exported to: {save_path}")
 
 
 def get_save_path():

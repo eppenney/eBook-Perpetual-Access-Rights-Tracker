@@ -19,7 +19,6 @@ def upload_and_process_file():
     if app is None:  # If no instance exists, create a new one
         app = QApplication(sys.argv)
 
-    # options = QFileDialog.Option()
     options = QFileDialog.Option.ReadOnly
 
     file_paths, _ = QFileDialog.getOpenFileNames(None, "Open File" if language == "english" else "Ouvrir le fichier", "", "CSV TSV or Excel (*.csv *.tsv *.xlsx);;All Files (*)" if language == "english" else "CSV TSV ou Excel (*.csv *.tsv *.xlsx);;Tous les fichiers (*)", options=options)
