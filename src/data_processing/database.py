@@ -2,14 +2,14 @@
 DATABASE STRUCTURE:
 
 Table 1: CRKN_file_names: (file_name, file_date)
-        - Contains a list of all of the tables that contain CRKN file data
+        - Contains a list of all the tables that contain CRKN file data
         - file_name = first part of file link name on CRKN website
         - file_date = date and version number of file link name on CRKN website
 
 Table 2: local_file_names: (file_name, file_date)
         - Contains a list of all the tables that contain local file data
         - NOTE: Does not include "local_" that is at the beginning of the actual tables
-        - file_name = entire file name that is uploaded
+        - file_name = entire file name that is uploaded (without the extension)
         - file_date = the actual date that the file was uploaded to the database
 
 Other Tables:
@@ -19,10 +19,10 @@ Other Tables:
 """
 
 import sqlite3
+from src.utility.logger import m_logger
 from src.utility.settings_manager import Settings
 
 settings_manager = Settings()
-settings_manager.load_settings()
 
 
 def connect_to_database():
@@ -59,14 +59,13 @@ def get_tables(connection):
     if allow_crkn == "True":
         crkn_tables = connection.execute("SELECT file_name FROM CRKN_file_names;").fetchall()
         # strip the apostrophes/parentheses from formatting
-        list_of_tables += [row[0] for row in crkn_tables]
+        list_of_tables.extend([row[0] for row in crkn_tables])
 
     # Need to modify the table names for the local files
     local_tables = connection.execute("SELECT file_name FROM local_file_names;").fetchall()
-    local_tables = ["local_" + row[0] for row in local_tables]
 
     # Combine the two lists - CRKN and local file names; will only include CRKN files if allow_CRKN is True
-    list_of_tables.extend(local_tables)
+    list_of_tables.extend(["local_" + row[0] for row in local_tables])
     return list_of_tables
 
 
@@ -76,28 +75,36 @@ def create_file_name_tables(connection):
     Table name format: just the abbreviation
     :param connection: database connection object
     """
-    # cursor object to interact with database
-    cursor = connection.cursor()
 
-    list_of_tables = cursor.execute(
-        """SELECT name FROM sqlite_master WHERE type='table'
-        AND name='CRKN_file_names'; """).fetchall()
+    try:
+        # cursor object to interact with database
+        cursor = connection.cursor()
 
-    # If table doesn't exist, create new table for CRKN file info
-    if not list_of_tables:
-        print("Table does not exist, creating new one")
-        cursor.execute("CREATE TABLE CRKN_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
+        list_of_tables = cursor.execute(
+            """SELECT name FROM sqlite_master WHERE type='table'
+            AND name='CRKN_file_names'; """).fetchall()
 
-    # Empty list for next check
-    list_of_tables.clear()
-    list_of_tables = cursor.execute(
-        """SELECT name FROM sqlite_master WHERE type='table'
-        AND name='local_file_names'; """).fetchall()
+        # If table doesn't exist, create new table for CRKN file info
+        if not list_of_tables:
+            print("Table does not exist, creating new one")
+            cursor.execute("CREATE TABLE CRKN_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
 
-    # If table does not exist, create new table for local file info
-    if not list_of_tables:
-        print("Table does not exist, creating new one")
-        cursor.execute("CREATE TABLE local_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
+        # Empty list for next check
+        list_of_tables.clear()
+        list_of_tables = cursor.execute(
+            """SELECT name FROM sqlite_master WHERE type='table'
+            AND name='local_file_names'; """).fetchall()
+
+        # If table does not exist, create new table for local file info
+        if not list_of_tables:
+            print("Table does not exist, creating new one")
+            cursor.execute("CREATE TABLE local_file_names(file_name VARCHAR(255), file_date VARCHAR(255));")
+        # Commit changes
+        connection.commit()
+    except sqlite3.Error as e:
+        m_logger.error(f"A database error occured: {e}")
+        # Rollback changes
+        connection.rollback()
 
 
 def search_database(connection, query, terms, searchTypes):
@@ -130,11 +137,16 @@ def search_database(connection, query, terms, searchTypes):
 
     # Searches for matching items through each table one by one and adds any matches to the list
     for table in list_of_tables:
-        formatted_query = query.replace("table_name", f"[{table}]")
+        # Get institutions from each table
+        institutions = cursor.execute(f'select * from {table}')
+        institutions = [description[0] for description in institutions.description[8:-2]]
 
-        # executes the final fully-formatted query
-        cursor.execute(formatted_query, terms)
+        # Only search table if it has the institution
+        if settings_manager.get_setting("institution") in institutions:
+            formatted_query = query.replace("table_name", f"[{table}]")
+            # executes the final fully-formatted query
+            cursor.execute(formatted_query, terms)
 
-        results.extend(cursor.fetchall())
+            results.extend(cursor.fetchall())
     return results
 

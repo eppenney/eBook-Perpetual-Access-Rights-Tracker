@@ -1,6 +1,6 @@
 import urllib
 
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, Qt
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QLineEdit, QMessageBox, QComboBox, QSizePolicy, QWidget, \
     QLabel
@@ -20,7 +20,6 @@ When creating instances of startScreen, use startScreen.get_instance(widget)
 Feb 27, 2024
 """
 settings_manager = Settings()
-settings_manager.load_settings()
 
 
 class startScreen(QDialog):
@@ -30,6 +29,10 @@ class startScreen(QDialog):
         if not cls._instance:
             cls._instance = cls(arg)
         return cls._instance
+    
+    @classmethod
+    def replace_instance(cls, arg):
+        cls._instance = cls(arg)
     
     def __init__(self, widget):
         super(startScreen, self).__init__()
@@ -54,12 +57,10 @@ class startScreen(QDialog):
         self.duplicateCombos = []
         self.duplicateSearchTypes = []
 
-        self.removeButton = self.findChild(QPushButton, 'removeButton') #finding child pushButton from the parent class
-        self.removeButton.clicked.connect(self.removeTextEdit)
+        
 
 
         # Finding widgets
-        self.pushButton = self.findChild(QPushButton, 'pushButton')
         self.textEdit = self.findChild(QLineEdit, 'textEdit')
         self.booleanBox = self.findChild(QComboBox, 'booleanBox')
         self.booleanSearchType = self.findChild(QComboBox, 'booleanBoxRight')
@@ -74,7 +75,13 @@ class startScreen(QDialog):
 
         self.duplicateCount = 0
         self.booleanBox.hide()
-        self.pushButton.clicked.connect(self.duplicateTextEdit)
+
+        # Add and remove field buttons:
+        self.addFieldButton = self.findChild(QPushButton, 'pushButton')
+        self.addFieldButton.clicked.connect(self.duplicateTextEdit)
+
+        self.removeFieldButton = self.findChild(QPushButton, 'removeButton') #finding child pushButton from the parent class
+        self.removeFieldButton.clicked.connect(self.removeTextEdit)
 
         self.search.clicked.connect(self.search_button_clicked)
         self.widget = widget  # Store the QStackedWidget reference
@@ -153,8 +160,8 @@ class startScreen(QDialog):
         new_search_type.show()
 
         newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 1)
-        self.pushButton.setGeometry(self.pushButton.x(), newY, self.pushButton.width(), self.pushButton.height())
-        self.removeButton.setGeometry(self.removeButton.x(), newY, self.removeButton.width(), self.removeButton.height())
+        self.addFieldButton.setGeometry(self.addFieldButton.x(), newY, self.addFieldButton.width(), self.addFieldButton.height())
+        self.removeFieldButton.setGeometry(self.removeFieldButton.x(), newY, self.removeFieldButton.width(), self.removeFieldButton.height())
 
       else:
           QMessageBox.warning(self, "Limit reached" if self.language_value == "english" else "", f"You can only search {MAX_DUPLICATES} at a time" if self.language_value == "english" else f"Vous ne pouvez rechercher que {MAX_DUPLICATES} à la fois.")
@@ -169,6 +176,9 @@ class startScreen(QDialog):
         for i in range(len(self.duplicateSearchTypes)):
             newY = self.booleanSearchType.y() + (self.booleanSearchType.height() + self.textOffsetY) * (i + 1)
             self.duplicateSearchTypes[i].setGeometry(self.booleanSearchType.x() - self.textOffsetX , newY, self.booleanSearchType.width(), self.booleanSearchType.height())
+        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 1)
+        self.addFieldButton.setGeometry(self.addFieldButton.x(), newY, self.addFieldButton.width(), self.addFieldButton.height())
+        self.removeFieldButton.setGeometry(self.removeFieldButton.x(), newY, self.removeFieldButton.width(), self.removeFieldButton.height())
 
     def newTextEdit(self):
         new_text_edit = QLineEdit(self)
@@ -245,8 +255,8 @@ class startScreen(QDialog):
             self.duplicateCount -= 1  # Decrement the count of duplicates
 
             newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 1)
-            self.pushButton.setGeometry(self.pushButton.x(), newY, self.pushButton.width(), self.pushButton.height())
-            self.removeButton.setGeometry(self.removeButton.x(), newY, self.removeButton.width(), self.removeButton.height())
+            self.addFieldButton.setGeometry(self.addFieldButton.x(), newY, self.addFieldButton.width(), self.addFieldButton.height())
+            self.removeFieldButton.setGeometry(self.removeFieldButton.x(), newY, self.removeFieldButton.width(), self.removeFieldButton.height())
 
         else:
             QMessageBox.information(self, "No More Duplicates" if self.language_value == "english" else "Plus de doublons", "There are no more duplicated text fields to remove." if self.language_value == "english" else "Il n'y a plus de champs de texte en double à supprimer.")
@@ -273,7 +283,7 @@ class startScreen(QDialog):
 
         # Do not search if no institution selected to search.
         if institution == "":
-            print("No institution selected.")
+            QMessageBox.information(self, "No institution selected" if self.language_value == "english" else "Aucun établissement sélectionné", "You have no institute selected. Please select an institute on the settings page." if self.language_value == "english" else "Vous n'avez sélectionné aucun institut. Veuillez sélectionner un institut sur la page des paramètres.")
             return
 
         searchText = self.textEdit.text().strip()
@@ -297,7 +307,7 @@ class startScreen(QDialog):
 
         # Do not go to results page if there are no results or no text in the search field.
         if len(results) == 0:
-            print("There are no results for the search.")
+            QMessageBox.information(self, "No Results Found" if self.language_value == "english" else "Aucun résultat trouvé", "There are no results for the search." if self.language_value == "english" else "Il n'y a aucun résultat pour la recherche.")
             close_database(connection)
             return
 
@@ -359,3 +369,10 @@ class startScreen(QDialog):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
         super().resizeEvent(event)
         self.update_all_sizes()
+
+    def keyPressEvent(self, event):
+        # Override keyPressEvent method to ignore Escape key event
+        if event.key() == Qt.Key.Key_Escape:
+            event.ignore()  # Ignore the Escape key event
+        else:
+            super().keyPressEvent(event)

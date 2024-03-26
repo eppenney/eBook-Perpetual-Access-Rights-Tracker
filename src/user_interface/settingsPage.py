@@ -1,4 +1,4 @@
-from PyQt6.QtCore import pyqtSignal, QUrl
+from PyQt6.QtCore import pyqtSignal, QUrl, Qt
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox, QMessageBox
@@ -8,7 +8,6 @@ from src.utility.settings_manager import Settings
 import os
 
 settings_manager = Settings()
-settings_manager.load_settings()
 
 
 class settingsPage(QDialog):
@@ -20,6 +19,11 @@ class settingsPage(QDialog):
     def get_instance(cls, arg):
         if not cls._instance:
             cls._instance = cls(arg)
+        return cls._instance
+    
+    @classmethod
+    def replace_instance(cls, arg):
+        cls._instance = cls(arg)
         return cls._instance
 
     def __init__(self, widget):
@@ -68,7 +72,6 @@ class settingsPage(QDialog):
         self.crknURL = self.findChild(QTextEdit, 'crknURL')
         self.crknURL.setPlainText(current_crkn_url)
 
-
     def update_CRKN_button(self):
         # Grey out the Update CRKN button if Allow_CRKN is False
         allow_crkn = settings_manager.get_setting("allow_CRKN")
@@ -108,6 +111,7 @@ class settingsPage(QDialog):
 
     # Testing to save institute working
     def save_selected(self):
+        from src.user_interface.startScreen import startScreen
         # Get the currently selected institute from the combo box
         selected_institute = self.instituteSelection.currentText()
         print("Selected institute:", selected_institute)  # Test
@@ -115,11 +119,11 @@ class settingsPage(QDialog):
         # Save the selected institute using the settings manager
         settings_manager.update_setting("institution", selected_institute)
 
-        selected_language = self.languageSelection.currentText()
-        print("Selected Language:", selected_language)  # Test
+        selected_language = self.languageSelection.currentIndex()
+        print("Selected Language:", "english" if selected_language == 0 else "french")  # Test
 
         # Update the language setting in the settings manager
-        settings_manager.set_language(selected_language)
+        settings_manager.set_language("english" if selected_language == 0 else "french")
 
         # Get the text from the crkURL QTextEdit
         crkn_url = self.findChild(QTextEdit, 'crknURL').toPlainText()
@@ -141,6 +145,22 @@ class settingsPage(QDialog):
 
         # Add the new institute to the settings
         settings_manager.add_local_institution(add_institute_text)
+        
+        self.hide()
+        
+        # Reset instances classes for UI 
+        startScreen.replace_instance(self.widget)
+        self.widget.removeWidget(self)
+        self.widget.addWidget(self.replace_instance(self.widget))
+        self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+
+    def keyPressEvent(self, event):
+        # Override keyPressEvent method to ignore Escape key event
+        if event.key() == Qt.Key.Key_Escape:
+            event.ignore()  # Ignore the Escape key event
+        else:
+            super().keyPressEvent(event)
+        
 
     """
     This was made by ChatGPT, do not sue me. 
