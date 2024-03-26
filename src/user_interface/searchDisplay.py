@@ -13,17 +13,23 @@ settings_manager = Settings()
 class searchDisplay(QDialog):
     _instance = None
     @classmethod
-    def get_instance(cls, arg):
+    def get_instance(cls, arg1, arg2):
         if not cls._instance:
-            cls._instance = cls(arg)
+            cls._instance = cls(arg1, arg2)
         return cls._instance
     
     @classmethod
-    def replace_instance(cls, arg):
-        cls._instance = cls(arg)
+    def replace_instance(cls, arg1, arg2):
+        if cls._instance:
+            # Remove the previous instance's reference from its parent widget
+            cls._instance.setParent(None)
+            # Explicitly delete the previous instance
+            del cls._instance
+            print("Deleting instance")
+        cls._instance = cls(arg1, arg2)
         return cls._instance
 
-    def __init__(self, widget):
+    def __init__(self, widget, results):
         super(searchDisplay, self).__init__()
         language_value = settings_manager.get_setting("language").lower()
         ui_file = os.path.join(os.path.dirname(__file__), f"{language_value}_searchDisplay.ui")
@@ -33,11 +39,13 @@ class searchDisplay(QDialog):
         self.backButton.clicked.connect(self.backToStartScreen)
         self.exportButton.clicked.connect(self.export_data_handler)
         self.widget = widget
-        self.results = []
+        self.results = results
         self.original_widget_values = None
         self.column_labels = ["Access", "File_Name", "Platform", "Title", "Publisher", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code", "collection_name", "title_metadata_last_modified"]
 
         self.tableWidget.itemSelectionChanged.connect(self.updateCellNameDisplay)
+
+        self.display_results_in_table()
 
         # using this method to show the results of the clicked cell on the top of the page whenever clicked on cell.
 
@@ -51,29 +59,22 @@ class searchDisplay(QDialog):
 
 
     def backToStartScreen(self):
-        print("Size of widget stack:", self.widget.count())
-        # from src.user_interface.startScreen import startScreen
-        # backButton = startScreen.get_instance(self.widget)
-        # self.widget.addWidget(backButton)
-        # self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
         self.widget.removeWidget(self.widget.currentWidget())
-        print("Size of widget stack:", self.widget.count())
 
 
-    def display_results_in_table(self, results):
-        self.results = results
+    def display_results_in_table(self):
+        # The issue is between here
         self.tableWidget.setRowCount(0)  # Clear existing rows
-        self.tableWidget.setColumnCount(len(results[0])) if results else self.tableWidget.setColumnCount(0)
+        self.tableWidget.setColumnCount(len(self.results[0])) if self.results else self.tableWidget.setColumnCount(0)
 
-        if results:
-            # self.results.insert(0, column_labels)
+        if self.results:
             self.tableWidget.setHorizontalHeaderLabels(self.column_labels)
 
-        for row_number, row_data in enumerate(results):
+        for row_number, row_data in enumerate(self.results):
             self.tableWidget.insertRow(row_number)
             for column_number, data in enumerate(row_data):
                 self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
-
+        # And here
         self.update_all_sizes()
 
     def export_data_handler(self):

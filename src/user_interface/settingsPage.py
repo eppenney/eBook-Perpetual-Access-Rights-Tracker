@@ -22,8 +22,14 @@ class settingsPage(QDialog):
         return cls._instance
     
     @classmethod
-    def replace_instance(cls, arg):
-        cls._instance = cls(arg)
+    def replace_instance(cls, arg1):
+        if cls._instance:
+            # Remove the previous instance's reference from its parent widget
+            cls._instance.setParent(None)
+            # Explicitly delete the previous instance
+            del cls._instance
+            print("Deleting instance")
+        cls._instance = cls(arg1)
         return cls._instance
 
     def __init__(self, widget):
