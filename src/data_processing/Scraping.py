@@ -307,11 +307,14 @@ def update_tables(file, method, connection, command):
 
         # Delete file from {method}_file_names table and drop the table as well.
         elif command == "DELETE":
-            cursor.execute(f"DELETE from {method}_file_names WHERE file_name LIKE {file[0]}")
+            print("Phase 1")
+            cursor.execute(f"DELETE from {method}_file_names WHERE file_name = '{file[0]}'")
+            print("Phase2")
             if method == "CRKN":
                 cursor.execute(f"DROP TABLE {file[0]}")
             else:
-                cursor.execute(f"DROP TABLE local_{file[0]}")
+                print("Phase 3")
+                cursor.execute(f"DROP TABLE [local_{file[0]}]")
         # Commit changes on successful operation
         connection.commit()
     except Exception as e:
