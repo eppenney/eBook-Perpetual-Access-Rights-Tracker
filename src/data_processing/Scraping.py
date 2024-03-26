@@ -456,34 +456,36 @@ def check_file_format(file_df):
     :return: True if valid, error string if not
     """
 
-    # Failed to read the file into a dataframe
-    if file_df is None:
-        return False
+    if isinstance(file_df, pd.DataFrame):
+        header_row = ["Title", "Publisher", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code",
+                      "collection_name", "title_metadata_last_modified"]
+        headers = file_df.columns.to_list()
+
+        # Header row is incorrect (too short or headers don't match)
+        if len(headers) <= 8 or not headers[:8] == header_row:
+            m_logger.error("The header row is incorrect")
+            return "The header row is incorrect."
+
+        # Title, ISBN and Y/N Column complete
+        df_series = file_df.count()
+        rows = file_df.shape[0]
+        if df_series["Title"] != rows:
+            m_logger.error("Missing title data")
+            return "Missing title data."
+        # if df_series["Platform_eISBN"] != rows:
+        #     m_logger.error("Missing ISBN data")
+        #     return "Missing Platform_eISBN data."
+        for institution_column in df_series[8:-2]:
+            if institution_column != rows:
+                m_logger.error("Missing Y/N data")
+                return "Missing Y/N data"
+
+        return True
+
+    # Failed to read the file into dataframe - return error instead
     elif file_df == "No Platform":
         return "No Platform listed in cell A1."
     elif file_df == "PA-Rights":
         return "The 'PA-Rights' sheet does not exist."
-
-    header_row = ["Title", "Publisher", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code", "collection_name", "title_metadata_last_modified"]
-    headers = file_df.columns.to_list()
-
-    # Header row is incorrect (too short or headers don't match)
-    if len(headers) <= 8 or not headers[:8] == header_row:
-        m_logger.error("The header row is incorrect")
-        return "The header row is incorrect."
-
-    # Title, ISBN and Y/N Column complete
-    df_series = file_df.count()
-    rows = file_df.shape[0]
-    if df_series["Title"] != rows:
-        m_logger.error("Missing title data")
-        return "Missing title data."
-    # if df_series["Platform_eISBN"] != rows:
-    #     m_logger.error("Missing ISBN data")
-    #     return "Missing Platform_eISBN data."
-    for institution_column in df_series[8:-2]:
-        if institution_column != rows:
-            m_logger.error("Missing Y/N data")
-            return "Missing Y/N data"
-
-    return True
+    else:
+        return "Unknown error."
