@@ -14,9 +14,10 @@ from src.data_processing import database
 from PyQt6.QtCore import QTimer, QThread, pyqtSignal
 from src.utility.logger import m_logger
 import os
+from PyQt6.QtWidgets import QMessageBox
 
 settings_manager = Settings()
-crkn_url = settings_manager.get_setting('CRKN_url')
+
 """
 Ethan Penney
 March 18, 2024
@@ -44,6 +45,7 @@ class ScrapingThread(QThread):
         return True
 
     def scrapeCRKN(self):
+        crkn_url = settings_manager.get_setting('CRKN_url')
         self.progress_update.emit(0)
         """Scrape the CRKN website for listed ebook files."""
         error = ""
@@ -153,7 +155,7 @@ class ScrapingThread(QThread):
             self.msleep(100)  # Sleep to avoid busy waiting
         return self.response
     
-    def revieve_response(self, response):
+    def recieve_response(self, response):
         self.response = response
     
     def download_files(self, files, connection):        
@@ -162,6 +164,7 @@ class ScrapingThread(QThread):
         :param files: list of files to download from CRKN
         :param connection: database connection object
         """
+        language = settings_manager.get_setting("language")
         try:
             i = 0
             for [link, command] in files:
@@ -206,25 +209,28 @@ class ScrapingThread(QThread):
         # Handle connection loss in middle of scraping
         except requests.exceptions.HTTPError as http_err:
             # Handle HTTP errors
-            error_message = "Server Connection Error: Please make sure you are connected to your internet and the CRKN URL is "
-            "updated in the Settings page."
-            error = http_err
-            print(f"{http_err} - download_files stopped")
+            error_message = "Server Connection Error: Connection to the server was lost. Some files may have been scraped, but not all files."
+            m_logger.error(error_message)
+            self.error_signal.emit(error_message)
+            # QMessageBox.warning(None, "Server Connection Error" if language == "English" else "Erreur de connexion au serveur", error_message if language == "English" else "Erreur de connexion au serveur\nLa connexion au serveur a été perdue. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
         except requests.exceptions.ConnectionError as conn_err:
             # Handle errors like refused connections
-            error_message = "Internet Connection Error: Please make sure you are connected to your internet."
-            error = conn_err
-            print(f"{conn_err} - download_files stopped")
+            error_message = "Internet Connection Error: Connection to the internet was lost. Some files may have been scraped, but not all files."
+            m_logger.error(error_message)
+            self.error_signal.emit(error_message)
+            # QMessageBox.warning(None, "Internet Connection Error" if language == "English" else "Erreur de connexion internet", error_message if language == "English" else "Erreur de connexion internet\nLa connexion à Internet a été perdue. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
         except requests.exceptions.Timeout as timeout_err:
             # Handle request timeout
-            error_message = "Connection Timeout: Please try updating CRKN again."
-            error = timeout_err
-            print(f"{timeout_err} - download_files stopped")
+            error_message = "Connection Timeout: The connection was too slow. Some files may have been scraped, but not all files."
+            m_logger.error(error_message)
+            self.error_signal.emit(error_message)
+            # QMessageBox.warning(None, "Connection Timeout" if language == "English" else "Délai d'attente", error_message if language == "English" else "Délai d'attente\nLa connexion était trop lente. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
         except Exception as e:
             # Handle any other exceptions
-            error_message = "Unexpected Error: Please try again later."
-            error = e
-            print(f"{e} - download_files stopped")
+            error_message = "Unexpected Error: Please try again later. Some files may have been scraped, but not all files."
+            m_logger.error(error_message)
+            self.error_signal.emit(error_message)
+            # QMessageBox.warning(None, "Unexpected Error" if language == "English" else "Erreur inattendue", error_message if language == "English" else "Erreur inattendue\nRéessayez plus tard. Certains fichiers peuvent avoir été supprimés, mais pas tous les fichiers.", QMessageBox.StandardButton.Ok)
 
         # Remove temp.xlsx used for uploading files
         try:
@@ -301,18 +307,17 @@ def update_tables(file, method, connection, command):
 
         # Delete file from {method}_file_names table and drop the table as well.
         elif command == "DELETE":
-            cursor.execute(f"DELETE from {method}_file_names WHERE file_name LIKE {file[0]}")
+            cursor.execute(f"DELETE from {method}_file_names WHERE file_name = '{file[0]}'")
             if method == "CRKN":
                 cursor.execute(f"DROP TABLE {file[0]}")
             else:
-                cursor.execute(f"DROP TABLE local_{file[0]}")
+                cursor.execute(f"DROP TABLE [local_{file[0]}]")
         # Commit changes on successful operation
         connection.commit()
     except Exception as e:
         # Rollback if changes fail
         connection.rollback()
         m_logger.error(f"Failed to {command} data for {file[0]}: {e}. Database remains unchanged")
-
 
 
 def split_CRKN_file_name(file_name):
@@ -357,6 +362,7 @@ def file_to_dataframe_excel(file_name, file):
         return df
     except ValueError:
         m_logger.error("Incorrect sheet name in excel file (PA-Rights did not exist).")
+        return
 
 
 def file_to_dataframe_csv(file_name, file):
@@ -387,6 +393,7 @@ def file_to_dataframe_csv(file_name, file):
         return df
     except Exception:
         m_logger.error("File to Dataframe failed - Unable to read csv file.")
+        return
 
 
 def file_to_dataframe_tsv(file_name, file):
@@ -417,6 +424,7 @@ def file_to_dataframe_tsv(file_name, file):
         return df
     except Exception:
         m_logger.error("File to Dataframe failed - Unable to read tsv file.")
+        return
 
 
 def upload_to_database(df, table_name, connection):
@@ -469,8 +477,8 @@ def check_file_format(file_df):
     # if df_series["Platform_eISBN"] != rows:
     #     m_logger.error("Missing ISBN data")
     #     return False
-    for uni_column in df_series[8:-2]:
-        if uni_column != rows:
+    for institution_column in df_series[8:-2]:
+        if institution_column != rows:
             m_logger.error("Missing Y/N data")
             return False
 

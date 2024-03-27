@@ -14,6 +14,7 @@ import os
 def main():
     m_logger.info("Application started")
     settings_manager = Settings()
+    settings_manager.load_settings()
 
     app = QApplication(sys.argv)
     widget = QtWidgets.QStackedWidget()

@@ -149,7 +149,7 @@ def search_database(connection, query, terms, searchTypes):
     # Searches for matching items through each table one by one and adds any matches to the list
     for table in list_of_tables:
         # Get institutions from each table
-        institutions = cursor.execute(f'select * from {table}')
+        institutions = cursor.execute(f'select * from [{table}]')
         institutions = [description[0] for description in institutions.description[8:-2]]
 
         # Only search table if it has the institution
@@ -160,3 +160,18 @@ def search_database(connection, query, terms, searchTypes):
 
             results.extend(cursor.fetchall())
     return results
+def get_table_data(connection, table_name):
+    """
+    Retrieve information from a specific table in the database.
+    :param connection: database connection object
+    :param table_name: name of the table to fetch data from
+    :return: list of tuples containing data from the specified table
+    """
+    try:
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM [{table_name}];")
+        table_data = cursor.fetchall()
+        return table_data
+    except sqlite3.Error as e:
+        m_logger.error(f"An error occurred while fetching data from the table: {e}")
+        return []

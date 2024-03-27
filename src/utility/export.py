@@ -1,21 +1,11 @@
-"""
-Ethan
-Jan 24, 2024
-This simple program gives you the export_data function. 
-Link this function to a button and it will open a file explorer and 
-export the passed parameter data to the location selected in a csv file.
-Usage will need to use a lambda function, as for some reason linking button
-functions doesn't let you pass parameters by default. Luckily Lambda is simple in python
-So, correct usage should look something like this:
-self.exportButton.clicked.connect(lambda: export_data(data_to_export))
-As opposed to:
-self.exportButton.clicked.connect(export_data(data_to_export))
-or:
-self.exportButton.clicked.connect(export_data)
-"""
-from PyQt6.QtWidgets import QFileDialog, QApplication
+from PyQt6.QtWidgets import QFileDialog, QApplication, QMessageBox
 import pandas as pd
 import sys
+from src.utility.logger import m_logger
+from src.utility.settings_manager import Settings
+
+
+settings_manager = Settings()
 
 
 def export_data(data, headers):
@@ -24,6 +14,7 @@ def export_data(data, headers):
     :param data: data to export - in the form of a list
     :param headers: headers of the columns - in the form of a list
     """
+    language = settings_manager.get_setting("language")
     app = QApplication.instance()  # Try to get the existing application instance
     if app is None:  # If no instance exists, create a new one
         app = QApplication(sys.argv)
@@ -40,7 +31,8 @@ def export_data(data, headers):
 
         # Save the DataFrame to TSV
         df.to_csv(save_path, sep="\t", index=False)
-        print(f"Data exported to: {save_path}")
+        m_logger.info(f"Data exported to: {save_path}")
+        QMessageBox.information(None, "File Export" if language == "English" else "Exportation de fichiers", f"File has been exported to:\n{save_path}" if language == "English" else f"Le fichier a été exporté vers:\n{save_path}", QMessageBox.StandardButton.Ok)
 
 
 def get_save_path():
@@ -48,7 +40,8 @@ def get_save_path():
     Get the save path of the file to export. This is a path selected by the user in their file structure.
     :return: The save path.
     """
+    language = settings_manager.get_setting("language")
     options = QFileDialog.Option.ReadOnly
-    save_path, _ = QFileDialog.getSaveFileName(None, "Save Data", "", "TSV Files (*.tsv);;All Files (*)", options=options)
+    save_path, _ = QFileDialog.getSaveFileName(None, "Save Data" if language == "English" else "Enregistrer le fichier", "", "TSV Files (*.tsv);;All Files (*)" if language == "English" else "Fichiers TSV (*.tsv);;Tous les fichiers (*)", options=options)
 
     return save_path
