@@ -135,11 +135,15 @@ class settingsPage(QDialog):
     
     def save_institution(self):
         selected_institution = self.institutionSelection.currentText()
-        settings_manager.update_setting("institution", selected_institution)
+        settings_manager.set_institution(selected_institution)
         self.reset_app()
 
     def save_CRKN_URL(self):
         crkn_url = self.findChild(QTextEdit, 'crknURL').toPlainText()
+
+        if len(crkn_url.split("/")) < 3:
+            QMessageBox.warning(self, "Incorrect URL format", "Incorrect URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
+            return
         settings_manager.set_crkn_url(crkn_url)
 
     def keyPressEvent(self, event):
