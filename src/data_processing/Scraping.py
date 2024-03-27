@@ -154,7 +154,7 @@ class ScrapingThread(QThread):
             self.msleep(100)  # Sleep to avoid busy waiting
         return self.response
     
-    def recieve_response(self, response):
+    def receive_response(self, response):
         self.response = response
     
     def download_files(self, files, connection):        

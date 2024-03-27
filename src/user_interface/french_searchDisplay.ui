@@ -53,7 +53,7 @@
         </string>
     </property>
     <property name="text">
-     <string>dos</string>
+     <string>Retour</string>
     </property>
    </widget>
    <widget class="QWidget" name="widget_2" native="true">
