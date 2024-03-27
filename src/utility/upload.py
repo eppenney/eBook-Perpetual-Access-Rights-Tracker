@@ -248,7 +248,7 @@ def file_to_df(file_name, file_path):
     :return: Dataframe or None
     """
     m_logger.info(f"Processing file: {file_path}")
-    file_extension = file_name.split(".")
+    file_extension = file_name.split(".")[-1]
     # Convert file into dataframe
     if file_extension == "csv":
         file_df = Scraping.file_to_dataframe_csv(file_name, file_path)
