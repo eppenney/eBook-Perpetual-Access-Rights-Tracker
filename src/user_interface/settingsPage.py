@@ -129,8 +129,13 @@ class settingsPage(QDialog):
         self.reset_app()
 
     def save_language(self):
+        current_language = settings_manager.get_setting("language")
         selected_language = self.languageSetting.currentIndex()
-        settings_manager.set_language("English" if selected_language == 0 else "French")   
+        reply = QMessageBox.question(None, "Language Change" if current_language == "English" else "Changement de langue", 
+                                     "Are you sure you want to change your language setting?" if current_language == "English" else "Êtes-vous sûr de vouloir modifier votre paramètre de langue ?", 
+                                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.Yes:
+            settings_manager.set_language("English" if selected_language == 0 else "French")   
         self.reset_app() 
     
     def save_institution(self):
