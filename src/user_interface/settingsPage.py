@@ -12,8 +12,8 @@ settings_manager = Settings()
 
 class settingsPage(QDialog):
     _instance = None
-    # # Should emit signal to the settings for saving the institute
-    instituteSelected = pyqtSignal(str)
+    # # Should emit signal to the settings for saving the institution
+    institutionSelected = pyqtSignal(str)
 
     @classmethod
     def get_instance(cls, arg):
@@ -22,8 +22,14 @@ class settingsPage(QDialog):
         return cls._instance
     
     @classmethod
-    def replace_instance(cls, arg):
-        cls._instance = cls(arg)
+    def replace_instance(cls, arg1):
+        if cls._instance:
+            # Remove the previous instance's reference from its parent widget
+            cls._instance.setParent(None)
+            # Explicitly delete the previous instance
+            del cls._instance
+            print("Deleting instance")
+        cls._instance = cls(arg1)
         return cls._instance
 
     def __init__(self, widget):
@@ -47,15 +53,19 @@ class settingsPage(QDialog):
 
         self.update_CRKN_button()
 
-        # Finding the combobox for the institute
-        self.instituteSelection = self.findChild(QComboBox, 'instituteSelection')
-        print("ComboBox Found:", self.instituteSelection)
-        self.populate_institutes()
+        # Finding the combobox for the institution
+        self.institutionSelection = self.findChild(QComboBox, 'institutionSelection')
+        self.institutionSelection.activated.connect(self.save_institution)
+        self.populate_institutions()
+        self.set_institution(settings_manager.get_setting("institution"))
+
+        # Find the Push Button for manage local database
+        self.manageDatabaseButton = self.findChild(QPushButton, 'manageDatabase')
+        self.manageDatabaseButton.clicked.connect(self.show_manage_local_databases_popup)
 
         # Finding the combobox for the SaveButton
         self.saveSettingsButton = self.findChild(QPushButton, 'saveSettings')
         self.saveSettingsButton.setToolTip("Click to save the settings")
-        print("ComboBox Found:", self.saveSettingsButton)
         self.saveSettingsButton.clicked.connect(self.save_selected)
 
         # Finding the linkButton from the QPushButton class
@@ -64,19 +74,15 @@ class settingsPage(QDialog):
         self.openLinkButton.clicked.connect(self.open_link)
 
         # Finding the languageButton from the QPushButton class
-
-        self.languageSelection = self.findChild(QComboBox,'languageSetting')
-        self.languageSelection.currentIndexChanged.connect(self.change_language)
+        self.languageSelection = self.findChild(QComboBox,'languageSetting') 
+        self.languageSelection.activated.connect(self.save_language)
+        self.languageSelection.setCurrentIndex(0 if settings_manager.get_setting("language") == "English" else 1)
 
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL = self.findChild(QTextEdit, 'crknURL')
         self.crknURL.setPlainText(current_crkn_url)
 
-        # Finding the addInstituteButton
-        self.addInstituteButton = self.findChild(QPushButton, 'addInstituteButton')
-        print('ComboBox Found:',self.addInstituteButton)
-        self.addInstituteButton.setToolTip("Click to add the institute")
-        self.addInstituteButton.clicked.connect(self.add_institute)
+        self.set_current_settings_values()
 
     def update_CRKN_button(self):
         # Grey out the Update CRKN button if Allow_CRKN is False
@@ -91,93 +97,50 @@ class settingsPage(QDialog):
         # Open the link in the default web browser
         QDesktopServices.openUrl(QUrl(link))
 
-    def change_language(self):
-        # Get the selected language from the combo box
-        selected_language = self.languageSelection.currentText()
-
-        # Update the language setting in the settings manager
-        settings_manager.set_language(selected_language)
-
-    def add_institute(self):
-        add_institute_text = self.findChild(QTextEdit,
-                                            'addInstitute').toPlainText().strip()  # Strip leading/trailing whitespace
-        print("Entered Institute:", add_institute_text)  # Test
-
-        if add_institute_text == "":
-            print("Empty text detected. Showing message box.")
-            # Prompt the user to enter text if the text box is empty
-            QMessageBox.information(self, "Empty Input", "Please enter the institute name.")
-            return
-        else:
-            print("Text is not empty. Proceeding to add institute.")
-
-        all_institutes = settings_manager.get_institutions()
-        print("All Institutes:", all_institutes)  # Test
-        if add_institute_text in all_institutes:
-            # Prompt the user that the institute already exists
-            print("Institute already exists!")
-            QMessageBox.warning(self, "Duplicate Institute", "The entered institute already exists.")
-            return
-
-        # Add the new institute to the settings
-        try:
-            settings_manager.add_local_institution(add_institute_text)
-        except Exception as e:
-            # Display an error message if an exception occurs
-            QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
-            return
-
-        # Re-populate institutes in the combo box
-        self.populate_institutes()
-
-
     def backToStartScreen2(self):
-        from src.user_interface.startScreen import startScreen
-        backButton2 = startScreen.get_instance(self.widget)
-        self.widget.addWidget(backButton2)
-        self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+        self.widget.removeWidget(self.widget.currentWidget())
 
-    def populate_institutes(self):
+
+    def populate_institutions(self):
         # Clear the existing items in the combo box
-        self.instituteSelection.clear()
+        self.institutionSelection.clear()
 
-        # Get the list of institutes from the settings manager
-        institutes = settings_manager.get_institutions()
-        print("Institutes:", institutes)  # TEST to make sure
+        # Get the list of institutions from the settings manager
+        institutions = settings_manager.get_institutions()
+        # print("institutions:", institutions)  # TEST to make sure
 
-        # Populate the combo box with institute names
-        self.instituteSelection.addItems(institutes)
+        # Populate the combo box with institution names
+        self.institutionSelection.addItems(institutions)
 
-    # Testing to save institute working
+    def set_institution(self, institution_value):
+        # Iterate over the items in the combo box
+        for index in range(self.institutionSelection.count()):
+            if self.institutionSelection.itemText(index) == institution_value:
+                # Set the current index to the item that matches the desired value
+                self.institutionSelection.setCurrentIndex(index)
+                break
+
+    # Testing to save institution working
     def save_selected(self):
-        from src.user_interface.startScreen import startScreen
-        # Get the currently selected institute from the combo box
-        selected_institute = self.instituteSelection.currentText()
-        print("Selected institute:", selected_institute)  # Test
+        self.save_institution()
+        self.save_language()
+        self.save_CRKN_URL()
+        # self.addInstitution()      
+        self.reset_app()
 
-        # Save the selected institute using the settings manager
-        settings_manager.update_setting("institution", selected_institute)
+    def save_language(self):
+        selected_language = self.languageSetting.currentIndex()
+        settings_manager.set_language("English" if selected_language == 0 else "French")   
+        self.reset_app() 
+    
+    def save_institution(self):
+        selected_institution = self.institutionSelection.currentText()
+        settings_manager.update_setting("institution", selected_institution)
+        self.reset_app()
 
-        selected_language = self.languageSelection.currentIndex()
-        print("Selected Language:", "english" if selected_language == 0 else "french")  # Test
-
-        # Update the language setting in the settings manager
-        settings_manager.set_language("english" if selected_language == 0 else "french")
-
-        # Get the text from the crkURL QTextEdit
+    def save_CRKN_URL(self):
         crkn_url = self.findChild(QTextEdit, 'crknURL').toPlainText()
-        print("Entered CRKN URL:", crkn_url)  # Test
-
-        # Update the CRKN URL setting using the settings manager
         settings_manager.set_crkn_url(crkn_url)
-
-        self.hide()
-        
-        # Reset instances classes for UI 
-        startScreen.replace_instance(self.widget)
-        self.widget.removeWidget(self)
-        self.widget.addWidget(self.replace_instance(self.widget))
-        self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
     def keyPressEvent(self, event):
         # Override keyPressEvent method to ignore Escape key event
@@ -185,15 +148,39 @@ class settingsPage(QDialog):
             event.ignore()  # Ignore the Escape key event
         else:
             super().keyPressEvent(event)
-        
 
-    """
-    This was made by ChatGPT, do not sue me. 
-    -Ethan
-    Feb 27, 2024 
-    """
+    def addInstitution(self):
+        """
+        Used to add the institution currently in the settings page text field
+        """
+        add_institution_text = self.institutionSelection.currentText()
+        
+        all_institutions = settings_manager.get_institutions()
+        if add_institution_text in all_institutions:
+            QMessageBox.warning(self, "Duplicate institution", "The entered institution already exists.", QMessageBox.StandardButton.Ok)
+            return
+
+        # Add the new institution to the settings
+        settings_manager.add_local_institution(add_institution_text)
+        
+    def reset_app(self):        
+        widget_count = self.widget.count()
+        for i in range(widget_count):
+            current_widget = self.widget.widget(i)
+            new_widget_instance = type(current_widget).replace_instance(self.widget)
+            self.widget.insertWidget(i, new_widget_instance)
+            self.widget.removeWidget(current_widget)
+            current_widget.deleteLater()
+        
+        # Set the current index to the last widget added
+        self.widget.setCurrentIndex(widget_count - 1)
 
     def update_all_sizes(self):
+        """
+        This was made by ChatGPT, do not sue me. 
+        -Ethan
+        Feb 27, 2024 
+        """
         original_width = 1200
         original_height = 800
         new_width = self.width() + 25
@@ -236,8 +223,33 @@ class settingsPage(QDialog):
         upload_and_process_file()
 
 
+    def set_current_settings_values(self):
+        # Set the current language selection
+        current_language = settings_manager.get_setting("language")
+        language_index = self.languageSelection.findText(current_language, Qt.MatchFlag.MatchFixedString)
+        if language_index >= 0:
+            self.languageSelection.setCurrentIndex(language_index)
 
-#Error i am encountering right now is based on the adding of institute and checking out if they already exist.
+        # Set the current CRKN URL
+        current_crkn_url = settings_manager.get_setting("CRKN_url")
+        self.crknURL.setPlainText(current_crkn_url)
+
+        # Set the current institution selection
+        current_institution = settings_manager.get_setting("institution")
+        institution_index = self.institutionSelection.findText(current_institution, Qt.MatchFlag.MatchFixedString)
+        if institution_index >= 0:
+            self.institutionSelection.setCurrentIndex(institution_index)
+
+        # Update the state of the CRKN update button
+        self.update_CRKN_button()
+
+    def show_manage_local_databases_popup(self):
+        from src.user_interface.manageDatabase import ManageLocalDatabasesPopup
+        popup = ManageLocalDatabasesPopup(self)
+        popup.exec()
+
+
+#Error i am encountering right now is based on the adding of institution and checking out if they already exist.
 #saving currently is not working as when clicked will shit down the application.
 # I have to make the things working.
 

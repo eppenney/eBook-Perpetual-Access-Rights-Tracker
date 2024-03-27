@@ -44,9 +44,9 @@ class LoadingPopup(QDialog):
         reply = QMessageBox.question(self, "Database Update", f"There {'is' if file_changes == 1 else 'are'} {file_changes} {'file' if file_changes == 1 else 'files'} to update in the database. Would you like to do the update now?",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
-            self.loading_thread.revieve_response("Y")
+            self.loading_thread.recieve_response("Y")
         else:
-            self.loading_thread.revieve_response("N")
+            self.loading_thread.recieve_response("N")
             
     def handle_error(self, error_msg):
         self.timer.stop()
@@ -57,6 +57,7 @@ class LoadingPopup(QDialog):
         dialog.addButton(QMessageBox.StandardButton.Ok)
         dialog.exec()
         self.finished = True
+        self.close()
 
     def show_popup_once(self):
         dialog = QMessageBox(self)

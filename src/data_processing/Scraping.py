@@ -16,7 +16,7 @@ from src.utility.logger import m_logger
 import os
 
 settings_manager = Settings()
-crkn_url = settings_manager.get_setting('CRKN_url')
+
 """
 Ethan Penney
 March 18, 2024
@@ -39,11 +39,12 @@ class ScrapingThread(QThread):
         """ Attempt to scrape again if connection is lost in the middle of scraping"""
         if attempt >= max_attempt:
             return False
-        # wait for 2 seconds before retrying
-        time.sleep(2)
+        # wait for 1 second before retrying
+        time.sleep(1)
         return True
 
     def scrapeCRKN(self):
+        crkn_url = settings_manager.get_setting('CRKN_url')
         self.progress_update.emit(0)
         """Scrape the CRKN website for listed ebook files."""
         error = ""
@@ -153,7 +154,7 @@ class ScrapingThread(QThread):
             self.msleep(100)  # Sleep to avoid busy waiting
         return self.response
     
-    def revieve_response(self, response):
+    def recieve_response(self, response):
         self.response = response
     
     def download_files(self, files, connection):        
@@ -162,45 +163,71 @@ class ScrapingThread(QThread):
         :param files: list of files to download from CRKN
         :param connection: database connection object
         """
-        i = 0
-        for [link, command] in files:
-            i += 1
-            progress = 30 + int((i / len(files)) * 30)
-            self.progress_update.emit(progress)
-            file_link = link.get("href")
+        language = settings_manager.get_setting("language")
+        try:
+            i = 0
+            scraped_institutions = False
+            for [link, command] in files:
+                i += 1
+                progress = 30 + int((i / len(files)) * 30)
+                self.progress_update.emit(progress)
+                file_link = link.get("href")
 
-            # Get which type of file it is (xlsx, csv, or tsv)
-            file_type = file_link.split(".")[-1]
+                # Get which type of file it is (xlsx, csv, or tsv)
+                file_type = file_link.split(".")[-1]
 
-            # Platform, date/version number
-            file_first, file_date = split_CRKN_file_name(file_link)
+                # Platform, date/version number
+                file_first, file_date = split_CRKN_file_name(file_link)
 
-            # Write file to temporary local file
-            with open(f"{os.path.abspath(os.path.dirname(__file__))}/temp.{file_type}", 'wb') as file:
-                response = requests.get(settings_manager.get_setting("CRKN_root_url") + file_link)
-                file.write(response.content)
+                # Write file to temporary local file
+                with open(f"{os.path.abspath(os.path.dirname(__file__))}/temp.{file_type}", 'wb') as file:
+                    response = requests.get(settings_manager.get_setting("CRKN_root_url") + file_link)
+                    file.write(response.content)
 
-            # Convert file into dataframe
-            if file_type == "xlsx":
-                file_df = file_to_dataframe_excel(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
-            elif file_type == "tsv":
-                file_df = file_to_dataframe_tsv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.tsv")
-            else:
-                file_df = file_to_dataframe_csv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
+                # Convert file into dataframe
+                if file_type == "xlsx":
+                    file_df = file_to_dataframe_excel(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
+                elif file_type == "tsv":
+                    file_df = file_to_dataframe_tsv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.tsv")
+                else:
+                    file_df = file_to_dataframe_csv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
 
-            # Check if in correct format, if it is, upload and update tables
-            valid_format = check_file_format(file_df)
-            if valid_format:
-                upload_to_database(file_df, file_first, connection)
-                update_tables([file_first, file_date], "CRKN", connection, command)
-            else:
-                m_logger.error("The file was not in the correct format, so it was not uploaded.")
-                self.error_signal.emit("The file was not in the correct format, so it was not uploaded.")
+                # Check if in correct format, if it is, upload and update tables
+                valid_format = check_file_format(file_df)
+                if valid_format is True:
+                    upload_to_database(file_df, file_first, connection)
+                    update_tables([file_first, file_date], "CRKN", connection, command)
+                    if not scraped_institutions:
+                        # Scrape CRKN institution list from valid CRKN file once
+                        headers = file_df.columns.to_list()
+                        insts = headers[8:-2]
+                        settings_manager.add_CRKN_institutions(insts)
+                        scraped_institutions = True
+                else:
+                    m_logger.error(f"The file was not in the correct format, so it was not uploaded. {valid_format}")
+                    self.error_signal.emit(f"The file was not in the correct format, so it was not uploaded.\n{valid_format}")
 
-        # Scrape CRKN institution list from last CRKN file
-        headers = file_df.columns.to_list()
-        insts = headers[8:-2]
-        settings_manager.add_CRKN_institutions(insts)
+        # Handle connection loss in middle of scraping
+        except requests.exceptions.HTTPError as http_err:
+            # Handle HTTP errors
+            error_message = "Server Connection Error: Connection to the server was lost. Some files may have been scraped, but not all files."
+            m_logger.error(error_message)
+            self.error_signal.emit(error_message)
+        except requests.exceptions.ConnectionError as conn_err:
+            # Handle errors like refused connections
+            error_message = "Internet Connection Error: Connection to the internet was lost. Some files may have been scraped, but not all files."
+            m_logger.error(error_message)
+            self.error_signal.emit(error_message)
+        except requests.exceptions.Timeout as timeout_err:
+            # Handle request timeout
+            error_message = "Connection Timeout: The connection was too slow. Some files may have been scraped, but not all files."
+            m_logger.error(error_message)
+            self.error_signal.emit(error_message)
+        except Exception as e:
+            # Handle any other exceptions
+            error_message = "Unexpected Error: Please try again later. Some files may have been scraped, but not all files."
+            m_logger.error(error_message)
+            self.error_signal.emit(error_message)
 
         # Remove temp.xlsx used for uploading files
         try:
@@ -277,18 +304,17 @@ def update_tables(file, method, connection, command):
 
         # Delete file from {method}_file_names table and drop the table as well.
         elif command == "DELETE":
-            cursor.execute(f"DELETE from {method}_file_names WHERE file_name LIKE {file[0]}")
+            cursor.execute(f"DELETE from {method}_file_names WHERE file_name = '{file[0]}'")
             if method == "CRKN":
                 cursor.execute(f"DROP TABLE {file[0]}")
             else:
-                cursor.execute(f"DROP TABLE local_{file[0]}")
+                cursor.execute(f"DROP TABLE [local_{file[0]}]")
         # Commit changes on successful operation
         connection.commit()
     except Exception as e:
         # Rollback if changes fail
         connection.rollback()
         m_logger.error(f"Failed to {command} data for {file[0]}: {e}. Database remains unchanged")
-
 
 
 def split_CRKN_file_name(file_name):
@@ -311,7 +337,7 @@ def file_to_dataframe_excel(file_name, file):
     File can be either a file or a URL link to a file.
     :param file_name: the file name being uploaded
     :param file: local file to convert to dataframe
-    :return: dataframe
+    :return: dataframe, or error string
     """
     try:
         df = pd.read_excel(file, sheet_name="PA-Rights")
@@ -320,7 +346,7 @@ def file_to_dataframe_excel(file_name, file):
         platform = df.columns[0]
         if platform == "Unnamed: 0":
             m_logger.error("File to Dataframe failed - No Platform listed.")
-            return
+            return "No Platform"
 
         # Remove top two rows, set header
         df = df.set_axis(df.values[1], axis="columns")
@@ -333,6 +359,7 @@ def file_to_dataframe_excel(file_name, file):
         return df
     except ValueError:
         m_logger.error("Incorrect sheet name in excel file (PA-Rights did not exist).")
+        return "PA-Rights"
 
 
 def file_to_dataframe_csv(file_name, file):
@@ -341,7 +368,7 @@ def file_to_dataframe_csv(file_name, file):
     File can be either a file or a URL link to a file.
     :param file_name: the file name being uploaded
     :param file: local file to convert to dataframe
-    :return: dataframe
+    :return: dataframe, or error string
     """
     try:
         df = pd.read_csv(file)
@@ -350,7 +377,7 @@ def file_to_dataframe_csv(file_name, file):
         platform = df.columns[0]
         if platform == "Unnamed: 0":
             m_logger.error("File to Dataframe failed - No Platform listed.")
-            return
+            return "No Platform"
 
         # Remove top two rows, set header
         df = df.set_axis(df.values[1], axis="columns")
@@ -363,6 +390,7 @@ def file_to_dataframe_csv(file_name, file):
         return df
     except Exception:
         m_logger.error("File to Dataframe failed - Unable to read csv file.")
+        return "PA-Rights"
 
 
 def file_to_dataframe_tsv(file_name, file):
@@ -371,7 +399,7 @@ def file_to_dataframe_tsv(file_name, file):
         File can be either a file or a URL link to a file.
         :param file_name: the file name being uploaded
         :param file: local file to convert to dataframe
-        :return: dataframe
+        :return: dataframe, or error string
         """
     try:
         df = pd.read_table(file)
@@ -380,7 +408,7 @@ def file_to_dataframe_tsv(file_name, file):
         platform = df.columns[0]
         if platform == "Unnamed: 0":
             m_logger.error("File to Dataframe failed - No Platform listed.")
-            return
+            return "No Platform"
 
         # Remove top two rows, set header
         df = df.set_axis(df.values[1], axis="columns")
@@ -393,6 +421,7 @@ def file_to_dataframe_tsv(file_name, file):
         return df
     except Exception:
         m_logger.error("File to Dataframe failed - Unable to read tsv file.")
+        return "PA-Rights"
 
 
 def upload_to_database(df, table_name, connection):
@@ -421,33 +450,39 @@ def check_file_format(file_df):
     """
     Checks the incoming file format to see if it is correct
     :param file_df: dataframe with file info (or None if unable to turn into dataframe
-    :return: boolean True or False if valid or not
+    :return: True if valid, error string if not
     """
 
-    # Failed to read the file into a dataframe
-    if file_df is None:
-        return False
+    if isinstance(file_df, pd.DataFrame):
+        header_row = ["Title", "Publisher", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code",
+                      "collection_name", "title_metadata_last_modified"]
+        headers = file_df.columns.to_list()
 
-    header_row = ["Title", "Publisher", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code", "collection_name", "title_metadata_last_modified"]
-    headers = file_df.columns.to_list()
+        # Header row is incorrect (too short or headers don't match)
+        if len(headers) <= 8 or not headers[:8] == header_row:
+            m_logger.error("The header row is incorrect")
+            return "The header row is incorrect."
 
-    # Header row is incorrect (too short or headers don't match)
-    if len(headers) <= 8 or not headers[:8] == header_row:
-        m_logger.error("The header row is incorrect")
-        return False
+        # Title, ISBN and Y/N Column complete
+        df_series = file_df.count()
+        rows = file_df.shape[0]
+        if df_series["Title"] != rows:
+            m_logger.error("Missing title data")
+            return "Missing title data."
+        # if df_series["Platform_eISBN"] != rows:
+        #     m_logger.error("Missing ISBN data")
+        #     return "Missing Platform_eISBN data."
+        for institution_column in df_series[8:-2]:
+            if institution_column != rows:
+                m_logger.error("Missing Y/N data")
+                return "Missing Y/N data"
 
-    # Title, ISBN and Y/N Column complete
-    df_series = file_df.count()
-    rows = file_df.shape[0]
-    if df_series["Title"] != rows:
-        m_logger.error("Missing title data")
-        return False
-    # if df_series["Platform_eISBN"] != rows:
-    #     m_logger.error("Missing ISBN data")
-    #     return False
-    for uni_column in df_series[8:-2]:
-        if uni_column != rows:
-            m_logger.error("Missing Y/N data")
-            return False
+        return True
 
-    return True
+    # Failed to read the file into dataframe - return error instead
+    elif file_df == "No Platform":
+        return "No Platform listed in cell A1."
+    elif file_df == "PA-Rights":
+        return "The 'PA-Rights' sheet does not exist."
+    else:
+        return "Unknown error."
