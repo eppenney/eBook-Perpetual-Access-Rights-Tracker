@@ -34,7 +34,7 @@ class startScreen(QDialog):
     
     def __init__(self, widget):
         super(startScreen, self).__init__()
-        self.language_value = settings_manager.get_setting("language").lower()
+        self.language_value = settings_manager.get_setting("language")
         ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_start.ui")  # Assuming the UI file is in the same directory as the script
         loadUi(ui_file, self)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -55,7 +55,7 @@ class startScreen(QDialog):
 
         # Finding widgets
         self.textEdit = self.findChild(QLineEdit, 'textEdit')
-        self.booleanBox = self.findChild(QComboBox, 'booleanBox')
+        self.orLabel = self.findChild(QLabel, 'orLabel')
         self.booleanSearchType = self.findChild(QComboBox, 'booleanBoxRight')
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
         self.institutionButton = self.findChild(QPushButton, "institutionButton")
@@ -67,7 +67,7 @@ class startScreen(QDialog):
         self.clearButton.clicked.connect(self.clearSearch)
 
         self.duplicateCount = 0
-        self.booleanBox.hide()
+        self.orLabel.hide()
 
         # Add and remove field buttons:
         self.addFieldButton = self.findChild(QPushButton, 'pushButton')
@@ -143,7 +143,7 @@ class startScreen(QDialog):
         new_text.show()
         
 
-        new_and_or_box = self.newBooleanBoxAndOr()
+        new_and_or_box = self.newOrLabel()
         self.duplicateCombos.append(new_and_or_box)
         new_and_or_box.show()
 
@@ -162,15 +162,15 @@ class startScreen(QDialog):
         self.clearButton.setGeometry(self.clearButton.x(), newY, self.clearButton.width(), self.clearButton.height())
 
       else:
-          QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "", f"You can only search {MAX_DUPLICATES} at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher que {MAX_DUPLICATES} à la fois.")
+          QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "Limite atteinte", f"You can only search {MAX_DUPLICATES} at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher que {MAX_DUPLICATES} à la fois.")
 
     def adjustDuplicateTextEditSize(self):
         for i in range(len(self.duplicateTextEdits)):
             newY = self.dupTextEdit.y() + (self.dupTextEdit.height() + self.textOffsetY) * (i + 1)
             self.duplicateTextEdits[i].setGeometry(self.dupTextEdit.x() - self.textOffsetX , newY, self.dupTextEdit.width(), self.dupTextEdit.height())
         for i in range(len(self.duplicateCombos)):
-            newY = self.booleanBox.y() + (self.booleanBox.height() + self.textOffsetY) * (i + 1)
-            self.duplicateCombos[i].setGeometry(self.booleanBox.x(), newY, self.booleanBox.width(), self.booleanBox.height())
+            newY = self.orLabel.y() + (self.orLabel.height() + self.textOffsetY) * (i + 1)
+            self.duplicateCombos[i].setGeometry(self.orLabel.x(), newY, self.orLabel.width(), self.orLabel.height())
         for i in range(len(self.duplicateSearchTypes)):
             newY = self.booleanSearchType.y() + (self.booleanSearchType.height() + self.textOffsetY) * (i + 1)
             self.duplicateSearchTypes[i].setGeometry(self.booleanSearchType.x() - self.textOffsetX , newY, self.booleanSearchType.width(), self.booleanSearchType.height())
@@ -194,7 +194,7 @@ class startScreen(QDialog):
         new_text_edit.setStyleSheet(self.textEdit.styleSheet())
 
         # Set geometry for the new QLineEdit        
-        new_text_edit.setGeometry(self.textEdit.x() + self.booleanBox.width() , newY, self.textEdit.width() - self.booleanBox.width() - self.textOffsetX, self.textEdit.height())
+        new_text_edit.setGeometry(self.textEdit.x() + self.orLabel.width() , newY, self.textEdit.width() - self.orLabel.width() - self.textOffsetX, self.textEdit.height())
         
         # If there's any specific initialization content or placeholder text
         new_text_edit.setPlaceholderText(self.textEdit.placeholderText())
@@ -206,25 +206,25 @@ class startScreen(QDialog):
 
         return new_text_edit
     
-    def newBooleanBoxAndOr(self):
-        newY = self.booleanBox.y() + (self.booleanBox.height() + self.textOffsetY) * self.duplicateCount
+    def newOrLabel(self):
+        newY = self.orLabel.y() + (self.orLabel.height() + self.textOffsetY) * self.duplicateCount
 
         # Duplicating the QComboBox when the text editor is duplicated.
-        new_boolean_box = QComboBox(self)
-        new_boolean_box.setGeometry(self.booleanBox.x(),newY,self.booleanBox.width(),self.booleanBox.height())
+        new_or_label = QLabel(self)
+        new_or_label.setGeometry(self.orLabel.x(),newY,self.orLabel.width(),self.orLabel.height())
 
-        new_boolean_box.setFont(self.booleanBox.font())
-        new_boolean_box.setStyleSheet(self.booleanBox.styleSheet())
+        new_or_label.setFont(self.orLabel.font())
+        new_or_label.setStyleSheet(self.orLabel.styleSheet())
+        new_or_label.setText(self.orLabel.text())
 
-        for i in range(self.booleanBox.count()):
-            new_boolean_box.addItem(self.booleanBox.itemText(i))
+        new_or_label.setAlignment(self.orLabel.alignment())
 
-        self.original_widget_values[new_boolean_box] = {
-            'geometry': new_boolean_box.geometry(),
-            'font_size': new_boolean_box.font().pointSize() if isinstance(new_boolean_box, (QLineEdit, QComboBox)) else None
+        self.original_widget_values[new_or_label] = {
+            'geometry': new_or_label.geometry(),
+            'font_size': new_or_label.font().pointSize() if isinstance(new_or_label, (QLineEdit, QComboBox)) else None
         }
 
-        return new_boolean_box
+        return new_or_label
     
     def newBooleanSearchType(self):
         newY = self.booleanSearchType.y() + (self.booleanSearchType.height() + self.textOffsetY) * self.duplicateCount
@@ -332,10 +332,10 @@ class startScreen(QDialog):
         # Do not go to results page if there are no results or no text in the search field.
         if len(results) == 0:
             QMessageBox.information(self, "No Results Found" if self.language_value == "English" else "Aucun résultat trouvé", "There are no results for the search." if self.language_value == "English" else "Il n'y a aucun résultat pour la recherche.")
-            close_database(connection)
             return
 
         self.searchToDisplay(results)
+        
 
     
     """

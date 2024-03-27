@@ -11,9 +11,11 @@ settings_manager = Settings()
 language = settings_manager.get_setting("language")
 
 def upload_and_process_file():
+    global language 
     """
     Upload and process local files into local database
     """
+    language = settings_manager.get_setting("language")
     app = QApplication.instance()  # Try to get the existing application instance
     if app is None:  # If no instance exists, create a new one
         app = QApplication(sys.argv)
@@ -30,7 +32,6 @@ def upload_and_process_file():
         uploadUI.exec()
 
 class UploadUI(QDialog):
-    language = settings_manager.get_setting("language")
     def __init__(self, file_paths):
         super().__init__()
         self.setWindowTitle("Processing File..." if language == "English" else "Fichier en cours de traitement")
