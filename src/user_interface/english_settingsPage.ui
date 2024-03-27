@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1183</width>
+    <width>1471</width>
     <height>877</height>
    </rect>
   </property>
@@ -90,9 +90,9 @@ color: rgb(255, 255, 255);
    <widget class="QPushButton" name="uploadButton">
     <property name="geometry">
      <rect>
-      <x>1049</x>
+      <x>990</x>
       <y>120</y>
-      <width>111</width>
+      <width>191</width>
       <height>41</height>
      </rect>
     </property>
@@ -115,13 +115,13 @@ color: rgb(255, 255, 255);
         </string>
     </property>
     <property name="text">
-     <string>Upload</string>
+     <string> Upload Local Files</string>
     </property>
    </widget>
    <widget class="QPushButton" name="updateCRKN">
     <property name="geometry">
      <rect>
-      <x>875</x>
+      <x>820</x>
       <y>120</y>
       <width>150</width>
       <height>41</height>
@@ -167,7 +167,7 @@ color: rgb(255, 255, 255);
 color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
-     <string>Select Institute</string>
+     <string>Select Institution</string>
     </property>
    </widget>
    <widget class="QComboBox" name="instituteSelection">
@@ -228,7 +228,7 @@ QComboBox::down-arrow {
 color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
-     <string>Add Institute</string>
+     <string>Add Institution</string>
     </property>
    </widget>
    <widget class="QLabel" name="UniversityLabel_7">
@@ -450,7 +450,7 @@ QTextEdit:hover {
         </string>
     </property>
     <property name="text">
-     <string>Manage Local Database</string>
+     <string>Manage Local Files</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="addInstitute">
