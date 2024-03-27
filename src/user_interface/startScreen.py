@@ -58,7 +58,7 @@ class startScreen(QDialog):
         self.booleanBox = self.findChild(QComboBox, 'booleanBox')
         self.booleanSearchType = self.findChild(QComboBox, 'booleanBoxRight')
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
-        self.instituteButton = self.findChild(QPushButton, "institutionButton")
+        self.institutionButton = self.findChild(QPushButton, "institutionButton")
         self.textEdit.returnPressed.connect(self.search_button_clicked)
         self.institutionName = self.findChild(QLabel, "institutionName")
 
@@ -296,7 +296,7 @@ class startScreen(QDialog):
 
         # Do not search if no institution selected to search.
         if institution == "":
-            QMessageBox.information(self, "No institution selected" if self.language_value == "English" else "Aucun établissement sélectionné", "You have no institute selected. Please select an institute on the settings page." if self.language_value == "English" else "Vous n'avez sélectionné aucun institut. Veuillez sélectionner un institut sur la page des paramètres.")
+            QMessageBox.information(self, "No institution selected" if self.language_value == "English" else "Aucun établissement sélectionné", "You have no institution selected. Please select an institution on the settings page." if self.language_value == "English" else "Vous n'avez sélectionné aucun institut. Veuillez sélectionner un institut sur la page des paramètres.")
             return
 
         searchText = self.textEdit.text().strip()
