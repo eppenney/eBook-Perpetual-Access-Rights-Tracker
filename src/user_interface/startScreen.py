@@ -300,23 +300,34 @@ class startScreen(QDialog):
             return
 
         searchText = self.textEdit.text().strip()
-        terms = [searchText]
+        if searchText != "":
+            terms = [searchText]
+        else:
+            terms = []
         searchTypeIndex = self.booleanSearchType.currentIndex()
         searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
         searchTypes = [searchType]
         query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM table_name WHERE "
-        connection = connect_to_database()
+
         if self.sender() == self.textEdit:
             # Trigger the click event of the search button only if the sender is the textEdit
             self.pushButton.click()
         # grabs the terms and searchTypes of each textbox for the search query:
         for i in range(len(self.duplicateTextEdits)):
-            terms.append(self.duplicateTextEdits[i].text().strip())
+            searchText = self.duplicateTextEdits[i].text().strip()
+            if searchText != "":
+                terms.append(searchText)
             searchTypeIndex = self.duplicateSearchTypes[i].currentIndex()
             searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
             searchTypes.append(searchType)
 
+        if len(terms) == 0:
+            QMessageBox.information(self, "No Search Items" if self.language_value == "english" else "Aucun Terme de Recherche", "There are no search items in the search boxes." if self.language_value == "english" else "Il n'y a aucun terme de recherche dans les cases de recherche.")
+            return
+
+        connection = connect_to_database()
         results = search_database(connection, query, terms, searchTypes)
+        close_database(connection)
 
         # Do not go to results page if there are no results or no text in the search field.
         if len(results) == 0:
@@ -324,7 +335,6 @@ class startScreen(QDialog):
             close_database(connection)
             return
 
-        close_database(connection)
         self.searchToDisplay(results)
 
     

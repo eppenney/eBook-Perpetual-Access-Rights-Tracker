@@ -115,7 +115,8 @@ class UploadThread(QThread):
         connection = database.connect_to_database()
 
         # Get file_name and date for table information
-        file_name = file_path.split("/")[-1].split(".")
+        file_name_with_ext = file_path.split("/")[-1]
+        file_name = file_name_with_ext.split(".")
         date = datetime.datetime.now()
         date = date.strftime("%Y_%m_%d")
 
@@ -128,12 +129,12 @@ class UploadThread(QThread):
         # If result is update, check if they want to update it
         if result == "UPDATE":
             self.get_answer_yes_no.emit("Replace File" if language == "English" else "Remplacer le fichier",
-                                        f"{file_name[0]}\nA file with the same name is already in the local database. Would you like to replace it with the new file?" 
-                                        if language == "English" else f"{file_name[0]}\nUn fichier du même nom se trouve déjà dans la base de données locale. Souhaitez-vous le remplacer par le nouveau fichier ?")
+                                        f"{file_name_with_ext}\nA file with the same name is already in the local database. Would you like to replace it with the new file?" 
+                                        if language == "English" else f"{file_name_with_ext}\nUn fichier du même nom se trouve déjà dans la base de données locale. Souhaitez-vous le remplacer par le nouveau fichier ?")
             reply = self.wait_for_response()
             if reply == False:
                 self.error_signal.emit("File Upload Cancelled" if language == "English" else "Téléchargement de fichier annulé", 
-                                        f"{file_name[0]}\n{'This file will not be uploaded' if language == 'english' else 'Ce fichier ne sera pas téléchargé'}")
+                                        f"{file_name_with_ext}\n{'This file will not be uploaded' if language == 'english' else 'Ce fichier ne sera pas téléchargé'}")
                 self.wait_for_response()
                 database.close_database(connection)
                 return
@@ -146,17 +147,17 @@ class UploadThread(QThread):
             file_df = file_to_df(".".join(file_name), file_path)
             if (file_df is None):
                 self.error_signal.emit("Invalid File Type" if language == "English" else "Type de fichier invalide", 
-                                        f"{file_name[0]}\nSelect only valid xlsx, csv or tsv files." if language == "English" else f"{file_name[0]}\nSélectionnez uniquement les fichiers xlsx, csv ou tsv valides.")
+                                        f"{file_name_with_ext}\nSelect only valid xlsx, csv or tsv files." if language == "English" else f"{file_name_with_ext}\nSélectionnez uniquement les fichiers xlsx, csv ou tsv valides.")
                 self.wait_for_response()
                 database.close_database(connection)
                 return
 
             # Check if in correct format
             valid_file = Scraping.check_file_format(file_df)
-            if not valid_file:
+            if valid_file is not True:
                 self.error_signal.emit("Invalid File Format" if language == "English" else "Format de fichier invalide", 
-                                       f"{file_name[0]}\nThe file was not in the correct format.\nUpload aborted." if language == "English" else 
-                                    f"{file_name[0]}\nLe fichier n'était pas au bon format.\nTéléchargement interrompu.")
+                                       f"{file_name_with_ext}\n{valid_file}\nUpload aborted." if language == "English" else 
+                                    f"{file_name_with_ext}\n{valid_file}\nTéléchargement interrompu.")
                 self.wait_for_response()
                 database.close_database(connection)
                 return
@@ -179,7 +180,7 @@ class UploadThread(QThread):
                 reply = self.wait_for_response()
                 if reply == False:
                     self.error_signal.emit("File Upload Cancelled" if language == "English" else "Téléchargement de fichier annulé", 
-                                        f"{file_name[0]}\n{'This file will not be uploaded' if language == 'english' else 'Ce fichier ne sera pas téléchargé'}")
+                                        f"{file_name_with_ext}\n{'This file will not be uploaded' if language == 'english' else 'Ce fichier ne sera pas téléchargé'}")
                     self.wait_for_response()
                     database.close_database(connection)
                     return
@@ -200,11 +201,11 @@ class UploadThread(QThread):
             Scraping.update_tables([file_name[0], date], "local", connection, result)
             self.currentValue += self.one_file_progress_value / 7
             self.progress_update.emit(int(self.currentValue) - 1)
-            self.get_okay.emit("File Upload" if language == "English" else "Téléchargement de fichiers", f"{file_name[0]}\nYour file has been uploaded. {len(file_df)} rows have been added." if language == "English" else f"{file_name[0]}\nVotre fichier a été téléchargé. {len(file_df)} lignes ont été ajoutées.") 
+            self.get_okay.emit("File Upload" if language == "English" else "Téléchargement de fichiers", f"{file_name_with_ext}\nYour file has been uploaded. {len(file_df)} rows have been added." if language == "English" else f"{file_name_with_ext}\nVotre fichier a été téléchargé. {len(file_df)} lignes ont été ajoutées.") 
             self.wait_for_response()
 
         except Exception as e:
-            self.error_signal.emit("Error" if language == "English" else "Erreur", f"{file_name[0]}\nAn error occurred during file processing: {str(e)}" if language == "English" else f"{file_name[0]}\nUne erreur s'est produite lors du traitement du fichier: {str(e)}")
+            self.error_signal.emit("Error" if language == "English" else "Erreur", f"{file_name_with_ext}\nAn error occurred during file processing: {str(e)}" if language == "English" else f"{file_name_with_ext}\nUne erreur s'est produite lors du traitement du fichier: {str(e)}")
 
         database.close_database(connection)
 

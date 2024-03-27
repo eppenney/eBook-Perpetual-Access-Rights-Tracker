@@ -164,4 +164,4 @@ class Settings(metaclass=SingletonMeta):
         Get combined list of CRKN and local institutions
         :return: list - containing CRKN_institutions and local_institutions
         """
-        return self.settings.get("CRKN_institutions") + self.settings.get("local_institutions")
+        return self.settings.get("local_institutions") + self.settings.get("CRKN_institutions")
