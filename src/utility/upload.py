@@ -133,8 +133,9 @@ class UploadThread(QThread):
                                         if language == "English" else f"{file_name_with_ext}\nUn fichier du même nom se trouve déjà dans la base de données locale. Souhaitez-vous le remplacer par le nouveau fichier ?")
             reply = self.wait_for_response()
             if reply == False:
+                print(language, language == "English")
                 self.error_signal.emit("File Upload Cancelled" if language == "English" else "Téléchargement de fichier annulé", 
-                                        f"{file_name_with_ext}\n{'This file will not be uploaded' if language == 'english' else 'Ce fichier ne sera pas téléchargé'}")
+                                        f"{file_name_with_ext}\n{'This file will not be uploaded' if language == 'English' else 'Ce fichier ne sera pas téléchargé'}")
                 self.wait_for_response()
                 database.close_database(connection)
                 return
@@ -180,7 +181,7 @@ class UploadThread(QThread):
                 reply = self.wait_for_response()
                 if reply == False:
                     self.error_signal.emit("File Upload Cancelled" if language == "English" else "Téléchargement de fichier annulé", 
-                                        f"{file_name_with_ext}\n{'This file will not be uploaded' if language == 'english' else 'Ce fichier ne sera pas téléchargé'}")
+                                        f"{file_name_with_ext}\n{'This file will not be uploaded' if language == 'English' else 'Ce fichier ne sera pas téléchargé'}")
                     self.wait_for_response()
                     database.close_database(connection)
                     return

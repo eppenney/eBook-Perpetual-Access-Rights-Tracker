@@ -322,7 +322,7 @@ class startScreen(QDialog):
             searchTypes.append(searchType)
 
         if len(terms) == 0:
-            QMessageBox.information(self, "No Search Items" if self.language_value == "english" else "Aucun Terme de Recherche", "There are no search items in the search boxes." if self.language_value == "english" else "Il n'y a aucun terme de recherche dans les cases de recherche.")
+            QMessageBox.information(self, "No Search Items" if self.language_value == "English" else "Aucun Terme de Recherche", "There are no search items in the search boxes." if self.language_value == "English" else "Il n'y a aucun terme de recherche dans les cases de recherche.")
             return
 
         connection = connect_to_database()
