@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Dialogue</string>
   </property>
   <widget class="QWidget" name="widget" native="true">
    <property name="geometry">
@@ -109,7 +109,7 @@ color: rgb(255, 255, 255);</string>
     <property name="styleSheet">
      <string notr="true">
             QPushButton {
-                font: 75 20pt "Arial";
+                font: 75 20pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
                 color: rgb(255, 255, 255);
@@ -125,22 +125,22 @@ color: rgb(255, 255, 255);</string>
         </string>
     </property>
     <property name="text">
-     <string>Recherche </string>
+     <string>Recherche</string>
     </property>
    </widget>
    <widget class="QPushButton" name="clearButton">
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>735</y> 
+      <y>735</y>
       <width>100</width>
-      <height>30</height> 
+      <height>30</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">
             QPushButton {
-                font: 75 16pt "Arial";
+                font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
                 color: rgb(255, 255, 255);
@@ -172,8 +172,7 @@ color: rgb(255, 255, 255);</string>
      <string notr="true">font: 75 20pt &quot;Arial&quot;;</string>
     </property>
     <property name="text">
-     <string>Veuillez utiliser la recherche ci-dessous
- </string>
+     <string>Please use the below search </string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
@@ -188,7 +187,7 @@ color: rgb(255, 255, 255);</string>
     <property name="styleSheet">
      <string notr="true">
             QPushButton {
-                font: 75 16pt "Arial";
+                font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 20px;
                 color: rgb(255, 255, 255);
@@ -219,7 +218,7 @@ color: rgb(255, 255, 255);</string>
     <property name="styleSheet">
      <string notr="true">
             QPushButton {
-                font: 75 16pt "Arial";
+                font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 20px;
                 color: rgb(255, 255, 255);
@@ -251,7 +250,7 @@ color: rgb(255, 255, 255);</string>
      <string notr="true">
             QComboBox {
                 color: rgb(255, 255, 255);
-                font: 75 16pt "MS Shell Dlg 2";
+                font: 75 16pt &quot;MS Shell Dlg 2&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
             }
@@ -290,7 +289,7 @@ color: rgb(255, 255, 255);</string>
     </item>
     <item>
      <property name="text">
-      <string>ET</string>
+      <string/>
      </property>
     </item>
    </widget>
@@ -307,7 +306,7 @@ color: rgb(255, 255, 255);</string>
      <string notr="true">
             QComboBox {
                 color: rgb(255, 255, 255);
-                font: 75 12pt "MS Shell Dlg 2";
+                font: 75 12pt &quot;MS Shell Dlg 2&quot;;
                 border-radius: 10px;
                 background-color: rgb(0, 85, 127);
             }
@@ -355,7 +354,7 @@ color: rgb(255, 255, 255);</string>
      </property>
     </item>
    </widget>
-   <widget class="QLabel" name="universityName">
+   <widget class="QLabel" name="institutionName">
     <property name="geometry">
      <rect>
       <x>100</x>

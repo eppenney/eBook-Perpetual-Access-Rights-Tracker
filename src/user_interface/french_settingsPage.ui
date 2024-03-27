@@ -170,7 +170,7 @@ color: rgb(0, 0, 0);</string>
      <string>Sélectionnez l'institut</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="instituteSelection">
+   <widget class="QComboBox" name="institutionSelection">
     <property name="geometry">
      <rect>
       <x>300</x>
@@ -453,7 +453,7 @@ QTextEdit:hover {
      <string>Gérer la base de données locale</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="addInstitute">
+   <widget class="QTextEdit" name="addinstitution">
     <property name="geometry">
      <rect>
       <x>320</x>

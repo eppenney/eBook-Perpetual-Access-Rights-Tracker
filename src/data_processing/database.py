@@ -149,7 +149,7 @@ def search_database(connection, query, terms, searchTypes):
     # Searches for matching items through each table one by one and adds any matches to the list
     for table in list_of_tables:
         # Get institutions from each table
-        institutions = cursor.execute(f'select * from {table}')
+        institutions = cursor.execute(f'select * from [{table}]')
         institutions = [description[0] for description in institutions.description[8:-2]]
 
         # Only search table if it has the institution

@@ -63,7 +63,7 @@ class Settings(metaclass=SingletonMeta):
                 "allow_CRKN": "True",
                 "institution": "Univ. of Prince Edward Island",
                 "CRKN_url": "https://library.upei.ca/test-page-ebooks-perpetual-access-project",
-                "CRKN_root_url": "",
+                "CRKN_root_url": "https://library.upei.ca",
                 "CRKN_institutions": [],
                 "local_institutions": [],
                 "database_name": default_db_path,

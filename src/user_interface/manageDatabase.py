@@ -33,15 +33,14 @@ class ManageLocalDatabasesPopup(QDialog):
         
         # Get those tables
         connection = connect_to_database()
-        local_tables = get_local_tables(connection)        
-        
+        local_table_data = get_table_data(connection, "local_file_names")
+
         # Populate the scroll area with table information
-        for table in local_tables:
-            table_data = get_table_data(connection, table)
-            table_label = QLabel(f"{table}, \nTable Rows: {len(table_data)}")
+        for table_data in local_table_data:
+            table_label = QLabel(f"{table_data[0]}, \nDate Added: {table_data[1]}")
 
             remove_button = QPushButton("Remove")
-            remove_button.clicked.connect(lambda checked, table=table: self.remove_table(table))
+            remove_button.clicked.connect(lambda checked, table=table_data[0]: self.remove_table(table))
             self.scrollLayout.addWidget(table_label)
             self.scrollLayout.addWidget(remove_button)
 
@@ -53,15 +52,12 @@ class ManageLocalDatabasesPopup(QDialog):
         close_database(connection)
         
     def remove_table(self, table_name):
-        from src.data_processing.Scraping import update_tables
-        con = connect_to_database()
-        print(f"Removing Table {table_name}")
+        from src.utility.upload import remove_local_file
         confirm = QMessageBox.question(self, "Confirmation", f"Are you sure you want to remove {table_name}?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if confirm == QMessageBox.StandardButton.Yes:
-            update_tables([table_name.lstrip("local_")], "local", con, "DELETE")
+            remove_local_file(table_name.lstrip("local_"))
             QMessageBox.information(self, "Success", f"{table_name} has been removed successfully.")
-            self.populate_table_information()  # Update the table information after removing
-        close_database(con)
+            self.populate_table_information()  
 
     def upload_local_databases(self):
         upload_and_process_file()

@@ -154,7 +154,7 @@ class ScrapingThread(QThread):
             self.msleep(100)  # Sleep to avoid busy waiting
         return self.response
     
-    def revieve_response(self, response):
+    def recieve_response(self, response):
         self.response = response
     
     def download_files(self, files, connection):        
@@ -304,13 +304,10 @@ def update_tables(file, method, connection, command):
 
         # Delete file from {method}_file_names table and drop the table as well.
         elif command == "DELETE":
-            print("Phase 1")
             cursor.execute(f"DELETE from {method}_file_names WHERE file_name = '{file[0]}'")
-            print("Phase2")
             if method == "CRKN":
                 cursor.execute(f"DROP TABLE {file[0]}")
             else:
-                print("Phase 3")
                 cursor.execute(f"DROP TABLE [local_{file[0]}]")
         # Commit changes on successful operation
         connection.commit()

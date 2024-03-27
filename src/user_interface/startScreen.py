@@ -37,9 +37,7 @@ class startScreen(QDialog):
         self.language_value = settings_manager.get_setting("language").lower()
         ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_start.ui")  # Assuming the UI file is in the same directory as the script
         loadUi(ui_file, self)
-
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-
 
         # settings up the internet connection in the icon at the end
         self.internetConnectionLabel = self.findChild(QLabel, 'internetConnection')
@@ -55,9 +53,6 @@ class startScreen(QDialog):
         self.duplicateCombos = []
         self.duplicateSearchTypes = []
 
-        
-
-
         # Finding widgets
         self.textEdit = self.findChild(QLineEdit, 'textEdit')
         self.booleanBox = self.findChild(QComboBox, 'booleanBox')
@@ -65,7 +60,7 @@ class startScreen(QDialog):
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
         self.instituteButton = self.findChild(QPushButton, "institutionButton")
         self.textEdit.returnPressed.connect(self.search_button_clicked)
-
+        self.institutionName = self.findChild(QLabel, "institutionName")
 
         # Clear Button
         self.clearButton = self.findChild(QPushButton, "clearButton")
@@ -94,7 +89,6 @@ class startScreen(QDialog):
         self.settingMenuButton.setIconSize(icon_size)
         self.settingMenuButton.clicked.connect(self.settingsDisplay)
 
-        self.settings_manager = Settings()
         self.displayInstitutionName()
 
         # Resizing Stuff
@@ -128,11 +122,11 @@ class startScreen(QDialog):
             self.internetConnectionLabel.setPixmap(QPixmap('resources/red_signal.png'))
 
     def displayInstitutionName(self):
-        institution_name = self.settings_manager.get_setting('institution')
+        institution_name = settings_manager.get_setting('institution')
         if institution_name:
-            self.universityName.setText(institution_name)
+            self.institutionName.setText(institution_name)
         else:
-            self.universityName.setText("No Institution Selected" if self.language_value == "english" else "Aucune institution sélectionnée")
+            self.institutionName.setText("No Institution Selected" if self.language_value == "English" else "Aucune institution sélectionnée")
 
     # This method responsible for making the new text edit each time the plus sign is clicked.
     # Basically we are only having limit of 5 searches at the same time
@@ -161,8 +155,14 @@ class startScreen(QDialog):
         self.addFieldButton.setGeometry(self.addFieldButton.x(), newY, self.addFieldButton.width(), self.addFieldButton.height())
         self.removeFieldButton.setGeometry(self.removeFieldButton.x(), newY, self.removeFieldButton.width(), self.removeFieldButton.height())
 
+        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 2)
+        self.search.setGeometry(self.search.x(), newY, self.search.width(), self.search.height())
+
+        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 3)
+        self.clearButton.setGeometry(self.clearButton.x(), newY, self.clearButton.width(), self.clearButton.height())
+
       else:
-          QMessageBox.warning(self, "Limit reached" if self.language_value == "english" else "", f"You can only search {MAX_DUPLICATES} at a time" if self.language_value == "english" else f"Vous ne pouvez rechercher que {MAX_DUPLICATES} à la fois.")
+          QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "", f"You can only search {MAX_DUPLICATES} at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher que {MAX_DUPLICATES} à la fois.")
 
     def adjustDuplicateTextEditSize(self):
         for i in range(len(self.duplicateTextEdits)):
@@ -177,6 +177,13 @@ class startScreen(QDialog):
         newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 1)
         self.addFieldButton.setGeometry(self.addFieldButton.x(), newY, self.addFieldButton.width(), self.addFieldButton.height())
         self.removeFieldButton.setGeometry(self.removeFieldButton.x(), newY, self.removeFieldButton.width(), self.removeFieldButton.height())
+        
+        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 2)
+        self.search.setGeometry(self.search.x(), newY, self.search.width(), self.search.height())
+
+        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 3)
+        self.clearButton.setGeometry(self.clearButton.x(), newY, self.clearButton.width(), self.clearButton.height())
+        
 
     def newTextEdit(self):
         new_text_edit = QLineEdit(self)
@@ -256,13 +263,20 @@ class startScreen(QDialog):
             self.addFieldButton.setGeometry(self.addFieldButton.x(), newY, self.addFieldButton.width(), self.addFieldButton.height())
             self.removeFieldButton.setGeometry(self.removeFieldButton.x(), newY, self.removeFieldButton.width(), self.removeFieldButton.height())
 
+            newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 2)
+            self.search.setGeometry(self.search.x(), newY, self.search.width(), self.search.height())
+
+            newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 3)
+            self.clearButton.setGeometry(self.clearButton.x(), newY, self.clearButton.width(), self.clearButton.height())
+
         else:
-            QMessageBox.information(self, "No More Duplicates" if self.language_value == "english" else "Plus de doublons", "There are no more duplicated text fields to remove." if self.language_value == "english" else "Il n'y a plus de champs de texte en double à supprimer.")
+            QMessageBox.information(self, "No More Duplicates" if self.language_value == "English" else "Plus de doublons", "There are no more duplicated text fields to remove." if self.language_value == "English" else "Il n'y a plus de champs de texte en double à supprimer.")
 
     def clearSearch(self):
         for i in range(len(self.duplicateTextEdits)):
             self.removeTextEdit()
         self.textEdit.clear()
+        self.booleanSearchType.setCurrentIndex(0)
 
     def settingsDisplay(self):
         settings = settingsPage.get_instance(self.widget)
@@ -282,7 +296,7 @@ class startScreen(QDialog):
 
         # Do not search if no institution selected to search.
         if institution == "":
-            QMessageBox.information(self, "No institution selected" if self.language_value == "english" else "Aucun établissement sélectionné", "You have no institute selected. Please select an institute on the settings page." if self.language_value == "english" else "Vous n'avez sélectionné aucun institut. Veuillez sélectionner un institut sur la page des paramètres.")
+            QMessageBox.information(self, "No institution selected" if self.language_value == "English" else "Aucun établissement sélectionné", "You have no institute selected. Please select an institute on the settings page." if self.language_value == "English" else "Vous n'avez sélectionné aucun institut. Veuillez sélectionner un institut sur la page des paramètres.")
             return
 
         searchText = self.textEdit.text().strip()
@@ -317,7 +331,8 @@ class startScreen(QDialog):
 
         # Do not go to results page if there are no results or no text in the search field.
         if len(results) == 0:
-            QMessageBox.information(self, "No Results Found" if self.language_value == "english" else "Aucun résultat trouvé", "There are no results for the search." if self.language_value == "english" else "Il n'y a aucun résultat pour la recherche.")
+            QMessageBox.information(self, "No Results Found" if self.language_value == "English" else "Aucun résultat trouvé", "There are no results for the search." if self.language_value == "English" else "Il n'y a aucun résultat pour la recherche.")
+            close_database(connection)
             return
 
         self.searchToDisplay(results)

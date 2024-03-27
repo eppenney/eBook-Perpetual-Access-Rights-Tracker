@@ -47,8 +47,7 @@ class searchDisplay(QDialog):
 
         self.display_results_in_table()
 
-        # using this method to show the results of the clicked cell on the top of the page whenever clicked on cell.
-
+    # using this method to show the results of the clicked cell on the top of the page whenever clicked on cell.
     def updateCellNameDisplay(self):
         selected_items = self.tableWidget.selectedItems()
         if selected_items:
@@ -63,8 +62,7 @@ class searchDisplay(QDialog):
 
 
     def display_results_in_table(self):
-        # The issue is between here
-        self.tableWidget.setRowCount(0)  # Clear existing rows
+        self.tableWidget.setRowCount(0) 
         self.tableWidget.setColumnCount(len(self.results[0])) if self.results else self.tableWidget.setColumnCount(0)
 
         if self.results:
@@ -74,8 +72,6 @@ class searchDisplay(QDialog):
             self.tableWidget.insertRow(row_number)
             for column_number, data in enumerate(row_data):
                 self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
-        # And here
-        self.update_all_sizes()
 
     def export_data_handler(self):
         export_data(self.results, self.column_labels)
@@ -114,6 +110,8 @@ class searchDisplay(QDialog):
                     font.setPointSize(int(original_font_size * (new_width / original_width)))
                 widget.setFont(font)
         
+        self.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+
         table_width = int(0.8 * new_width)
         self.tableWidget.setFixedWidth(table_width)
 
@@ -124,9 +122,6 @@ class searchDisplay(QDialog):
         # Set the calculated width for each column
         for column_number in range(num_columns):
             self.tableWidget.setColumnWidth(column_number, column_width)
-
-        self.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
-
 
     def resizeEvent(self, event):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
