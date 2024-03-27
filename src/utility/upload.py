@@ -143,7 +143,7 @@ class UploadThread(QThread):
 
         try:
             # Get our dataframe, check if it's good
-            file_df = file_to_df(file_name, file_path)
+            file_df = file_to_df(".".join(file_name), file_path)
             if (file_df is None):
                 self.error_signal.emit("Invalid File Type" if language == "English" else "Type de fichier invalide", 
                                         f"{file_name[0]}\nSelect only valid xlsx, csv or tsv files." if language == "English" else f"{file_name[0]}\nSélectionnez uniquement les fichiers xlsx, csv ou tsv valides.")
@@ -219,7 +219,7 @@ class UploadThread(QThread):
         self.response = response
 
 
-def get_new_institutions( file_df):
+def get_new_institutions(file_df):
     """
     Get and return list of institutions that are not in either the CRKN or local list from a new file dataframe
     :param file_df: file in the form of a pandas dataframe
@@ -243,18 +243,19 @@ def get_new_institutions( file_df):
 def file_to_df(file_name, file_path):
     """
     Convert a file to a dataframe
-    :param file_name: An array of format ['filename', 'file_extension']
+    :param file_name: A string of format name.ext
     :param file_path: A string containing the file path.
     :return: Dataframe or None
     """
     m_logger.info(f"Processing file: {file_path}")
+    file_extension = file_name.split(".")
     # Convert file into dataframe
-    if file_name[-1] == "csv":
-        file_df = Scraping.file_to_dataframe_csv(".".join(file_name), file_path)
-    elif file_name[-1] == "xlsx":
-        file_df = Scraping.file_to_dataframe_excel(".".join(file_name), file_path)
-    elif file_name[-1] == "tsv":
-        file_df = Scraping.file_to_dataframe_tsv(".".join(file_name), file_path)
+    if file_extension == "csv":
+        file_df = Scraping.file_to_dataframe_csv(file_name, file_path)
+    elif file_extension == "xlsx":
+        file_df = Scraping.file_to_dataframe_excel(file_name, file_path)
+    elif file_extension == "tsv":
+        file_df = Scraping.file_to_dataframe_tsv(file_name, file_path)
     else:
         return None
     return file_df
