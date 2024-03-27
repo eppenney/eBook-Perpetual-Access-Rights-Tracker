@@ -125,7 +125,7 @@ color: rgb(255, 255, 255);</string>
         </string>
     </property>
     <property name="text">
-     <string>Recherche</string>
+     <string>Rechercher</string>
     </property>
    </widget>
    <widget class="QPushButton" name="clearButton">
@@ -156,7 +156,7 @@ color: rgb(255, 255, 255);</string>
         </string>
     </property>
     <property name="text">
-     <string>Clair</string>
+     <string>Effacer</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
