@@ -10,6 +10,7 @@ from src.utility.settings_manager import Settings
 settings_manager = Settings()
 language = settings_manager.get_setting("language")
 
+
 def upload_and_process_file():
     global language 
     """
@@ -30,6 +31,7 @@ def upload_and_process_file():
     if file_paths:
         uploadUI = UploadUI(file_paths)
         uploadUI.exec()
+
 
 class UploadUI(QDialog):
     def __init__(self, file_paths):
@@ -60,7 +62,7 @@ class UploadUI(QDialog):
     def handle_error(self, title, error_msg):
         m_logger.error(error_msg)
         QMessageBox.critical(None, title, error_msg, QMessageBox.StandardButton.Ok)
-        self.loading_thread.recieve_response(True)
+        self.loading_thread.receive_response(True)
 
     def update_progress(self, value):
         m_logger.info(f"File upload progress at {value}%")
@@ -74,12 +76,13 @@ class UploadUI(QDialog):
         m_logger.info(body)
         reply = QMessageBox.question(None, title, body, 
                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        self.loading_thread.recieve_response(reply == QMessageBox.StandardButton.Yes)
+        self.loading_thread.receive_response(reply == QMessageBox.StandardButton.Yes)
 
     def get_okay(self, title, body):
         m_logger.info(body)
         QMessageBox.information(None, title, body, QMessageBox.StandardButton.Ok)
-        self.loading_thread.recieve_response(True)
+        self.loading_thread.receive_response(True)
+
 
 class UploadThread(QThread):
     def __init__(self, file_paths):
@@ -147,7 +150,7 @@ class UploadThread(QThread):
         try:
             # Get our dataframe, check if it's good
             file_df = file_to_df(".".join(file_name), file_path)
-            if (file_df is None):
+            if file_df is None:
                 self.error_signal.emit("Invalid File Type" if language == "English" else "Type de fichier invalide", 
                                         f"{file_name_with_ext}\nSelect only valid xlsx, csv or tsv files." if language == "English" else f"{file_name_with_ext}\nSélectionnez uniquement les fichiers xlsx, csv ou tsv valides.")
                 self.wait_for_response()
@@ -218,7 +221,7 @@ class UploadThread(QThread):
             self.msleep(100)  # Sleep to avoid busy waiting
         return self.response
     
-    def recieve_response(self, response):
+    def receive_response(self, response):
         self.response = response
 
 
@@ -243,6 +246,7 @@ def get_new_institutions(file_df):
                 new_inst.append(inst)
     return new_inst
 
+
 def file_to_df(file_name, file_path):
     """
     Convert a file to a dataframe
@@ -262,7 +266,8 @@ def file_to_df(file_name, file_path):
     else:
         return None
     return file_df
-    
+
+
 def remove_local_file(file_name):
     """
     Remove local file from database - helper function for Scraping.update_tables

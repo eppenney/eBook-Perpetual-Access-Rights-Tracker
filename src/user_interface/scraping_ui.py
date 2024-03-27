@@ -52,9 +52,9 @@ class LoadingPopup(QDialog):
                                      f"Il y a {file_changes} {'fichier' if file_changes == 1 else 'fichers'} à mettre à jour dans la base de données. Souhaitez-vous effectuer la mise à jour maintenant ?",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
-            self.loading_thread.recieve_response("Y")
+            self.loading_thread.receive_response("Y")
         else:
-            self.loading_thread.recieve_response("N")
+            self.loading_thread.receive_response("N")
             
     def handle_error(self, error_msg):
         self.timer.stop()
