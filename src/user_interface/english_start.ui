@@ -336,7 +336,7 @@ color: rgb(255, 255, 255);</string>
    <widget class="QLabel" name="institutionName">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>90</x>
       <y>750</y>
       <width>271</width>
       <height>31</height>
@@ -368,9 +368,22 @@ QLabel:pressed {
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>760</y>
-      <width>47</width>
+      <y>750</y>
+      <width>31</width>
       <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="helpIcon">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>270</y>
+      <width>41</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">

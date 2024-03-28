@@ -1,10 +1,10 @@
 import urllib
 
-from PyQt6.QtCore import QTimer, Qt
+from PyQt6.QtCore import QTimer, Qt, QUrl
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QLineEdit, QMessageBox, QComboBox, QSizePolicy, QWidget, \
     QLabel
-from PyQt6.QtGui import QIcon, QPixmap, QTransform, QFontMetrics
+from PyQt6.QtGui import QIcon, QPixmap, QTransform, QFontMetrics, QDesktopServices
 from src.user_interface.settingsPage import settingsPage
 from src.data_processing.database import connect_to_database, \
     close_database, search_database
@@ -17,6 +17,13 @@ When creating instances of startScreen, use startScreen.get_instance(widget)
 Feb 27, 2024
 """
 settings_manager = Settings()
+
+class ClickableLabel(QLabel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def mousePressEvent(self, event):
+        QDesktopServices.openUrl(QUrl('https://www.youtube.com/watch?v=dQw4w9WgXcQ'))
 
 
 class RotatableButton(QPushButton):
@@ -103,6 +110,13 @@ class startScreen(QDialog):
         self.search.clicked.connect(self.search_button_clicked)
         self.widget = widget  # Store the QStackedWidget reference
 
+        self.helpIcon = self.findChild(QLabel, 'helpIcon')
+        self.helpIcon.setPixmap(QPixmap('resources/helpIcon.png'))
+        clickable_help_icon = ClickableLabel(self)
+        clickable_help_icon.setGeometry(self.helpIcon.geometry())  # Match the geometry with the existing help icon
+
+        clickable_help_icon.mousePressEvent = self.open_url  # Override the mousePressEvent
+
         # # making a group of different button to give a effect of burger menu
         self.buttonGroup = QButtonGroup()
 
@@ -132,15 +146,19 @@ class startScreen(QDialog):
 
         self.dupTextEdit = None
 
+    def open_url(self, event):
+        # Open the specified URL in the default web browser
+        url = QUrl('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+        QDesktopServices.openUrl(url)
+
     # This is for this internet connection check and changes the color accordingly
     def checkInternetConnection(self):
         try:
             # Attempt to connect to a known host
             urllib.request.urlopen('http://google.com', timeout=1)
             self.updateConnectionStatus(True)
-        except urllib.request.URLError as err:
-            self.updateConnectionStatus(False)
-        except TimeoutError:
+        except (urllib.error.URLError, OSError):
+            # Catching both URLError and OSError
             self.updateConnectionStatus(False)
 
     def updateConnectionStatus(self, isConnected):
