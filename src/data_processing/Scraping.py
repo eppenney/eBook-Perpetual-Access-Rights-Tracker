@@ -174,7 +174,7 @@ class ScrapingThread(QThread):
 
 
     
-    def recieve_response(self, response):
+    def receive_response(self, response):
         self.response = response
     
     def download_files(self, files, connection):        
