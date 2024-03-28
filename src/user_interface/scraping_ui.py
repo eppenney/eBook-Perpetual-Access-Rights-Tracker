@@ -15,7 +15,7 @@ def scrapeCRKN():
 class LoadingPopup(QDialog):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Updating CRKN Database..." if language == "English" else "Mise à jour de la base de données du CRKN...")
+        self.setWindowTitle("Updating CRKN Database..." if language == "English" else "Mise à jour de la base de données de RCDR...")
         self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.CustomizeWindowHint | Qt.WindowType.WindowTitleHint)
                 
         layout = QVBoxLayout(self)
@@ -70,7 +70,7 @@ class LoadingPopup(QDialog):
     def show_popup_once(self):
         dialog = QMessageBox(self)
         dialog.setWindowTitle("Task Completed" if language == "English" else "Tâche terminée")
-        dialog.setText("Scraping process complete." if language == "English" else "Processus de grattage terminé.")
+        dialog.setText("Data retrieval complete." if language == "English" else "Récupération des données terminée.")
         dialog.setIcon(QMessageBox.Icon.Information)
         dialog.addButton(QMessageBox.StandardButton.Ok)
         dialog.exec()

@@ -38,7 +38,7 @@ def main():
         close_database(connection_obj)
 
     if settings_manager.get_setting('allow_CRKN') == "True":
-        reply = QMessageBox.question(None, 'Update CRKN' if language == "English" else "Mettre à jour le CRKN", 
+        reply = QMessageBox.question(None, 'Update CRKN' if language == "English" else "Mettre à jour de RCDR",
                                      'Would you like to update CRKN database before proceeding?' if language == "English" else "Souhaitez-vous mettre à jour la base de données du RCDR avant de continuer ?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
             scrapeCRKN()
