@@ -60,6 +60,8 @@ class WelcomePage(QDialog):
             return
         settings_manager.set_crkn_url(crkn_url)
 
+        settings_manager.save_settings()
+
         # Close the welcome page
         self.accept()
 
