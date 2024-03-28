@@ -67,27 +67,44 @@ class ScrapingThread(QThread):
 
             except requests.exceptions.HTTPError as http_err:
                 # Handle HTTP errors
-                error_message = "Server Connection Error: Please make sure you are connected to your internet and the CRKN URL is "
-                "updated in the Settings page."
+                if settings_manager.get_setting("language") == "English":
+                    error_message = ("Server Connection Error: Please make sure you are connected "
+                                     "to your internet and the CRKN URL is ")
+                    "updated in the Settings page."
+                else:
+                    error_message = ("Erreur de connexion au serveur : Veuillez vous assurer que vous êtes connecté à "
+                                     "votre internet et que l'URL de CRKN est mise à jour dans la page des paramètres.")
                 error = http_err
                 page_text = None
                 if not self.retry_scrape(attempt):
                     return
             except requests.exceptions.ConnectionError as conn_err:
                 # Handle errors like refused connections
-                error_message = "Internet Connection Error: Please make sure you are connected to your internet."
+                if settings_manager.get_setting("language") == "English":
+                    error_message = ("Internet Connection Error: Please make sure you are connected "
+                                     "to your internet.")
+                else:
+                    error_message = ("Erreur de Connexion Internet : Veuillez vous assurer que "
+                                     "vous êtes connecté à votre internet.")
                 error = conn_err
                 page_text = None
                 if not self.retry_scrape(attempt):
                     return
             except requests.exceptions.Timeout as timeout_err:
                 # Handle request timeout
-                error_message = "Connection Timeout: Please try updating CRKN again."
+                if settings_manager.get_setting("language") == "English":
+                    error_message = "Connection Timeout: Please try again later."
+                else:
+                    error_message = "Délai de connexion dépassé : Veuillez essayer de mettre à jour CRKN à nouveau."
                 error = timeout_err
                 page_text = None
             except Exception as e:
                 # Handle any other exceptions
-                error_message = "Unexpected Error: Please try again later."
+                if settings_manager.get_setting("language") == "English":
+                    error_message = ("Unexpected Error: Please make sure you are connected "
+                                     "to the internet.")
+                else:
+                    error_message = "Erreur inattendue : Veuillez réessayer plus tard."
                 error = e
                 page_text = None
             attempt += 1
@@ -165,6 +182,9 @@ class ScrapingThread(QThread):
         while self.response is None:
             self.msleep(100)  # Sleep to avoid busy waiting
         return self.response
+
+
+
     
     def receive_response(self, response):
         self.response = response
