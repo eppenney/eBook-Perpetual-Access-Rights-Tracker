@@ -5,6 +5,7 @@
 """
 import os
 from PyQt6.QtWidgets import QDialog, QComboBox, QPushButton, QTextEdit, QMessageBox
+from PyQt6.QtCore import QPropertyAnimation, QEasingCurve
 from PyQt6.uic import loadUi
 from src.utility.settings_manager import Settings
 
@@ -16,6 +17,10 @@ class WelcomePage(QDialog):
         self.language_value = settings_manager.get_setting("language").lower()
         ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_welcome_screen.ui")
         loadUi(ui_file, self)
+
+        self.animation = QPropertyAnimation(self, b"windowOpacity")
+        self.animation.setDuration(1000)  # 1 second duration
+        self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
 
         # Populate institution selection combobox
         self.populate_institutions()
@@ -30,6 +35,12 @@ class WelcomePage(QDialog):
         # Connect save button click event
         self.saveButton = self.findChild(QPushButton, 'saveSettings_2')
         self.saveButton.clicked.connect(self.save_settings)
+
+    def showEvent(self, event):
+        # Override showEvent to start animation when the dialog is shown
+        self.animation.setStartValue(0.0)  # Start with opacity 0
+        self.animation.setEndValue(1.0)  # End with opacity 1
+        self.animation.start()
 
     def populate_institutions(self):
         # Get the list of institutions from the settings manager
