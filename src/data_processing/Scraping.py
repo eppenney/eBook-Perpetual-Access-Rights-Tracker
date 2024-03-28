@@ -486,10 +486,13 @@ def check_file_format(file_df):
                       "collection_name", "title_metadata_last_modified"]
         headers = file_df.columns.to_list()
 
-        # Header row is incorrect (too short or headers don't match)
-        if len(headers) <= 8 or not headers[:8] == header_row:
-            m_logger.error("The header row is incorrect")
-            return "The header row is incorrect."
+        for i in range(min(len(headers), 8)):
+            if headers[i] != header_row[i]:
+                m_logger.error("The header row is incorrect")
+                return f"Missing or incorrect header column '{header_row[i]}' in column {i+1} (A=1)."
+        if len(headers) < 8:
+            m_logger.error("Missing columns in the header row")
+            return f"Missing columns in the header row."
 
         # Title, ISBN and Y/N Column complete
         df_series = file_df.count()
