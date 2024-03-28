@@ -270,7 +270,7 @@ class startScreen(QDialog):
             self.clearButton.setGeometry(self.clearButton.x(), newY, self.clearButton.width(), self.clearButton.height())
 
         else:
-            QMessageBox.information(self, "No More Duplicates" if self.language_value == "English" else "Plus de doublons", "There are no more duplicated text fields to remove." if self.language_value == "English" else "Il n'y a plus de champs de texte en double à supprimer.")
+            QMessageBox.information(self, "Minimum Fields Reached" if self.language_value == "English" else "Cases minimum atteints", "There are no more search fields to remove." if self.language_value == "English" else "Il n'y a plus de cases de recherche à supprimer.")
 
     def clearSearch(self):
         for i in range(len(self.duplicateTextEdits)):

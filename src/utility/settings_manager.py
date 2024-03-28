@@ -149,15 +149,12 @@ class Settings(metaclass=SingletonMeta):
         self.settings["local_institutions"].remove(institution)
         self.save_settings()
 
-    def add_CRKN_institutions(self, institutions):
+    def set_CRKN_institutions(self, institutions):
         """
         Add CRKN institutions to CRKN_institutions if they are not already in it.
         :param institutions: list of CRKN institutions from CRKN file
         """
-        for inst in institutions:
-            if inst not in self.settings.get("CRKN_institutions"):
-                self.settings.get("CRKN_institutions").append(inst)
-        self.save_settings()
+        self.update_setting("CRKN_institutions", institutions)
 
     def get_institutions(self):
         """
