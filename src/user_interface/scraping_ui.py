@@ -1,6 +1,10 @@
 from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QProgressBar, QMessageBox
 from src.data_processing.Scraping import ScrapingThread
+from src.utility.settings_manager import Settings
+
+
+settings_manager = Settings()
 
 def scrapeCRKN():
     loading_popup = LoadingPopup()
@@ -9,7 +13,10 @@ def scrapeCRKN():
 class LoadingPopup(QDialog):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Scraping CRKN Database...")
+        if settings_manager.get_setting("language") == "English":
+            self.setWindowTitle("Retrieving from CRKN Database...")
+        else:
+            self.setWindowTitle("Récupération de la base de données CRKN...")
         self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.CustomizeWindowHint | Qt.WindowType.WindowTitleHint)
                 
         layout = QVBoxLayout(self)
@@ -61,8 +68,12 @@ class LoadingPopup(QDialog):
 
     def show_popup_once(self):
         dialog = QMessageBox(self)
-        dialog.setWindowTitle("Task Completed")
-        dialog.setText("Scraping process complete.")
+        if settings_manager.get_setting("language") == "English":
+            dialog.setWindowTitle("Task Completed")
+            dialog.setText("Scraping process complete.")
+        else:
+            dialog.setWindowTitle("Tâche terminée.")
+            dialog.setText("Récupération terminée.")
         dialog.setIcon(QMessageBox.Icon.Information)
         dialog.addButton(QMessageBox.StandardButton.Ok)
         dialog.exec()
