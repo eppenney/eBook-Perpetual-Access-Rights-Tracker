@@ -4,7 +4,7 @@ from PyQt6.QtCore import QTimer, Qt
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QLineEdit, QMessageBox, QComboBox, QSizePolicy, QWidget, \
     QLabel
-from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtGui import QIcon, QPixmap, QTransform
 from src.user_interface.settingsPage import settingsPage
 from src.data_processing.database import connect_to_database, \
     close_database, search_database
@@ -18,6 +18,30 @@ Feb 27, 2024
 """
 settings_manager = Settings()
 
+
+class RotatableButton(QPushButton):
+    def __init__(self, icon_path, settings_display_func, parent=None):
+        super().__init__(parent)
+        self.setIcon(QIcon(icon_path))
+        self.setGeometry(15, 15, 50, 50)
+        icon_size = self.size()
+        self.setIconSize(icon_size)
+        self.normal_icon = QIcon(icon_path)
+        self.hover_icon = self.rotate_icon(icon_path, 15)  # Rotate the icon by 15 degrees
+        self.clicked.connect(settings_display_func)
+        self.setStyleSheet("border:none;")  # Remove button border
+
+    def enterEvent(self, event):
+        self.setIcon(self.hover_icon)  # Set rotated icon when mouse enters
+
+    def leaveEvent(self, event):
+        self.setIcon(self.normal_icon)  # Set normal icon when mouse leaves
+
+    def rotate_icon(self, icon_path, degrees):
+        pixmap = QPixmap(icon_path)
+        transform = QTransform().rotate(degrees)
+        rotated_pixmap = pixmap.transformed(transform)
+        return QIcon(rotated_pixmap)
 
 class startScreen(QDialog):
     _instance = None
@@ -82,12 +106,16 @@ class startScreen(QDialog):
         # # making a group of different button to give a effect of burger menu
         self.buttonGroup = QButtonGroup()
 
-        # Settings
-        self.settingMenuButton.setIcon(QIcon("resources/Gear-icon.png"))
-        self.settingMenuButton.setGeometry(15, 15, self.settingMenuButton.width(), self.settingMenuButton.height())
-        icon_size = self.settingMenuButton.size()
-        self.settingMenuButton.setIconSize(icon_size)
+        # # Settings
+        # self.settingMenuButton.setIcon(QIcon("resources/Gear-icon.png"))
+        # self.settingMenuButton.setGeometry(15, 15, self.settingMenuButton.width(), self.settingMenuButton.height())
+        # icon_size = self.settingMenuButton.size()
+        # self.settingMenuButton.setIconSize(icon_size)
+        # self.settingMenuButton.clicked.connect(self.settingsDisplay)
+
+        self.settingMenuButton = RotatableButton("resources/Gear-icon.png", self.settingsDisplay, self)
         self.settingMenuButton.clicked.connect(self.settingsDisplay)
+        self.widget = widget
 
         self.displayInstitutionName()
 
@@ -398,3 +426,4 @@ class startScreen(QDialog):
             event.ignore()  # Ignore the Escape key event
         else:
             super().keyPressEvent(event)
+

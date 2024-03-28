@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QApplication, QMessageBox
 from src.user_interface.startScreen import startScreen
 from src.data_processing.database import connect_to_database, create_file_name_tables, close_database
 from src.user_interface.scraping_ui import scrapeCRKN
+from src.user_interface.welcomeScreen import WelcomePage
 from src.utility.settings_manager import Settings
 from src.utility.logger import m_logger
 
@@ -18,6 +19,12 @@ def main():
 
     app = QApplication(sys.argv)
     widget = QtWidgets.QStackedWidget()
+
+    if settings_manager.get_setting("first_time_launch") != False:  # Corrected condition
+        welcome_page = WelcomePage()
+        if welcome_page.exec() == welcome_page.accepted:
+            settings_manager.update_setting("first_time_launch", False)  # Corrected value
+
     start = startScreen.get_instance(widget)  # Pass the widget to startScreen
     widget.addWidget(start)
 
