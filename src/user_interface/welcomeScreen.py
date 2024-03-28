@@ -64,5 +64,3 @@ class WelcomePage(QDialog):
 
         # Close the welcome page
         self.accept()
-
-
