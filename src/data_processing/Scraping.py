@@ -459,6 +459,12 @@ def upload_to_database(df, table_name, connection):
             if_exists="replace",
             index=False
         )
+        cursor = connection.cursor()
+        # Fixes the date format in the database directly; removes the seconds
+        cursor.execute(f'''
+            UPDATE {table_name}
+            SET title_metadata_last_modified = strftime('%Y-%m-%d', title_metadata_last_modified)
+        ''')
         connection.commit()
     except Exception as e:
         # Rollback in case of error
