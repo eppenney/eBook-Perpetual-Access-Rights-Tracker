@@ -12,9 +12,11 @@ language = settings_manager.get_setting("language")
 
 
 def upload_and_process_file():
+    global language 
     """
     Upload and process local files into local database
     """
+    language = settings_manager.get_setting("language")
     app = QApplication.instance()  # Try to get the existing application instance
     if app is None:  # If no instance exists, create a new one
         app = QApplication(sys.argv)
@@ -32,7 +34,6 @@ def upload_and_process_file():
 
 
 class UploadUI(QDialog):
-    language = settings_manager.get_setting("language")
     def __init__(self, file_paths):
         super().__init__()
         self.setWindowTitle("Processing File..." if language == "English" else "Fichier en cours de traitement")
@@ -136,6 +137,7 @@ class UploadThread(QThread):
                                         if language == "English" else f"{file_name_with_ext}\nUn fichier du même nom se trouve déjà dans la base de données locale. Souhaitez-vous le remplacer par le nouveau fichier ?")
             reply = self.wait_for_response()
             if reply == False:
+                print(language, language == "English")
                 self.error_signal.emit("File Upload Cancelled" if language == "English" else "Téléchargement de fichier annulé", 
                                         f"{file_name_with_ext}\n{'This file will not be uploaded' if language == 'English' else 'Ce fichier ne sera pas téléchargé'}")
                 self.wait_for_response()
