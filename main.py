@@ -15,14 +15,11 @@ import os
 def main():
     m_logger.info("Application started")
 
+    settings_manager = Settings()
+    settings_manager.load_settings()
+
     app = QApplication(sys.argv)
     widget = QtWidgets.QStackedWidget()
-
-    if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/src/utility/settings.json"):
-        settings_manager = Settings()
-        settings_manager.load_settings()
-        welcome_page = WelcomePage()
-        welcome_page.exec()
 
     if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/src/utility/ebook_database.db"):
         # Create database and structure
@@ -30,21 +27,36 @@ def main():
         create_file_name_tables(connection_obj)
         close_database(connection_obj)
 
-    start = startScreen.get_instance(widget)  # Pass the widget to startScreen
-    widget.addWidget(start)
+    if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/src/utility/settings.json"):
+        if settings_manager.get_setting('allow_CRKN') == "True":
+            reply = QMessageBox.question(None, 'Scrape CRKN', 'Would you like to scrape CRKN before proceeding?',
+                                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            if reply == QMessageBox.StandardButton.Yes:
+                scrapeCRKN()
+        welcome_page = WelcomePage()
+        welcome_page.exec()
 
-    widget.addWidget(start)
-    widget.setMinimumHeight(800)
-    widget.setMinimumWidth(1200)
-    widget.show()
+        start = startScreen.get_instance(widget)  # Pass the widget to startScreen
+        widget.addWidget(start)
 
-    settings_manager = Settings()
-    settings_manager.load_settings()
+        widget.addWidget(start)
+        widget.setMinimumHeight(800)
+        widget.setMinimumWidth(1200)
+        widget.show()
 
-    if settings_manager.get_setting('allow_CRKN') == "True":
-        reply = QMessageBox.question(None, 'Scrape CRKN', 'Would you like to scrape CRKN before proceeding?', QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        if reply == QMessageBox.StandardButton.Yes:
-            scrapeCRKN()
+    else:
+        start = startScreen.get_instance(widget)  # Pass the widget to startScreen
+        widget.addWidget(start)
+
+        widget.addWidget(start)
+        widget.setMinimumHeight(800)
+        widget.setMinimumWidth(1200)
+        widget.show()
+
+        if settings_manager.get_setting('allow_CRKN') == "True":
+            reply = QMessageBox.question(None, 'Scrape CRKN', 'Would you like to scrape CRKN before proceeding?', QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            if reply == QMessageBox.StandardButton.Yes:
+                scrapeCRKN()
 
     sys.exit(app.exec())
 
