@@ -23,9 +23,9 @@ class WelcomePage(QDialog):
         # Populate language selection combobox
         self.populate_languages()
 
-        # Connect save button click event
-        self.saveButton = self.findChild(QPushButton, 'saveSettings_2')
-        self.saveButton.clicked.connect(self.save_settings)
+        current_crkn_url = settings_manager.get_setting("CRKN_url")
+        self.crknURL = self.findChild(QTextEdit, 'crknURLWEL')
+        self.crknURL.setPlainText(current_crkn_url)
 
         # Connect save button click event
         self.saveButton = self.findChild(QPushButton, 'saveSettings_2')
@@ -49,25 +49,16 @@ class WelcomePage(QDialog):
         selected_institution = self.findChild(QComboBox, 'institutionSelectionWEL').currentText()
         selected_language = self.findChild(QComboBox, 'languageSelectionWEL').currentText()
 
-        # Update settings only if it's the first time launch
-        if settings_manager.get_first_time_launch():
-            settings_manager.set_institution(selected_institution)
-            settings_manager.set_language(selected_language)
-            settings_manager.set_first_time_launch(False)  # Set first_time_launch to False
+        settings_manager.set_institution(selected_institution)
+        settings_manager.set_language(selected_language)
 
-        # Get the URL from the QTextEdit
-        url = self.findChild(QTextEdit, 'crknURLWEL').toPlainText().strip()
-
-        # Validate URL format
-        if not url:
-            QMessageBox.warning(self, "Empty URL", "Please enter a CRKN URL.", QMessageBox.StandardButton.Ok)
+        crkn_url = self.findChild(QTextEdit, 'crknURLWEL').toPlainText()
+        if len(crkn_url.split("/")) < 3:
+            QMessageBox.warning(self, "Incorrect URL format",
+                                "Incorrect URL format.\nEnsure URL begins with URL format, eg) http:// or https://.",
+                                QMessageBox.StandardButton.Ok)
             return
-        elif not url.startswith("https://library.upei.ca/") or not url.endswith("ebooks-perpetual-access-project"):
-            QMessageBox.warning(self, "Invalid URL Format", "Please enter a valid CRKN URL in the format: 'https://library.upei.ca/test-page-ebooks-perpetual-access-project'", QMessageBox.StandardButton.Ok)
-            return
-
-        # Save the URL using settings manager
-        settings_manager.set_crkn_url(url)
+        settings_manager.set_crkn_url(crkn_url)
 
         # Close the welcome page
         self.accept()

@@ -14,16 +14,21 @@ import os
 
 def main():
     m_logger.info("Application started")
-    settings_manager = Settings()
-    settings_manager.load_settings()
 
     app = QApplication(sys.argv)
     widget = QtWidgets.QStackedWidget()
 
-    if settings_manager.get_setting("first_time_launch") != False:  # Corrected condition
+    if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/src/utility/settings.json"):
+        settings_manager = Settings()
+        settings_manager.load_settings()
         welcome_page = WelcomePage()
-        if welcome_page.exec() == welcome_page.accepted:
-            settings_manager.update_setting("first_time_launch", False)  # Corrected value
+        welcome_page.exec()
+
+    if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/src/utility/ebook_database.db"):
+        # Create database and structure
+        connection_obj = connect_to_database()
+        create_file_name_tables(connection_obj)
+        close_database(connection_obj)
 
     start = startScreen.get_instance(widget)  # Pass the widget to startScreen
     widget.addWidget(start)
@@ -33,15 +38,8 @@ def main():
     widget.setMinimumWidth(1200)
     widget.show()
 
-    if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/../utility/settings.json"):
-        # First start up. Create settings file.
-        # Need to put some code here with the settings.
-        pass
-    if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/../utility/ebook_database.db"):
-        # Create database and structure
-        connection_obj = connect_to_database()
-        create_file_name_tables(connection_obj)
-        close_database(connection_obj)
+    settings_manager = Settings()
+    settings_manager.load_settings()
 
     if settings_manager.get_setting('allow_CRKN') == "True":
         reply = QMessageBox.question(None, 'Scrape CRKN', 'Would you like to scrape CRKN before proceeding?', QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
@@ -49,6 +47,7 @@ def main():
             scrapeCRKN()
 
     sys.exit(app.exec())
+
 
 if __name__ == "__main__":
     main()

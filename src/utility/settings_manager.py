@@ -165,17 +165,3 @@ class Settings(metaclass=SingletonMeta):
         :return: list - containing CRKN_institutions and local_institutions
         """
         return self.settings.get("local_institutions") + self.settings.get("CRKN_institutions")
-
-    def get_first_time_launch(self):
-        """
-        Check if it's the first time the application is launched.
-        :return: bool indicating if it's the first time launch
-        """
-        return self.settings.get("first_time_launch", True)
-
-    def set_first_time_launch(self, value):
-        """
-        Set the flag indicating whether it's the first time launch.
-        :param value: bool value indicating whether it's the first time launch
-        """
-        self.update_setting('first_time_launch', value)
