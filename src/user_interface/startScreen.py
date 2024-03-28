@@ -4,7 +4,7 @@ from PyQt6.QtCore import QTimer, Qt
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QButtonGroup, QPushButton, QLineEdit, QMessageBox, QComboBox, QSizePolicy, QWidget, \
     QLabel
-from PyQt6.QtGui import QIcon, QPixmap, QTransform
+from PyQt6.QtGui import QIcon, QPixmap, QTransform, QFontMetrics
 from src.user_interface.settingsPage import settingsPage
 from src.data_processing.database import connect_to_database, \
     close_database, search_database
@@ -146,15 +146,27 @@ class startScreen(QDialog):
     def updateConnectionStatus(self, isConnected):
         if isConnected:
             self.internetConnectionLabel.setPixmap(QPixmap('resources/green_signal.png'))
+            self.internetConnectionLabel.setToolTip("Internet Connection: Online")
         else:
             self.internetConnectionLabel.setPixmap(QPixmap('resources/red_signal.png'))
+            self.internetConnectionLabel.setToolTip("Internet Connection: Offline")
 
     def displayInstitutionName(self):
         institution_name = settings_manager.get_setting('institution')
         if institution_name:
             self.institutionName.setText(institution_name)
         else:
-            self.institutionName.setText("No Institution Selected" if self.language_value == "English" else "Aucune institution sélectionnée")
+            self.institutionName.setText(
+                "No Institution Selected" if self.language_value == "English" else "Aucune institution sélectionnée")
+
+        # Adjust label size dynamically based on text length
+        font = self.institutionName.font()
+        font_metrics = QFontMetrics(font)
+        text_width = font_metrics.horizontalAdvance(institution_name)
+        text_height = font_metrics.height()
+
+        # Set the minimum size for the label based on the text size
+        self.institutionName.setMinimumSize(text_width, text_height)
 
     # This method responsible for making the new text edit each time the plus sign is clicked.
     # Basically we are only having limit of 5 searches at the same time
