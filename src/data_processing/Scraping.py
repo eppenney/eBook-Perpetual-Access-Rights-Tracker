@@ -226,8 +226,8 @@ class ScrapingThread(QThread):
                     update_tables([file_first, file_date], "CRKN", connection, command)
 
                 else:
-                    m_logger.error(f"The file was not in the correct format, so it was not uploaded. {valid_format}")
-                    self.error_signal.emit(f"The file was not in the correct format, so it was not uploaded.\n{valid_format}")
+                    m_logger.error(f"{file_link.split('/')[-1]} - The file was not in the correct format, so it was not uploaded.\n{valid_format}")
+                    self.error_signal.emit(f"{file_link.split('/')[-1]}\nThe file was not in the correct format, so it was not uploaded.\n{valid_format}")
 
         # Handle connection loss in middle of scraping
         except requests.exceptions.HTTPError:
@@ -461,6 +461,12 @@ def upload_to_database(df, table_name, connection):
             if_exists="replace",
             index=False
         )
+
+        cursor = connection.cursor()
+        # Fixes the date format in the database directly; removes the seconds
+        cursor.execute(f'''UPDATE {table_name}
+                    SET title_metadata_last_modified = strftime('%Y-%m-%d', title_metadata_last_modified)''')
+
         connection.commit()
     except Exception as e:
         # Rollback in case of error
@@ -503,7 +509,7 @@ def check_file_format(file_df):
 
     # Failed to read the file into dataframe - return error instead
     elif file_df == "No Platform":
-        return "No Platform listed in cell A1."
+        return "No platform listed in cell A1."
     elif file_df == "PA-Rights":
         return "The 'PA-Rights' sheet does not exist."
     else:

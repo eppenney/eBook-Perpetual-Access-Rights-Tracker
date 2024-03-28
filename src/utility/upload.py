@@ -178,9 +178,9 @@ class UploadThread(QThread):
                 if len(new_institutions) > 5:
                     new_institutions_display += '...'
                 self.get_answer_yes_no.emit("New Institutions", f"{len(new_institutions)} institution name{'s' if len(new_institutions) > 1 else ''} found that " +
-                                            f"{'are' if len(new_institutions) > 1 else 'is'} not a CRKN institution and {'are' if len(new_institutions) > 1 else 'is'} not on the list of local institutions.\n" +
+                                            f"{'are' if len(new_institutions) > 1 else 'is'} not a CRKN institution and {'are' if len(new_institutions) > 1 else 'is'} not on the list of local institutions.\n\n" +
                                             f"{new_institutions_display}\n" +
-                                            "Would you like to add them to the local list? \n'No' - The file will not be uploaded. \n'Yes' - The new institution names will be added as options" + 
+                                            "Would you like to add them to the local list? \n'No' - The file will not be uploaded. \n'Yes' - The file will be uploaded, and the new institution names will be added as options" +
                                             " and will be available in the settings menu.")
                 reply = self.wait_for_response()
                 if reply == False:
