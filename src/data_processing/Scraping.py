@@ -69,8 +69,7 @@ class ScrapingThread(QThread):
                 # Handle HTTP errors
                 if settings_manager.get_setting("language") == "English":
                     error_message = ("Server Connection Error: Please make sure you are connected "
-                                     "to your internet and the CRKN URL is ")
-                    "updated in the Settings page."
+                                     "to your internet and the CRKN URL is updated in the Settings page.")
                 else:
                     error_message = ("Erreur de connexion au serveur : Veuillez vous assurer que vous êtes connecté à "
                                      "votre internet et que l'URL de CRKN est mise à jour dans la page des paramètres.")
@@ -161,6 +160,18 @@ class ScrapingThread(QThread):
                         self.progress_update.emit(progress)
                         update_tables([file], "CRKN", connection, "DELETE")
 
+        # Scrape CRKN institution list from a CRKN file in the database
+        crkn_tables = connection.execute("SELECT file_name FROM CRKN_file_names;").fetchall()
+        # strip the apostrophes/parentheses from formatting
+        crkn_tables = [row[0] for row in crkn_tables]
+
+        if len(crkn_tables) > 0:
+            institutions = connection.cursor().execute(f'select * from [{crkn_tables[0]}]')
+            institutions = [description[0] for description in institutions.description[8:-2]]
+        else:
+            institutions = []
+        settings_manager.set_CRKN_institutions(institutions)
+
         database.close_database(connection)
         self.progress_update.emit(100)
 
@@ -171,9 +182,6 @@ class ScrapingThread(QThread):
             self.msleep(100)  # Sleep to avoid busy waiting
         return self.response
 
-
-
-    
     def receive_response(self, response):
         self.response = response
     
@@ -186,7 +194,6 @@ class ScrapingThread(QThread):
         language = settings_manager.get_setting("language")
         try:
             i = 0
-            scraped_institutions = False
             for [link, command] in files:
                 i += 1
                 progress = 30 + int((i / len(files)) * 30)
@@ -217,33 +224,28 @@ class ScrapingThread(QThread):
                 if valid_format is True:
                     upload_to_database(file_df, file_first, connection)
                     update_tables([file_first, file_date], "CRKN", connection, command)
-                    if not scraped_institutions:
-                        # Scrape CRKN institution list from valid CRKN file once
-                        headers = file_df.columns.to_list()
-                        insts = headers[8:-2]
-                        settings_manager.add_CRKN_institutions(insts)
-                        scraped_institutions = True
+
                 else:
                     m_logger.error(f"The file was not in the correct format, so it was not uploaded. {valid_format}")
                     self.error_signal.emit(f"The file was not in the correct format, so it was not uploaded.\n{valid_format}")
 
         # Handle connection loss in middle of scraping
-        except requests.exceptions.HTTPError as http_err:
+        except requests.exceptions.HTTPError:
             # Handle HTTP errors
             error_message = "Server Connection Error: Connection to the server was lost. Some files may have been scraped, but not all files."
             m_logger.error(error_message)
             self.error_signal.emit(error_message)
-        except requests.exceptions.ConnectionError as conn_err:
+        except requests.exceptions.ConnectionError:
             # Handle errors like refused connections
             error_message = "Internet Connection Error: Connection to the internet was lost. Some files may have been scraped, but not all files."
             m_logger.error(error_message)
             self.error_signal.emit(error_message)
-        except requests.exceptions.Timeout as timeout_err:
+        except requests.exceptions.Timeout:
             # Handle request timeout
             error_message = "Connection Timeout: The connection was too slow. Some files may have been scraped, but not all files."
             m_logger.error(error_message)
             self.error_signal.emit(error_message)
-        except Exception as e:
+        except Exception:
             # Handle any other exceptions
             error_message = "Unexpected Error: Please try again later. Some files may have been scraped, but not all files."
             m_logger.error(error_message)
