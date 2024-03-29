@@ -73,6 +73,7 @@ class settingsPage(QDialog):
         self.openLinkButton.setToolTip("Click to open the link")
         self.openLinkButton.clicked.connect(self.open_link)
 
+
         # Finding the languageButton from the QPushButton class
         self.languageSelection = self.findChild(QComboBox,'languageSetting') 
         self.languageSelection.activated.connect(self.save_language)
