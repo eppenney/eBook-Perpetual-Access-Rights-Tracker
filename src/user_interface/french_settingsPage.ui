@@ -150,7 +150,7 @@ color: rgb(255, 255, 255);
         </string>
     </property>
     <property name="text">
-     <string>Mise à jour CRKN</string>
+     <string>Mise à jour RCDR</string>
     </property>
    </widget>
    <widget class="QLabel" name="UniversityLabel_5">
