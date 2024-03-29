@@ -224,7 +224,6 @@ class ScrapingThread(QThread):
                 if valid_format is True:
                     upload_to_database(file_df, file_first, connection)
                     update_tables([file_first, file_date], "CRKN", connection, command)
-
                 else:
                     m_logger.error(f"{file_link.split('/')[-1]} - The file was not in the correct format, so it was not uploaded.\n{valid_format}")
                     self.error_signal.emit(f"{file_link.split('/')[-1]}\nThe file was not in the correct format, so it was not uploaded.\n{valid_format}")
