@@ -1,7 +1,7 @@
 from PyQt6.QtCore import pyqtSignal, QUrl, Qt
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox, QMessageBox, QCheckBox
+from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QLineEdit, QComboBox, QMessageBox, QCheckBox
 from src.user_interface.scraping_ui import scrapeCRKN
 from src.utility.upload import upload_and_process_file
 from src.utility.settings_manager import Settings
@@ -34,8 +34,8 @@ class settingsPage(QDialog):
 
     def __init__(self, widget):
         super(settingsPage, self).__init__()
-        self.language_value = settings_manager.get_setting("language").lower()
-        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_settingsPage.ui")
+        self.language_value = settings_manager.get_setting("language")
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_settingsPage.ui")
         loadUi(ui_file, self)
 
         self.backButton2 = self.findChild(QPushButton, 'backButton')  # finding child pushButton from the parent class
@@ -89,9 +89,10 @@ class settingsPage(QDialog):
         self.allowCRKN.setChecked(settings_manager.get_setting("allow_CRKN") == "True")
 
         current_crkn_url = settings_manager.get_setting("CRKN_url")
-        self.crknURL = self.findChild(QTextEdit, 'crknURL')
-        self.crknURL.setPlainText(current_crkn_url)
-        # self.crknURL.textChanged.connect(self.save_CRKN_URL) # textChanged no good
+        self.crknURL = self.findChild(QLineEdit, 'crknURL')
+        self.crknURL.setText(current_crkn_url)
+        self.crknURL.returnPressed.connect(self.save_CRKN_URL)
+
 
         self.set_current_settings_values()
 
@@ -136,12 +137,13 @@ class settingsPage(QDialog):
         self.save_institution()
         self.save_language()
         self.save_CRKN_URL()
-        # self.addInstitution()      
         self.reset_app()
 
     def save_language(self):
         current_language = settings_manager.get_setting("language")
         selected_language = self.languageSetting.currentIndex()
+        if (current_language == ("English" if selected_language == 0 else "French")):
+            return
         reply = QMessageBox.question(None, "Language Change" if current_language == "English" else "Changement de langue", 
                                      "Are you sure you want to change your language setting?" if current_language == "English" else "Êtes-vous sûr de vouloir modifier votre paramètre de langue ?", 
                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
@@ -151,11 +153,19 @@ class settingsPage(QDialog):
     
     def save_institution(self):
         selected_institution = self.institutionSelection.currentText()
-        settings_manager.set_institution(selected_institution)
+        if (selected_institution == settings_manager.get_setting("institution")):
+            return
+        response = QMessageBox.warning(self, "Change Institution" if self.language_value == "English" else "Changer d'établissement", 
+                            "Are you sure you want to change the institution?" if self.language_value == "English" else "Etes-vous sûr de vouloir changer d'établissement?",
+                            QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
+        if (response == QMessageBox.StandardButton.Yes):
+            settings_manager.set_institution(selected_institution)
         self.reset_app()
 
-    def save_CRKN_URL(self):
-        crkn_url = self.findChild(QTextEdit, 'crknURL').toPlainText()
+    def save_CRKN_URL(self, event=None):
+        crkn_url = self.findChild(QLineEdit, 'crknURL').text()
+        if (crkn_url == settings_manager.get_setting("CRKN_url")):
+            return
 
         if len(crkn_url.split("/")) < 3:
             QMessageBox.warning(self, "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
@@ -163,7 +173,11 @@ class settingsPage(QDialog):
                                 "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",QMessageBox.StandardButton.Ok)
             self.reset_app()
             return
-        settings_manager.set_crkn_url(crkn_url)
+        response = QMessageBox.warning(self, "Change CRKN URL" if self.language_value == "English" else "Modifier l'URL du CRKN", 
+                            "Are you sure you want to change the CRKN retrieval URL?" if self.language_value == "English" else "Êtes-vous sûr de vouloir modifier l'URL de récupération du CRKN?",
+                            QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
+        if (response == QMessageBox.StandardButton.Yes):
+            settings_manager.set_crkn_url(crkn_url)
         self.reset_app()
 
     def save_allow_CRKN(self):
@@ -186,7 +200,10 @@ class settingsPage(QDialog):
         
         all_institutions = settings_manager.get_institutions()
         if add_institution_text in all_institutions:
-            QMessageBox.warning(self, "Duplicate institution", "The entered institution already exists.", QMessageBox.StandardButton.Ok)
+            QMessageBox.warning(self, 
+                                "Duplicate institution" if self.language_value == "English" else "Institution en double", 
+                                "The entered institution already exists." if self.language_value == "English" else "L'institution saisie existe déjà.", 
+                                QMessageBox.StandardButton.Ok)
             return
 
         # Add the new institution to the settings
@@ -221,7 +238,7 @@ class settingsPage(QDialog):
             for widget in self.findChildren(QWidget):
                 self.original_widget_values[widget] = {
                     'geometry': widget.geometry(),
-                    'font_size': widget.font().pointSize() if isinstance(widget, (QTextEdit, QComboBox)) else None
+                    'font_size': widget.font().pointSize() if isinstance(widget, (QLineEdit, QComboBox)) else None
                 }
 
         # Iterate through every widget loaded using loadUi
@@ -236,7 +253,7 @@ class settingsPage(QDialog):
             widget.setGeometry(x, y, width, height)
 
             # If the widget is a QTextEdit or QComboBox, adjust font size
-            if isinstance(widget, (QTextEdit, QComboBox)):
+            if isinstance(widget, (QLineEdit, QComboBox)):
                 font = widget.font()
                 original_font_size = original_values['font_size']
                 if original_font_size is not None:
@@ -261,7 +278,7 @@ class settingsPage(QDialog):
 
         # Set the current CRKN URL
         current_crkn_url = settings_manager.get_setting("CRKN_url")
-        self.crknURL.setPlainText(current_crkn_url)
+        self.crknURL.setText(current_crkn_url)
 
         # Set the current institution selection
         current_institution = settings_manager.get_setting("institution")

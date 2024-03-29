@@ -385,7 +385,7 @@ color: rgb(0, 0, 0);</string>
      <string>Help</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="crknURL">
+   <widget class="QLineEdit" name="crknURL">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -395,25 +395,25 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">/* Styling for QTextEdit */
-QTextEdit {
+     <string notr="true">/* Styling for QLineEdit */
+QLineEdit {
     font-family: Arial, sans-serif;
     font-size: 14px;
     color: #333; /* Text color */
     background-color: #fff; /* Background color */
     border: 1px solid #ccc; /* Border color */
     border-radius: 5px; /* Border radius */
-    padding: 8px; /* Padding inside the QTextEdit */
+    padding: 8px; /* Padding inside the QLineEdit */
 }
 
-/* Styling for QTextEdit when it's focused */
-QTextEdit:focus {
+/* Styling for QLineEdit when it's focused */
+QLineEdit:focus {
     border: 1px solid #4d90fe; /* Focused border color */
     outline: none; /* Remove default focus outline */
 }
 
-/* Styling for QTextEdit when hovered */
-QTextEdit:hover {
+/* Styling for QLineEdit when hovered */
+QLineEdit:hover {
     border: 1px solid #999; /* Border color on hover */
 }</string>
     </property>
@@ -488,7 +488,7 @@ QTextEdit:hover {
      <string>Manage Local Institutions</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="addinstitution">
+   <widget class="QLineEdit" name="addinstitution">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -498,25 +498,25 @@ QTextEdit:hover {
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">/* Styling for QTextEdit */
-QTextEdit {
+     <string notr="true">/* Styling for QLineEdit */
+QLineEdit {
     font-family: Arial, sans-serif;
     font-size: 14px;
     color: #333; /* Text color */
     background-color: #fff; /* Background color */
     border: 1px solid #ccc; /* Border color */
     border-radius: 5px; /* Border radius */
-    padding: 8px; /* Padding inside the QTextEdit */
+    padding: 8px; /* Padding inside the QLineEdit */
 }
 
-/* Styling for QTextEdit when it's focused */
-QTextEdit:focus {
+/* Styling for QLineEdit when it's focused */
+QLineEdit:focus {
     border: 1px solid #4d90fe; /* Focused border color */
     outline: none; /* Remove default focus outline */
 }
 
-/* Styling for QTextEdit when hovered */
-QTextEdit:hover {
+/* Styling for QLineEdit when hovered */
+QLineEdit:hover {
     border: 1px solid #999; /* Border color on hover */
 }</string>
     </property>
