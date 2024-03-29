@@ -75,10 +75,8 @@ class WelcomePage(QDialog):
         settings_manager.set_language(selected_language)
 
         crkn_url = self.findChild(QTextEdit, 'crknURLWEL').toPlainText()
-        if len(crkn_url.split("/")) < 3:
-            QMessageBox.warning(self, "Incorrect URL format",
-                                "Incorrect URL format.\nEnsure URL begins with URL format, eg) http:// or https://.",
-                                QMessageBox.StandardButton.Ok)
+        if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
+            QMessageBox.warning(self, "Incorrect URL format", "Incorrect URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
             return
         settings_manager.set_crkn_url(crkn_url)
 
