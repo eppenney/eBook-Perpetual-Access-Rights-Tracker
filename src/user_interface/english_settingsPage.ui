@@ -231,6 +231,7 @@ color: rgb(0, 0, 0);</string>
      <string>Help Link </string>
     </property>
    </widget>
+
    <widget class="QLabel" name="UniversityLabel_7">
     <property name="geometry">
      <rect>
@@ -306,7 +307,7 @@ QComboBox::down-arrow {
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>520</y>
+      <y>420</y>
       <width>151</width>
       <height>41</height>
      </rect>
@@ -317,6 +318,56 @@ color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
      <string>CRKN URL</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="helpURL">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>560</y>
+      <width>581</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">/* Styling for QLineEdit */
+QLineEdit {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333; /* Text color */
+    background-color: #fff; /* Background color */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 5px; /* Border radius */
+    padding: 8px; /* Padding inside the QLineEdit */
+}
+
+/* Styling for QLineEdit when it's focused */
+QLineEdit:focus {
+    border: 1px solid #4d90fe; /* Focused border color */
+    outline: none; /* Remove default focus outline */
+}
+
+/* Styling for QLineEdit when hovered */
+QLineEdit:hover {
+    border: 1px solid #999; /* Border color on hover */
+}</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="helpURL">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>520</y>
+      <width>151</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 75 14pt &quot;Arial&quot;;
+color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string>Help URL</string>
     </property>
    </widget>
    <widget class="QPushButton" name="saveSettings">
@@ -385,44 +436,49 @@ color: rgb(0, 0, 0);</string>
      <string>Help</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="crknURL">
+   <widget class="QLineEdit" name="crknURL">
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>560</y>
+      <y>460</y>
       <width>581</width>
       <height>51</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">/* Styling for QTextEdit */
-QTextEdit {
+     <string notr="true">/* Styling for QLineEdit */
+QLineEdit {
     font-family: Arial, sans-serif;
     font-size: 14px;
     color: #333; /* Text color */
     background-color: #fff; /* Background color */
     border: 1px solid #ccc; /* Border color */
     border-radius: 5px; /* Border radius */
-    padding: 8px; /* Padding inside the QTextEdit */
+    padding: 8px; /* Padding inside the QLineEdit */
 }
 
-/* Styling for QTextEdit when it's focused */
-QTextEdit:focus {
+/* Styling for QLineEdit when it's focused */
+QLineEdit:focus {
     border: 1px solid #4d90fe; /* Focused border color */
     outline: none; /* Remove default focus outline */
 }
 
-/* Styling for QTextEdit when hovered */
-QTextEdit:hover {
+/* Styling for QLineEdit when hovered */
+QLineEdit:hover {
     border: 1px solid #999; /* Border color on hover */
-}</string>
+}
+QLineEdit:disabled {
+                background-color: rgb(180, 180, 180); /* Grey color for disabled state */
+                color: rgb(120, 120, 120); /* Darker text color for disabled state */
+            }
+</string>
     </property>
    </widget>
    <widget class="QPushButton" name="manageDatabase">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>670</y>
+      <x>620</x>
+      <y>640</y>
       <width>251</width>
       <height>41</height>
      </rect>
@@ -456,9 +512,9 @@ QTextEdit:hover {
    <widget class="QPushButton" name="manageInstitution">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>620</y>
-      <width>251</width>
+      <x>360</x>
+      <y>640</y>
+      <width>250</width>
       <height>41</height>
      </rect>
     </property>
@@ -521,6 +577,7 @@ QTextEdit:hover {
 }</string>
     </property>
    </widget>
+
    <widget class="QCheckBox" name="allowCRKNData">
     <property name="geometry">
      <rect>

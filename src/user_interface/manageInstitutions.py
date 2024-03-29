@@ -75,7 +75,7 @@ class ManageInstitutionsPopup(QDialog):
         if ok_pressed and institution.strip() and institution not in settings_manager.get_setting("local_institutions"): 
             settings_manager.add_local_institution(institution)
             self.populate_table_information()
-        elif institution in settings_manager.get_setting("local_institutions"):
+        elif institution in settings_manager.get_institutions():
             QMessageBox.warning(self, "Warning" if self.language_value == "English" else "Avertissement", 
                                 "Institution already saved." if self.language_value == "English" else "Établissement déjà enregistré.")
         else:
