@@ -231,7 +231,7 @@ class ScrapingThread(QThread):
                     self.error_signal.emit(f"{file_link.split('/')[-1]}\nThe file was not in the correct format, so it was not uploaded.\n{valid_format}")
 
         # Handle connection loss in middle of scraping
-        except requests.exceptions.HTTPError:
+        except requests.exceptions.HTTPError as http_err:
             # Handle HTTP errors
             if language == "English":
                 error_message = ("Internet Connection Error : Connection to the server was lost. Not all files have been successfully retreived. Please try updating CRKN again.")
@@ -239,7 +239,7 @@ class ScrapingThread(QThread):
                 error_message = ("Erreur de Connexion Internet : La connexion su serveur a été perdue. Tous les fichiers n'ont pas été récupérés. Veuillez réessayer de mettre  à jour RCDR de nouveau.")
             m_logger.error(http_err)
             self.error_signal.emit(error_message)
-        except requests.exceptions.ConnectionError:
+        except requests.exceptions.ConnectionError as conn_err:
             # Handle errors like refused connections
             if language == "English":
                 error_message = ("Internet Connection Error : Connection to the internet was lost. Not all files have been successfully retreived. Please try updating CRKN again.")
@@ -248,7 +248,7 @@ class ScrapingThread(QThread):
                     "Erreur de Connexion Internet : La connexion à l'internet a été perdue. Tous les fichiers n'ont pas été récupérés avec succès. Veuillez réessayer de mettre à jour RCDR de nouveau.")
             m_logger.error(conn_err)
             self.error_signal.emit(error_message)
-        except requests.exceptions.Timeout:
+        except requests.exceptions.Timeout as timeout_err:
             # Handle request timeout
             if language == "English":
                 error_message = "Connection Timeout : The server took too long to respond. Not all files have been successfully retrieved. Please try updating CRKN again."
@@ -256,7 +256,7 @@ class ScrapingThread(QThread):
                 error_message = "Expiration de la Connexion : Le serveur a mis trop de temps à répondre. Tous les fichiers n'ont pas été récupérés avec succès. Veuillez réessayer de mettre  à jour RCDR de nouveau."
             m_logger.error(timeout_err)
             self.error_signal.emit(error_message)
-        except Exception:
+        except Exception as e:
             # Handle any other exceptions
             if language == "English":
                 error_message = ("Unexpected Error : Not all files have been successfully retrieved. "
