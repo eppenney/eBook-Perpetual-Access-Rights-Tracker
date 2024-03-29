@@ -79,9 +79,8 @@ class settingsPage(QDialog):
         self.languageSelection.activated.connect(self.save_language)
         self.languageSelection.setCurrentIndex(0 if settings_manager.get_setting("language") == "English" else 1)
 
-        current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL = self.findChild(QTextEdit, 'crknURL')
-        self.crknURL.setPlainText(current_crkn_url)
+        self.helpURL = self.findChild(QTextEdit, 'helpURL')
 
         self.set_current_settings_values()
 
@@ -123,9 +122,25 @@ class settingsPage(QDialog):
 
     # Testing to save institution working
     def save_selected(self):
+        crkn_url = self.crknURL.toPlainText()
+        if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
+            QMessageBox.warning(self, "Incorrect CRKN URL format",
+                                "Incorrect CRKN URL format.\nEnsure URL begins with http:// or https://.",
+                                QMessageBox.StandardButton.Ok)
+            return
+        help_url = self.helpURL.toPlainText()
+        if not (help_url.startswith("https://") or help_url.startswith("http://")):
+            QMessageBox.warning(self, "Incorrect GitHub URL format",
+                                "Incorrect GitHub URL format.\nEnsure URL begins with http:// or https://.",
+                                QMessageBox.StandardButton.Ok)
+            return
+
         self.save_institution()
         self.save_language()
-        self.save_CRKN_URL()
+        settings_manager.set_crkn_url(crkn_url)
+        settings_manager.set_github_url(help_url)
+        # self.save_CRKN_url()
+        # self.save_github_url()
         # self.addInstitution()      
         self.reset_app()
 
@@ -145,12 +160,22 @@ class settingsPage(QDialog):
         self.reset_app()
 
     def save_CRKN_URL(self):
-        crkn_url = self.findChild(QTextEdit, 'crknURL').toPlainText()
-
+        crkn_url = self.crknURL.toPlainText()
         if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
-            QMessageBox.warning(self, "Incorrect URL format", "Incorrect URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
+            QMessageBox.warning(self, "Incorrect CRKN URL format",
+                                "Incorrect CRKN URL format.\nEnsure URL begins with http:// or https://.",
+                                QMessageBox.StandardButton.Ok)
             return
         settings_manager.set_crkn_url(crkn_url)
+
+    def save_github_URL(self):
+        help_url = self.helpURL.toPlainText()
+        if not (help_url.startswith("https://") or help_url.startswith("http://")):
+            QMessageBox.warning(self, "Incorrect GitHub URL format",
+                                "Incorrect GitHub URL format.\nEnsure URL begins with http:// or https://.",
+                                QMessageBox.StandardButton.Ok)
+            return
+        settings_manager.set_github_url(help_url)
 
     def keyPressEvent(self, event):
         # Override keyPressEvent method to ignore Escape key event
@@ -243,6 +268,10 @@ class settingsPage(QDialog):
         # Set the current CRKN URL
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL.setPlainText(current_crkn_url)
+
+        # Set the current CRKN URL
+        current_help_url = settings_manager.get_setting("github_url")
+        self.helpURL.setPlainText(current_help_url)
 
         # Set the current institution selection
         current_institution = settings_manager.get_setting("institution")
