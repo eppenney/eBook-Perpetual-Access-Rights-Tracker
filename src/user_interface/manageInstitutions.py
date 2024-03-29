@@ -72,9 +72,12 @@ class ManageInstitutionsPopup(QDialog):
     def upload_local_institution(self):
         institution, ok_pressed = QInputDialog.getText(self, "Add Institution" if self.language_value == "English" else "Ajouter un établissement", 
                                                        "Enter institution name:" if self.language_value == "English" else "Entrez le nom de l'établissement :")
-        if ok_pressed and institution.strip(): 
+        if ok_pressed and institution.strip() and institution not in settings_manager.get_setting("local_institutions"): 
             settings_manager.add_local_institution(institution)
             self.populate_table_information()
+        elif institution in settings_manager.get_setting("local_institutions"):
+            QMessageBox.warning(self, "Warning" if self.language_value == "English" else "Avertissement", 
+                                "Institution already saved." if self.language_value == "English" else "Établissement déjà enregistré.")
         else:
             QMessageBox.warning(self, "Warning" if self.language_value == "English" else "Avertissement", 
                                 "No institution name entered or input is empty." if self.language_value == "English" else "Aucun nom d'institution saisi ou la saisie est vide.")

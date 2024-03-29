@@ -91,6 +91,7 @@ class settingsPage(QDialog):
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL = self.findChild(QTextEdit, 'crknURL')
         self.crknURL.setPlainText(current_crkn_url)
+        # self.crknURL.textChanged.connect(self.save_CRKN_URL) # textChanged no good
 
         self.set_current_settings_values()
 
@@ -157,9 +158,13 @@ class settingsPage(QDialog):
         crkn_url = self.findChild(QTextEdit, 'crknURL').toPlainText()
 
         if len(crkn_url.split("/")) < 3:
-            QMessageBox.warning(self, "Incorrect URL format", "Incorrect URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
+            QMessageBox.warning(self, "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
+                                "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else 
+                                "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",QMessageBox.StandardButton.Ok)
+            self.reset_app()
             return
         settings_manager.set_crkn_url(crkn_url)
+        self.reset_app()
 
     def save_allow_CRKN(self):
         allow = self.allowCRKN.isChecked()
