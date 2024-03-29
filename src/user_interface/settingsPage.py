@@ -92,6 +92,7 @@ class settingsPage(QDialog):
         print("Current crkn url: ", current_crkn_url)
         self.crknURL = self.findChild(QLineEdit, 'crknURL')
         self.crknURL.setText(current_crkn_url)
+        self.crknURL.setToolTip("Press Enter to confirm changes")
         print("QLine texT: ", self.crknURL.text())
         self.crknURL.returnPressed.connect(self.save_CRKN_URL)
 
