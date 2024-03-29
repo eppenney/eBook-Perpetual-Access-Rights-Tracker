@@ -302,6 +302,56 @@ color: rgb(0, 0, 0);</string>
      <string>URL du CRKN</string>
     </property>
    </widget>
+   <widget class="QLineEdit" name="helpURL">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>560</y>
+      <width>581</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">/* Styling for QLineEdit */
+QLineEdit {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333; /* Text color */
+    background-color: #fff; /* Background color */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 5px; /* Border radius */
+    padding: 8px; /* Padding inside the QLineEdit */
+}
+
+/* Styling for QLineEdit when it's focused */
+QLineEdit:focus {
+    border: 1px solid #4d90fe; /* Focused border color */
+    outline: none; /* Remove default focus outline */
+}
+
+/* Styling for QLineEdit when hovered */
+QLineEdit:hover {
+    border: 1px solid #999; /* Border color on hover */
+}</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="helpURL">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>520</y>
+      <width>151</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 75 14pt &quot;Arial&quot;;
+color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string>URL d'aide</string>
+    </property>
+   </widget>
    <widget class="QPushButton" name="saveSettings">
     <property name="geometry">
      <rect>
@@ -404,8 +454,8 @@ QLineEdit:hover {
    <widget class="QPushButton" name="manageDatabase">
     <property name="geometry">
      <rect>
-      <x>445</x>
-      <y>620</y>
+      <x>625</x>
+      <y>640</y>
       <width>330</width>
       <height>41</height>
      </rect>
@@ -439,9 +489,9 @@ QLineEdit:hover {
    <widget class="QPushButton" name="manageInstitution">
     <property name="geometry">
      <rect>
-      <x>465</x>
-      <y>545</y>
-      <width>300</width>
+      <x>285</x>
+      <y>640</y>
+      <width>330</width>
       <height>41</height>
      </rect>
     </property>
