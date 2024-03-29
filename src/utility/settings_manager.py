@@ -124,7 +124,7 @@ class Settings(metaclass=SingletonMeta):
         Set the GitHub link for the project.
         :param link: new link
         """
-        self.update_setting('github_link', link)
+        self.update_setting('github_url', link)
 
     def set_institution(self, institution):
         """
