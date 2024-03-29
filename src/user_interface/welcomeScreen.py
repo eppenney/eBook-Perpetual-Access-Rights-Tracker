@@ -71,11 +71,11 @@ class WelcomePage(QDialog):
     #     languageSelection.addItems(["English", "French"])
 
     def save_settings(self):
-        crkn_url = self.crknURL.toPlainText()
+        crkn_url = self.crknURL.text()
         if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
             QMessageBox.warning(self, "Incorrect CRKN URL format", "Incorrect CRKN URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
             return
-        help_url = self.helpURL.toPlainText()
+        help_url = self.helpURL.text()
         if not (help_url.startswith("https://") or help_url.startswith("http://")):
             QMessageBox.warning(self, "Incorrect GitHub URL format",
                                 "Incorrect GitHub URL format.\nEnsure URL begins with http:// or https://.",
