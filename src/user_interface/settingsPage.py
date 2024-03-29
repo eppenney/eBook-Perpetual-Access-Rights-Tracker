@@ -1,7 +1,7 @@
-from PyQt6.QtCore import pyqtSignal, QUrl, Qt
+from PyQt6.QtCore import pyqtSignal, QUrl, Qt, QEvent
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QLineEdit, QComboBox, QMessageBox, QCheckBox
+from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox, QMessageBox, QCheckBox, QLineEdit
 from src.user_interface.scraping_ui import scrapeCRKN
 from src.utility.upload import upload_and_process_file
 from src.utility.settings_manager import Settings
@@ -77,6 +77,12 @@ class settingsPage(QDialog):
         self.openLinkButton = self.findChild(QPushButton, 'helpButton')
         self.openLinkButton.setToolTip("Click to open the link")
         self.openLinkButton.clicked.connect(self.open_link)
+
+        # The help link should be saving the link to the json file when enter is clicked.
+        self.helpLink = self.findChild(QTextEdit, 'helpLink')
+        self.helpLink.setToolTip("Press Enter to confirm changes")
+        self.helpLink.installEventFilter(self)
+
 
 
         # Finding the languageButton from the QPushButton class
@@ -160,7 +166,31 @@ class settingsPage(QDialog):
                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
             settings_manager.set_language("English" if selected_language == 0 else "French")   
-        self.reset_app() 
+        self.reset_app()
+
+    def eventFilter(self, source, event):
+        if event.type() == QEvent.Type.KeyPress and source is self.helpLink:
+            if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
+                self.confirm_github_link_change()
+                return True
+        return super().eventFilter(source, event)
+
+    def confirm_github_link_change(self):
+        # Get the current link in the QTextEdit
+        current_link = self.helpLink.toPlainText()
+
+        # Ask the user to change this path file.
+        reply = QMessageBox.question(self, "Confirm Link Change",
+                                     f"The path link for the documentation is about to change:\n{current_link}\n\nContinue?",
+                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.Yes:
+
+            self.save_github_link()
+
+    # Saving the link
+    def save_github_link(self):
+        link = self.helpLink.toPlainText()
+        settings_manager.set_github_link(link)
     
     def save_institution(self):
         selected_institution = self.institutionSelection.currentText()
