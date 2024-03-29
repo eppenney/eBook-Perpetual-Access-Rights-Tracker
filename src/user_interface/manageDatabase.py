@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QDialog, QPushButton, QVBoxLayout, QLabel, QScrollArea, QFrame, QMessageBox, QSizePolicy
+from PyQt6.QtWidgets import QDialog, QPushButton, QLabel, QFrame, QMessageBox
 from PyQt6.uic import loadUi
 from src.utility.upload import upload_and_process_file
 from src.data_processing.database import get_local_tables, connect_to_database, close_database, get_table_data
@@ -11,9 +11,10 @@ class ManageLocalDatabasesPopup(QDialog):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Manage Local Databases")
-        self.language_value = settings_manager.get_setting("language").lower()
-        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_manageDatabase.ui")
+        self.language_value = settings_manager.get_setting("language")
+        self.setWindowTitle("Manage Local Databases" if self.language_value == "English" else "Gérer les bases de données locales")
+    
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_manageDatabase.ui")
         loadUi(ui_file, self) 
 
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
@@ -32,9 +33,9 @@ class ManageLocalDatabasesPopup(QDialog):
 
         # Populate the scroll area with table information
         for table_data in local_table_data:
-            table_label = QLabel(f"{table_data[0]}, \nDate Added: {table_data[1]}")
+            table_label = QLabel(f"{table_data[0]}, \n{'Date Added' if self.language_value == 'English' else 'Date ajoutée'}: {table_data[1]}")
             
-            remove_button = QPushButton("Remove")
+            remove_button = QPushButton("Remove" if self.language_value == "English" else "Retirer")
             remove_button.clicked.connect(lambda checked, table=table_data[0]: self.remove_table(table))
 
             line = QFrame()
@@ -54,14 +55,15 @@ class ManageLocalDatabasesPopup(QDialog):
         
         close_database(connection)
 
-        
     def remove_table(self, table_name):
         from src.utility.upload import remove_local_file
-        confirm = QMessageBox.question(self, "Confirmation", f"Are you sure you want to remove {table_name}?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        confirm = QMessageBox.question(self, "Confirmation", 
+                                       f"Are you sure you want to remove {table_name}?" if self.language_value == "English" else f"Êtes-vous sûr de vouloir supprimer {table_name}?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if confirm == QMessageBox.StandardButton.Yes:
             remove_local_file(table_name.lstrip("local_"))
             self.populate_table_information() 
-            QMessageBox.information(self, "Success", f"{table_name} has been removed successfully.")
+            QMessageBox.information(self, "Success" if self.language_value == "English" else "Succès", 
+                                    f"{table_name} has been removed successfully." if self.language_value == "English" else f"{table_name} a été supprimé avec succès.")
             
     def deleteTableData(self):
         for i in reversed(range(self.scrollLayout.count())):
