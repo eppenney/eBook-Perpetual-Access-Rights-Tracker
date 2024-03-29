@@ -461,7 +461,6 @@ def upload_to_database(df, table_name, connection):
             if_exists="replace",
             index=False
         )
-
         cursor = connection.cursor()
         # Fixes the date format in the database directly; removes the seconds
         cursor.execute(f'''UPDATE {table_name}
