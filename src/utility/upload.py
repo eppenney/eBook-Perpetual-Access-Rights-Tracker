@@ -12,9 +12,11 @@ language = settings_manager.get_setting("language")
 
 
 def upload_and_process_file():
+    global language 
     """
     Upload and process local files into local database
     """
+    language = settings_manager.get_setting("language")
     app = QApplication.instance()  # Try to get the existing application instance
     if app is None:  # If no instance exists, create a new one
         app = QApplication(sys.argv)
@@ -32,10 +34,9 @@ def upload_and_process_file():
 
 
 class UploadUI(QDialog):
-    language = settings_manager.get_setting("language")
     def __init__(self, file_paths):
         super().__init__()
-        self.setWindowTitle("Processing File..." if language == "English" else "Fichier en cours de traitement")
+        self.setWindowTitle("Processing File..." if language == "English" else "Fichier en cours de traitement...")
         self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.CustomizeWindowHint | Qt.WindowType.WindowTitleHint)
                 
         layout = QVBoxLayout(self)
@@ -136,8 +137,9 @@ class UploadThread(QThread):
                                         if language == "English" else f"{file_name_with_ext}\nUn fichier du même nom se trouve déjà dans la base de données locale. Souhaitez-vous le remplacer par le nouveau fichier ?")
             reply = self.wait_for_response()
             if reply == False:
-                self.error_signal.emit("File Upload Cancelled" if language == "English" else "Téléchargement de fichier annulé", 
-                                        f"{file_name_with_ext}\n{'This file will not be uploaded' if language == 'English' else 'Ce fichier ne sera pas téléchargé'}")
+                print(language, language == "English")
+                self.error_signal.emit("File Upload Cancelled" if language == "English" else "Chargement de fichier annulé",
+                                        f"{file_name_with_ext}\n{'This file will not be uploaded' if language == 'English' else 'Ce fichier ne sera pas chargé'}")
                 self.wait_for_response()
                 database.close_database(connection)
                 return
@@ -160,7 +162,7 @@ class UploadThread(QThread):
             if valid_file is not True:
                 self.error_signal.emit("Invalid File Format" if language == "English" else "Format de fichier invalide", 
                                        f"{file_name_with_ext}\n{valid_file}\nUpload aborted." if language == "English" else 
-                                    f"{file_name_with_ext}\n{valid_file}\nTéléchargement interrompu.")
+                                    f"{file_name_with_ext}\n{valid_file}\nChargement interrompu.")
                 self.wait_for_response()
                 database.close_database(connection)
                 return
@@ -176,14 +178,14 @@ class UploadThread(QThread):
                 if len(new_institutions) > 5:
                     new_institutions_display += '...'
                 self.get_answer_yes_no.emit("New Institutions", f"{len(new_institutions)} institution name{'s' if len(new_institutions) > 1 else ''} found that " +
-                                            f"{'are' if len(new_institutions) > 1 else 'is'} not a CRKN institution and {'are' if len(new_institutions) > 1 else 'is'} not on the list of local institutions.\n" +
+                                            f"{'are' if len(new_institutions) > 1 else 'is'} not a CRKN institution and {'are' if len(new_institutions) > 1 else 'is'} not on the list of local institutions.\n\n" +
                                             f"{new_institutions_display}\n" +
-                                            "Would you like to add them to the local list? \n'No' - The file will not be uploaded. \n'Yes' - The new institution names will be added as options" + 
+                                            "Would you like to add them to the local list? \n'No' - The file will not be uploaded. \n'Yes' - The file will be uploaded, and the new institution names will be added as options" +
                                             " and will be available in the settings menu.")
                 reply = self.wait_for_response()
                 if reply == False:
-                    self.error_signal.emit("File Upload Cancelled" if language == "English" else "Téléchargement de fichier annulé", 
-                                        f"{file_name_with_ext}\n{'This file will not be uploaded' if language == 'English' else 'Ce fichier ne sera pas téléchargé'}")
+                    self.error_signal.emit("File Upload Cancelled" if language == "English" else "Chargement de fichier annulé",
+                                        f"{file_name_with_ext}\n{'This file will not be uploaded' if language == 'English' else 'Ce fichier ne sera pas chargé'}")
                     self.wait_for_response()
                     database.close_database(connection)
                     return
@@ -204,7 +206,7 @@ class UploadThread(QThread):
             Scraping.update_tables([file_name[0], date], "local", connection, result)
             self.currentValue += self.one_file_progress_value / 7
             self.progress_update.emit(int(self.currentValue) - 1)
-            self.get_okay.emit("File Upload" if language == "English" else "Téléchargement de fichiers", f"{file_name_with_ext}\nYour file has been uploaded. {len(file_df)} rows have been added." if language == "English" else f"{file_name_with_ext}\nVotre fichier a été téléchargé. {len(file_df)} lignes ont été ajoutées.") 
+            self.get_okay.emit("File Upload" if language == "English" else "Chargement de fichiers", f"{file_name_with_ext}\nYour file has been uploaded. {len(file_df)} rows have been added." if language == "English" else f"{file_name_with_ext}\nVotre fichier a été chargé. {len(file_df)} lignes ont été ajoutées.")
             self.wait_for_response()
 
         except Exception as e:

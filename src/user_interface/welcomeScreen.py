@@ -23,7 +23,10 @@ class WelcomePage(QDialog):
         self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
 
         # Populate institution selection combobox
+        # Finding the combobox for the institution
+        self.institutionSelection = self.findChild(QComboBox, 'institutionSelectionWEL')
         self.populate_institutions()
+        self.set_institution(settings_manager.get_setting("institution"))
 
         # Populate language selection combobox
         self.populate_languages()
@@ -43,12 +46,20 @@ class WelcomePage(QDialog):
         self.animation.start()
 
     def populate_institutions(self):
+        # Clear the existing items in the combo box
+        self.institutionSelection.clear()
         # Get the list of institutions from the settings manager
         institutions = settings_manager.get_institutions()
+        # Populate the combo box with institution names
+        self.institutionSelection.addItems(institutions)
 
-        # Populate the institution selection combobox
-        institutionSelectionWEL = self.findChild(QComboBox, 'institutionSelectionWEL')
-        institutionSelectionWEL.addItems(institutions)
+    def set_institution(self, institution_value):
+        # Iterate over the items in the combo box
+        for index in range(self.institutionSelection.count()):
+            if self.institutionSelection.itemText(index) == institution_value:
+                # Set the current index to the item that matches the desired value
+                self.institutionSelection.setCurrentIndex(index)
+                break
 
     def populate_languages(self):
         # Populate the language selection combobox
@@ -57,7 +68,7 @@ class WelcomePage(QDialog):
 
     def save_settings(self):
         # Get selected institution and language
-        selected_institution = self.findChild(QComboBox, 'institutionSelectionWEL').currentText()
+        selected_institution = self.institutionSelection.currentText()
         selected_language = self.findChild(QComboBox, 'languageSelectionWEL').currentText()
 
         settings_manager.set_institution(selected_institution)
