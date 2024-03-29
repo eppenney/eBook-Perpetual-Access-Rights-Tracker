@@ -108,7 +108,7 @@ class Settings(metaclass=SingletonMeta):
         Allow to use CRKN.
         :param allowCRKN: "True" or "False"
         """
-        self.update_setting('allowCRKN', allowCRKN)
+        self.update_setting('allow_CRKN', allowCRKN)
 
     def set_crkn_url(self, url):
         """

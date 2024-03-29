@@ -1,7 +1,7 @@
 from PyQt6.QtCore import pyqtSignal, QUrl, Qt
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox, QMessageBox
+from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox, QMessageBox, QCheckBox
 from src.user_interface.scraping_ui import scrapeCRKN
 from src.utility.upload import upload_and_process_file
 from src.utility.settings_manager import Settings
@@ -79,6 +79,11 @@ class settingsPage(QDialog):
         self.languageSelection.activated.connect(self.save_language)
         self.languageSelection.setCurrentIndex(0 if settings_manager.get_setting("language") == "English" else 1)
 
+        # Allow CRKN tickbox 
+        self.allowCRKN = self.findChild(QCheckBox, "allowCRKNData")
+        self.allowCRKN.clicked.connect(self.save_allow_CRKN)
+        self.allowCRKN.setChecked(settings_manager.get_setting("allow_CRKN") == "True")
+
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL = self.findChild(QTextEdit, 'crknURL')
         self.crknURL.setPlainText(current_crkn_url)
@@ -151,6 +156,11 @@ class settingsPage(QDialog):
             QMessageBox.warning(self, "Incorrect URL format", "Incorrect URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
             return
         settings_manager.set_crkn_url(crkn_url)
+
+    def save_allow_CRKN(self):
+        allow = self.allowCRKN.isChecked()
+        settings_manager.set_allow_CRKN("True" if allow else "False")
+        self.reset_app()
 
     def keyPressEvent(self, event):
         # Override keyPressEvent method to ignore Escape key event

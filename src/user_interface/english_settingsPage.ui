@@ -486,6 +486,23 @@ QTextEdit:hover {
 }</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="allowCRKNData">
+    <property name="geometry">
+        <rect>
+            <x>675</x>
+            <y>128</y>
+            <width>200</width>
+            <height>30</height>
+        </rect>
+    </property>
+    <property name="styleSheet">
+        <string notr="true">font: 75 14pt "Arial";</string>
+    </property>
+    <property name="text">
+        <string>Allow CRKN Data</string>
+    </property>
+</widget>
+
   </widget>
  </widget>
  <resources/>
