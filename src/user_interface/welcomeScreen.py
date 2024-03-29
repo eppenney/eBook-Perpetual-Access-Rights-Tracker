@@ -36,8 +36,8 @@ class WelcomePage(QDialog):
         self.crknURL.setText(current_crkn_url)
 
         current_help_url = settings_manager.get_setting("github_url")
-        self.helpURL = self.findChild(QTextEdit, 'helpURLWEL')
-        self.helpURL.setPlainText(current_help_url)
+        self.helpURL = self.findChild(QLineEdit, 'helpURL')
+        self.helpURL.setText(current_help_url)
 
         # Connect save button click event
         self.saveButton = self.findChild(QPushButton, 'saveSettings')
