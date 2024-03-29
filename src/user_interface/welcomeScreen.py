@@ -1,10 +1,10 @@
 """
- This will act as the welcome page which will only open for the first time the application is opened.
+ This will act as the come page which will only open for the first time the application is opened.
  The settings saved from here will be saved for the first time.
 
 """
 import os
-from PyQt6.QtWidgets import QDialog, QComboBox, QPushButton, QTextEdit, QMessageBox
+from PyQt6.QtWidgets import QDialog, QComboBox, QPushButton, QLineEdit, QMessageBox
 from PyQt6.QtCore import QPropertyAnimation, QEasingCurve
 from PyQt6.uic import loadUi
 from src.utility.settings_manager import Settings
@@ -24,19 +24,19 @@ class WelcomePage(QDialog):
 
         # Populate institution selection combobox
         # Finding the combobox for the institution
-        self.institutionSelection = self.findChild(QComboBox, 'institutionSelectionWEL')
+        self.institutionSelection = self.findChild(QComboBox, 'institutionSelection')
         self.populate_institutions()
         self.set_institution(settings_manager.get_setting("institution"))
 
         # Populate language selection combobox
-        self.populate_languages()
+        # self.populate_languages()
 
         current_crkn_url = settings_manager.get_setting("CRKN_url")
-        self.crknURL = self.findChild(QTextEdit, 'crknURLWEL')
-        self.crknURL.setPlainText(current_crkn_url)
+        self.crknURL = self.findChild(QLineEdit, 'crknURL')
+        self.crknURL.setText(current_crkn_url)
 
         # Connect save button click event
-        self.saveButton = self.findChild(QPushButton, 'saveSettings_2')
+        self.saveButton = self.findChild(QPushButton, 'saveSettings')
         self.saveButton.clicked.connect(self.save_settings)
 
     def showEvent(self, event):
@@ -61,20 +61,20 @@ class WelcomePage(QDialog):
                 self.institutionSelection.setCurrentIndex(index)
                 break
 
-    def populate_languages(self):
-        # Populate the language selection combobox
-        languageSelectionWEL = self.findChild(QComboBox, 'languageSelectionWEL')
-        languageSelectionWEL.addItems(["English", "French"])
+    # def populate_languages(self):
+    #     # Populate the language selection combobox
+    #     languageSelection = self.findChild(QComboBox, 'languageSetting')
+    #     languageSelection.addItems(["English", "French"])
 
     def save_settings(self):
         # Get selected institution and language
         selected_institution = self.institutionSelection.currentText()
-        selected_language = self.findChild(QComboBox, 'languageSelectionWEL').currentText()
+        selected_language = self.findChild(QComboBox, 'languageSelection').currentText()
 
         settings_manager.set_institution(selected_institution)
         settings_manager.set_language(selected_language)
 
-        crkn_url = self.findChild(QTextEdit, 'crknURLWEL').toPlainText()
+        crkn_url = self.findChild(QLineEdit, 'crknURL').toPlainText()
         if len(crkn_url.split("/")) < 3:
             QMessageBox.warning(self, "Incorrect URL format",
                                 "Incorrect URL format.\nEnsure URL begins with URL format, eg) http:// or https://.",
@@ -84,5 +84,5 @@ class WelcomePage(QDialog):
 
         settings_manager.save_settings()
 
-        # Close the welcome page
+        # Close the come page
         self.accept()
