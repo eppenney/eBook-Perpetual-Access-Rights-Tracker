@@ -146,9 +146,28 @@ class settingsPage(QDialog):
 
     # Testing to save institution working
     def save_selected(self):
+        crkn_url = self.crknURL.toPlainText()
+        if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
+            QMessageBox.warning(self, "Incorrect CRKN URL format",
+                                "Incorrect CRKN URL format.\nEnsure URL begins with http:// or https://.",
+                                QMessageBox.StandardButton.Ok)
+            return
+        help_url = self.helpURL.toPlainText()
+        if not (help_url.startswith("https://") or help_url.startswith("http://")):
+            QMessageBox.warning(self, "Incorrect GitHub URL format",
+                                "Incorrect GitHub URL format.\nEnsure URL begins with http:// or https://.",
+                                QMessageBox.StandardButton.Ok)
+            return
+
         self.save_institution()
         self.save_language()
-        self.save_CRKN_URL()
+
+        settings_manager.set_crkn_url(crkn_url)
+        settings_manager.set_github_url(help_url)
+        # self.save_CRKN_url()
+        # self.save_github_url()
+        # self.addInstitution()      
+
         self.reset_app()
 
     def save_language(self):
@@ -176,10 +195,10 @@ class settingsPage(QDialog):
 
     def save_CRKN_URL(self, event=None):
         crkn_url = self.crknURL.text()
+        crkn_url = self.crknURL.text()
         if (crkn_url == settings_manager.get_setting("CRKN_url")):
-            return
-
-        if len(crkn_url.split("/")) < 3:
+              return
+        if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
             QMessageBox.warning(self, "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
                                 "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else 
                                 "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",QMessageBox.StandardButton.Ok)
@@ -212,6 +231,23 @@ class settingsPage(QDialog):
     def save_allow_CRKN(self):
         allow = self.allowCRKN.isChecked()
         settings_manager.set_allow_CRKN("True" if allow else "False")
+        self.reset_app()
+
+    def save_github_URL(self):
+        help_url = self.helpURL.text()
+        if (help_url == settings_manager.get_setting("github_url")):
+              return
+        if not (help_url.startswith("https://") or help_url.startswith("http://")):
+            QMessageBox.warning(self, "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
+                                "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else 
+                                "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",QMessageBox.StandardButton.Ok)
+            self.reset_app()
+            return
+        response = QMessageBox.warning(self, "Change CRKN URL" if self.language_value == "English" else "Modifier l'URL du CRKN", 
+                            "Are you sure you want to change the CRKN retrieval URL?" if self.language_value == "English" else "Êtes-vous sûr de vouloir modifier l'URL de récupération du CRKN?",
+                            QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
+        if (response == QMessageBox.StandardButton.Yes):
+            settings_manager.set_crkn_url(crkn_url)
         self.reset_app()
 
     def keyPressEvent(self, event):
@@ -290,7 +326,11 @@ class settingsPage(QDialog):
 
         # Set the current CRKN URL
         current_crkn_url = settings_manager.get_setting("CRKN_url")
-        # self.crknURL.setText(current_crkn_url)
+        self.crknURL.setText(current_crkn_url)
+
+        # Set the current CRKN URL
+        current_help_url = settings_manager.get_setting("github_url")
+        self.helpURL.setText(current_help_url)
 
         # Set the current institution selection
         current_institution = settings_manager.get_setting("institution")
