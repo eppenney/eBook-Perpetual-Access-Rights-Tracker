@@ -79,7 +79,7 @@ class settingsPage(QDialog):
         self.openLinkButton.clicked.connect(self.open_link)
 
         # The help link should be saving the link to the json file when enter is clicked.
-        self.helpLink = self.findChild(QTextEdit, 'helpLink')
+        self.helpLink = self.findChild(QLineEdit, 'helpURL')
         self.helpLink.setToolTip("Press Enter to confirm changes")
         self.helpLink.installEventFilter(self)
 
@@ -171,20 +171,19 @@ class settingsPage(QDialog):
         return super().eventFilter(source, event)
 
     def confirm_github_link_change(self):
-        # Get the current link in the QTextEdit
-        current_link = self.helpLink.toPlainText()
+        # Get the current link in the QLineEdit
+        current_link = self.helpLink.text()
 
         # Ask the user to change this path file.
         reply = QMessageBox.question(self, "Confirm Link Change",
                                      f"The path link for the documentation is about to change:\n{current_link}\n\nContinue?",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
-
             self.save_github_link()
 
     # Saving the link
     def save_github_link(self):
-        link = self.helpLink.toPlainText()
+        link = self.helpLink.text()
         settings_manager.set_github_link(link)
     
     def save_institution(self):
