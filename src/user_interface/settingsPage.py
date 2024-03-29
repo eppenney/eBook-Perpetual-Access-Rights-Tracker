@@ -126,7 +126,6 @@ class settingsPage(QDialog):
     def backToStartScreen2(self):
         self.widget.removeWidget(self.widget.currentWidget())
 
-
     def populate_institutions(self):
         # Clear the existing items in the combo box
         self.institutionSelection.clear()
@@ -155,7 +154,7 @@ class settingsPage(QDialog):
     def save_language(self):
         current_language = settings_manager.get_setting("language")
         selected_language = self.languageSetting.currentIndex()
-        if (current_language == ("English" if selected_language == 0 else "French")):
+        if current_language == ("English" if selected_language == 0 else "French"):
             return
         reply = QMessageBox.question(None, "Language Change" if current_language == "English" else "Changement de langue", 
                                      "Are you sure you want to change your language setting?" if current_language == "English" else "Êtes-vous sûr de vouloir modifier votre paramètre de langue ?", 
@@ -166,7 +165,7 @@ class settingsPage(QDialog):
     
     def save_institution(self):
         selected_institution = self.institutionSelection.currentText()
-        if (selected_institution == settings_manager.get_setting("institution")):
+        if selected_institution == settings_manager.get_setting("institution"):
             return
         response = QMessageBox.warning(self, "Change Institution" if self.language_value == "English" else "Changer d'établissement", 
                             "Are you sure you want to change the institution?" if self.language_value == "English" else "Etes-vous sûr de vouloir changer d'établissement?",
@@ -175,11 +174,10 @@ class settingsPage(QDialog):
             settings_manager.set_institution(selected_institution)
         self.reset_app()
 
-    def save_CRKN_URL(self, event=None):
+    def save_CRKN_URL(self):
         crkn_url = self.crknURL.text()
-        crkn_url = self.crknURL.text()
-        if (crkn_url == settings_manager.get_setting("CRKN_url")):
-              return
+        if crkn_url == settings_manager.get_setting("CRKN_url"):
+            return
         if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
             QMessageBox.warning(self, "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
                                 "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else 
@@ -195,9 +193,9 @@ class settingsPage(QDialog):
 
     def save_help_url(self):
         help_url = self.helpURL.text()
-        if (help_url == settings_manager.get_setting("github_link")):
+        if help_url == settings_manager.get_setting("github_link"):
             return
-        if len(help_url.split("/")) < 3:
+        if not (help_url.startswith("https://") or help_url.startswith("http://")):
             QMessageBox.warning(self, "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
                                 "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else 
                                 "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",QMessageBox.StandardButton.Ok)
