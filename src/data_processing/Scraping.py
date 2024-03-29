@@ -250,16 +250,16 @@ class ScrapingThread(QThread):
             if language == "English":
                 error_message = "Connection Timeout : The server took too long to respond. Not all files have been successfully retrieved. Please try updating CRKN again."
             else:
-                error_message = "Expiration de la Connexion : La connexion était trop lente. Certains fichiers ont pu être récupérés, mais pas tous."
+                error_message = "Expiration de la Connexion : Le serveur a mis trop de temps à répondre. Tous les fichiers n'ont pas été récupérés avec succès. Veuillez réessayer de mettre  à jour RCDR de nouveau."
             m_logger.error(timeout_err)
             self.error_signal.emit(error_message)
         except Exception as e:
             # Handle any other exceptions
             if language == "English":
-                error_message = ("Unexpected Error : Please make sure you are connected "
-                                 "to the internet.")
+                error_message = ("Unexpected Error : Not all files have been successfully retrieved. "
+                                 "Please try updating CRKN again.")
             else:
-                error_message = "Erreur inattendue : Veuillez réessayer plus tard."
+                error_message = "Erreur inattendue : Tous les fichiers n'ont pas été récupérés avec succès. Veuillez réessayer de mettre  à jour RCDR de nouveau."
             m_logger.error(e)
             self.error_signal.emit(error_message)
 
