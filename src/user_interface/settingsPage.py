@@ -1,7 +1,7 @@
 from PyQt6.QtCore import pyqtSignal, QUrl, Qt
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox, QMessageBox
+from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox, QMessageBox, QCheckBox
 from src.user_interface.scraping_ui import scrapeCRKN
 from src.utility.upload import upload_and_process_file
 from src.utility.settings_manager import Settings
@@ -63,6 +63,10 @@ class settingsPage(QDialog):
         self.manageDatabaseButton = self.findChild(QPushButton, 'manageDatabase')
         self.manageDatabaseButton.clicked.connect(self.show_manage_local_databases_popup)
 
+        # Find the Push Button for manage local database
+        self.manageInstitutionButton = self.findChild(QPushButton, 'manageInstitution')
+        self.manageInstitutionButton.clicked.connect(self.show_manage_institutions_popup)
+
         # Finding the combobox for the SaveButton
         self.saveSettingsButton = self.findChild(QPushButton, 'saveSettings')
         self.saveSettingsButton.setToolTip("Click to save the settings")
@@ -79,9 +83,15 @@ class settingsPage(QDialog):
         self.languageSelection.activated.connect(self.save_language)
         self.languageSelection.setCurrentIndex(0 if settings_manager.get_setting("language") == "English" else 1)
 
+        # Allow CRKN tickbox 
+        self.allowCRKN = self.findChild(QCheckBox, "allowCRKNData")
+        self.allowCRKN.clicked.connect(self.save_allow_CRKN)
+        self.allowCRKN.setChecked(settings_manager.get_setting("allow_CRKN") == "True")
+
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL = self.findChild(QTextEdit, 'crknURL')
         self.crknURL.setPlainText(current_crkn_url)
+        # self.crknURL.textChanged.connect(self.save_CRKN_URL) # textChanged no good
 
         self.set_current_settings_values()
 
@@ -148,9 +158,18 @@ class settingsPage(QDialog):
         crkn_url = self.findChild(QTextEdit, 'crknURL').toPlainText()
 
         if len(crkn_url.split("/")) < 3:
-            QMessageBox.warning(self, "Incorrect URL format", "Incorrect URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
+            QMessageBox.warning(self, "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
+                                "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else 
+                                "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",QMessageBox.StandardButton.Ok)
+            self.reset_app()
             return
         settings_manager.set_crkn_url(crkn_url)
+        self.reset_app()
+
+    def save_allow_CRKN(self):
+        allow = self.allowCRKN.isChecked()
+        settings_manager.set_allow_CRKN("True" if allow else "False")
+        self.reset_app()
 
     def keyPressEvent(self, event):
         # Override keyPressEvent method to ignore Escape key event
@@ -256,6 +275,11 @@ class settingsPage(QDialog):
     def show_manage_local_databases_popup(self):
         from src.user_interface.manageDatabase import ManageLocalDatabasesPopup
         popup = ManageLocalDatabasesPopup(self)
+        popup.exec()
+
+    def show_manage_institutions_popup(self):
+        from src.user_interface.manageInstitutions import ManageInstitutionsPopup
+        popup = ManageInstitutionsPopup(self)
         popup.exec()
 
 
