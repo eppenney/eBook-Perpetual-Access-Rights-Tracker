@@ -68,7 +68,7 @@ class ScrapingThread(QThread):
             except requests.exceptions.HTTPError as http_err:
                 # Handle HTTP errors
                 if settings_manager.get_setting("language") == "English":
-                    error_message = ("Server Connection Error: Please make sure you are connected "
+                    error_message = ("Server Connection Error : Please make sure you are connected "
                                      "to your internet and the CRKN URL is ")
                     "updated in the Settings page."
                 else:
@@ -81,7 +81,7 @@ class ScrapingThread(QThread):
             except requests.exceptions.ConnectionError as conn_err:
                 # Handle errors like refused connections
                 if settings_manager.get_setting("language") == "English":
-                    error_message = ("Internet Connection Error: Please make sure you are connected "
+                    error_message = ("Internet Connection Error : Please make sure you are connected "
                                      "to your internet.")
                 else:
                     error_message = ("Erreur de Connexion Internet : Veuillez vous assurer que "
@@ -101,7 +101,7 @@ class ScrapingThread(QThread):
             except Exception as e:
                 # Handle any other exceptions
                 if settings_manager.get_setting("language") == "English":
-                    error_message = ("Unexpected Error: Please make sure you are connected "
+                    error_message = ("Unexpected Error : Please make sure you are connected "
                                      "to the internet.")
                 else:
                     error_message = "Erreur inattendue : Veuillez réessayer plus tard."
@@ -230,23 +230,37 @@ class ScrapingThread(QThread):
         # Handle connection loss in middle of scraping
         except requests.exceptions.HTTPError as http_err:
             # Handle HTTP errors
-            error_message = "Server Connection Error: Connection to the server was lost. Some files may have been scraped, but not all files."
-            m_logger.error(error_message)
+            if language == "English":
+                error_message = ("Internet Connection Error : Connection to the server was lost. Not all files have been successfully retreived. Please try updating CRKN again.")
+            else:
+                error_message = ("Erreur de Connexion Internet : La connexion su serveur a été perdue. Tous les fichiers n'ont pas été récupérés. Veuillez réessayer de mettre  à jour RCDR de nouveau.")
+            m_logger.error(http_err)
             self.error_signal.emit(error_message)
         except requests.exceptions.ConnectionError as conn_err:
             # Handle errors like refused connections
-            error_message = "Internet Connection Error: Connection to the internet was lost. Some files may have been scraped, but not all files."
-            m_logger.error(error_message)
+            if language == "English":
+                error_message = ("Internet Connection Error : Connection to the internet was lost. Not all files have been successfully retreived. Please try updating CRKN again.")
+            else:
+                error_message = (
+                    "Erreur de Connexion Internet : La connexion à l'internet a été perdue. Tous les fichiers n'ont pas été récupérés avec succès. Veuillez réessayer de mettre à jour RCDR de nouveau.")
+            m_logger.error(conn_err)
             self.error_signal.emit(error_message)
         except requests.exceptions.Timeout as timeout_err:
             # Handle request timeout
-            error_message = "Connection Timeout: The connection was too slow. Some files may have been scraped, but not all files."
-            m_logger.error(error_message)
+            if language == "English":
+                error_message = "Connection Timeout : The server took too long to respond. Not all files have been successfully retrieved. Please try updating CRKN again."
+            else:
+                error_message = "Expiration de la Connexion : La connexion était trop lente. Certains fichiers ont pu être récupérés, mais pas tous."
+            m_logger.error(timeout_err)
             self.error_signal.emit(error_message)
         except Exception as e:
             # Handle any other exceptions
-            error_message = "Unexpected Error: Please try again later. Some files may have been scraped, but not all files."
-            m_logger.error(error_message)
+            if language == "English":
+                error_message = ("Unexpected Error : Please make sure you are connected "
+                                 "to the internet.")
+            else:
+                error_message = "Erreur inattendue : Veuillez réessayer plus tard."
+            m_logger.error(e)
             self.error_signal.emit(error_message)
 
         # Remove temp.xlsx used for uploading files
