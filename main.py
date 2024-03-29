@@ -59,7 +59,6 @@ def main():
             if reply == QMessageBox.StandardButton.Yes:
                 scrapeCRKN()
 
-
     sys.exit(app.exec())
 
 
