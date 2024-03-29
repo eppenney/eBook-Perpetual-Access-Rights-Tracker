@@ -489,7 +489,7 @@ QTextEdit:hover {
    <widget class="QCheckBox" name="allowCRKNData">
     <property name="geometry">
         <rect>
-            <x>675</x>
+            <x>600</x>
             <y>128</y>
             <width>200</width>
             <height>30</height>
