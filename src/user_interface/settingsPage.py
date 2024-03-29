@@ -282,11 +282,13 @@ class settingsPage(QDialog):
     def show_manage_local_databases_popup(self):
         from src.user_interface.manageDatabase import ManageLocalDatabasesPopup
         popup = ManageLocalDatabasesPopup(self)
+        popup.finished.connect(self.reset_app)
         popup.exec()
 
     def show_manage_institutions_popup(self):
         from src.user_interface.manageInstitutions import ManageInstitutionsPopup
         popup = ManageInstitutionsPopup(self)
+        popup.finished.connect(self.reset_app)
         popup.exec()
 
 
