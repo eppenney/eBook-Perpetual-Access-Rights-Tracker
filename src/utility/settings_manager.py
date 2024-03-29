@@ -67,7 +67,7 @@ class Settings(metaclass=SingletonMeta):
                 "CRKN_institutions": [],
                 "local_institutions": [],
                 "database_name": default_db_path,
-                "github_url": "https://github.com/eppenney/eBook-Perpetual-Access-Rights-Tracker"
+                "github_link": "https://github.com/eppenney/eBook-Perpetual-Access-Rights-Tracker"
             }
             # Set the CRKN root url from the CRKN url
             url_parts = settings["CRKN_url"].split('/')
@@ -124,7 +124,7 @@ class Settings(metaclass=SingletonMeta):
         Set the GitHub link for the project.
         :param link: new link
         """
-        self.update_setting('github_url', link)
+        self.update_setting('github_link', link)
 
     def set_institution(self, institution):
         """
