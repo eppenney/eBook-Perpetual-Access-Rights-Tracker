@@ -35,6 +35,10 @@ class WelcomePage(QDialog):
         self.crknURL = self.findChild(QLineEdit, 'crknURL')
         self.crknURL.setText(current_crkn_url)
 
+        current_help_url = settings_manager.get_setting("github_url")
+        self.helpURL = self.findChild(QLineEdit, 'helpURL')
+        self.helpURL.setText(current_help_url)
+
         # Connect save button click event
         self.saveButton = self.findChild(QPushButton, 'saveSettings')
         self.saveButton.clicked.connect(self.save_settings)
@@ -67,6 +71,17 @@ class WelcomePage(QDialog):
     #     languageSelection.addItems(["English", "French"])
 
     def save_settings(self):
+        crkn_url = self.crknURL.text()
+        if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
+            QMessageBox.warning(self, "Incorrect CRKN URL format", "Incorrect CRKN URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
+            return
+        help_url = self.helpURL.text()
+        if not (help_url.startswith("https://") or help_url.startswith("http://")):
+            QMessageBox.warning(self, "Incorrect GitHub URL format",
+                                "Incorrect GitHub URL format.\nEnsure URL begins with http:// or https://.",
+                                QMessageBox.StandardButton.Ok)
+            return
+
         # Get selected institution and language
         selected_institution = self.institutionSelection.currentText()
         selected_language = self.findChild(QComboBox, 'languageSetting').currentText()
@@ -74,13 +89,8 @@ class WelcomePage(QDialog):
         settings_manager.set_institution(selected_institution)
         settings_manager.set_language(selected_language)
 
-        crkn_url = self.findChild(QLineEdit, 'crknURL').text()
-        if len(crkn_url.split("/")) < 3:
-            QMessageBox.warning(self, "Incorrect URL format",
-                                "Incorrect URL format.\nEnsure URL begins with URL format, eg) http:// or https://.",
-                                QMessageBox.StandardButton.Ok)
-            return
         settings_manager.set_crkn_url(crkn_url)
+        settings_manager.set_github_url(help_url)
 
         settings_manager.save_settings()
 

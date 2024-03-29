@@ -1,7 +1,7 @@
 from PyQt6.QtCore import pyqtSignal, QUrl, Qt, QEvent
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QTextEdit, QComboBox, QMessageBox, QCheckBox, QLineEdit
+from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QLineEdit, QComboBox, QMessageBox, QCheckBox, QLineEdit
 from src.user_interface.scraping_ui import scrapeCRKN
 from src.utility.upload import upload_and_process_file
 from src.utility.settings_manager import Settings
@@ -78,13 +78,6 @@ class settingsPage(QDialog):
         self.openLinkButton.setToolTip("Click to open the link")
         self.openLinkButton.clicked.connect(self.open_link)
 
-        # The help link should be saving the link to the json file when enter is clicked.
-        self.helpLink = self.findChild(QTextEdit, 'helpLink')
-        self.helpLink.setToolTip("Press Enter to confirm changes")
-        self.helpLink.installEventFilter(self)
-
-
-
         # Finding the languageButton from the QPushButton class
         self.languageSelection = self.findChild(QComboBox,'languageSetting') 
         self.languageSelection.activated.connect(self.save_language)
@@ -96,9 +89,18 @@ class settingsPage(QDialog):
         self.allowCRKN.setChecked(settings_manager.get_setting("allow_CRKN") == "True")
 
         current_crkn_url = settings_manager.get_setting("CRKN_url")
+        print("Current crkn url: ", current_crkn_url)
         self.crknURL = self.findChild(QLineEdit, 'crknURL')
         self.crknURL.setText(current_crkn_url)
+        self.crknURL.setToolTip("Press Enter to confirm changes")
+        print("QLine texT: ", self.crknURL.text())
         self.crknURL.returnPressed.connect(self.save_CRKN_URL)
+
+        current_help_url = settings_manager.get_setting("github_link")
+        self.helpURL = self.findChild(QLineEdit, 'helpURL')
+        self.helpURL.setText(current_help_url)
+        self.helpURL.setToolTip("Press Enter to confirm changes")
+        self.helpURL.returnPressed.connect(self.save_help_url)
 
 
         self.set_current_settings_values()
@@ -124,14 +126,12 @@ class settingsPage(QDialog):
     def backToStartScreen2(self):
         self.widget.removeWidget(self.widget.currentWidget())
 
-
     def populate_institutions(self):
         # Clear the existing items in the combo box
         self.institutionSelection.clear()
 
         # Get the list of institutions from the settings manager
         institutions = settings_manager.get_institutions()
-        # print("institutions:", institutions)  # TEST to make sure
 
         # Populate the combo box with institution names
         self.institutionSelection.addItems(institutions)
@@ -154,7 +154,7 @@ class settingsPage(QDialog):
     def save_language(self):
         current_language = settings_manager.get_setting("language")
         selected_language = self.languageSetting.currentIndex()
-        if (current_language == ("English" if selected_language == 0 else "French")):
+        if current_language == ("English" if selected_language == 0 else "French"):
             return
         reply = QMessageBox.question(None, "Language Change" if current_language == "English" else "Changement de langue", 
                                      "Are you sure you want to change your language setting?" if current_language == "English" else "Êtes-vous sûr de vouloir modifier votre paramètre de langue ?", 
@@ -162,34 +162,10 @@ class settingsPage(QDialog):
         if reply == QMessageBox.StandardButton.Yes:
             settings_manager.set_language("English" if selected_language == 0 else "French")   
         self.reset_app()
-
-    def eventFilter(self, source, event):
-        if event.type() == QEvent.Type.KeyPress and source is self.helpLink:
-            if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
-                self.confirm_github_link_change()
-                return True
-        return super().eventFilter(source, event)
-
-    def confirm_github_link_change(self):
-        # Get the current link in the QTextEdit
-        current_link = self.helpLink.toPlainText()
-
-        # Ask the user to change this path file.
-        reply = QMessageBox.question(self, "Confirm Link Change",
-                                     f"The path link for the documentation is about to change:\n{current_link}\n\nContinue?",
-                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        if reply == QMessageBox.StandardButton.Yes:
-
-            self.save_github_link()
-
-    # Saving the link
-    def save_github_link(self):
-        link = self.helpLink.toPlainText()
-        settings_manager.set_github_link(link)
     
     def save_institution(self):
         selected_institution = self.institutionSelection.currentText()
-        if (selected_institution == settings_manager.get_setting("institution")):
+        if selected_institution == settings_manager.get_setting("institution"):
             return
         response = QMessageBox.warning(self, "Change Institution" if self.language_value == "English" else "Changer d'établissement", 
                             "Are you sure you want to change the institution?" if self.language_value == "English" else "Etes-vous sûr de vouloir changer d'établissement?",
@@ -198,12 +174,11 @@ class settingsPage(QDialog):
             settings_manager.set_institution(selected_institution)
         self.reset_app()
 
-    def save_CRKN_URL(self, event=None):
-        crkn_url = self.findChild(QLineEdit, 'crknURL').text()
-        if (crkn_url == settings_manager.get_setting("CRKN_url")):
+    def save_CRKN_URL(self):
+        crkn_url = self.crknURL.text()
+        if crkn_url == settings_manager.get_setting("CRKN_url"):
             return
-
-        if len(crkn_url.split("/")) < 3:
+        if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
             QMessageBox.warning(self, "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
                                 "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else 
                                 "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",QMessageBox.StandardButton.Ok)
@@ -214,6 +189,23 @@ class settingsPage(QDialog):
                             QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
         if (response == QMessageBox.StandardButton.Yes):
             settings_manager.set_crkn_url(crkn_url)
+        self.reset_app()
+
+    def save_help_url(self):
+        help_url = self.helpURL.text()
+        if help_url == settings_manager.get_setting("github_link"):
+            return
+        if not (help_url.startswith("https://") or help_url.startswith("http://")):
+            QMessageBox.warning(self, "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
+                                "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else 
+                                "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",QMessageBox.StandardButton.Ok)
+            self.reset_app()
+            return
+        response = QMessageBox.warning(self, "Change help URL" if self.language_value == "English" else "Modifier l'URL de l'aide", 
+                            "Are you sure you want to change the help URL?" if self.language_value == "English" else "Êtes-vous sûr de vouloir modifier l'URL d'aide ?",
+                            QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
+        if (response == QMessageBox.StandardButton.Yes):
+            settings_manager.set_github_url(help_url)
         self.reset_app()
 
     def save_allow_CRKN(self):
@@ -271,7 +263,7 @@ class settingsPage(QDialog):
             # Set the new geometry and size
             widget.setGeometry(x, y, width, height)
 
-            # If the widget is a QTextEdit or QComboBox, adjust font size
+            # If the widget is a QLineEdit or QComboBox, adjust font size
             if isinstance(widget, (QLineEdit, QComboBox)):
                 font = widget.font()
                 original_font_size = original_values['font_size']
@@ -298,6 +290,10 @@ class settingsPage(QDialog):
         # Set the current CRKN URL
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL.setText(current_crkn_url)
+
+        # Set the current CRKN URL
+        current_help_url = settings_manager.get_setting("github_link")
+        self.helpURL.setText(current_help_url)
 
         # Set the current institution selection
         current_institution = settings_manager.get_setting("institution")
