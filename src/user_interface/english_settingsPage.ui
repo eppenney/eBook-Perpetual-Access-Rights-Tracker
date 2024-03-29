@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1183</width>
-    <height>872</height>
+    <height>877</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -228,7 +228,7 @@ QComboBox::down-arrow {
 color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
-     <string>Add institution</string>
+     <string>Help Link </string>
     </property>
    </widget>
    <widget class="QLabel" name="UniversityLabel_7">
@@ -488,7 +488,7 @@ QTextEdit:hover {
      <string>Manage Local Institutions</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="addinstitution">
+   <widget class="QTextEdit" name="helpLink">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -523,21 +523,20 @@ QTextEdit:hover {
    </widget>
    <widget class="QCheckBox" name="allowCRKNData">
     <property name="geometry">
-        <rect>
-            <x>675</x>
-            <y>128</y>
-            <width>200</width>
-            <height>30</height>
-        </rect>
+     <rect>
+      <x>675</x>
+      <y>128</y>
+      <width>200</width>
+      <height>30</height>
+     </rect>
     </property>
     <property name="styleSheet">
-        <string notr="true">font: 75 14pt "Arial";</string>
+     <string notr="true">font: 75 14pt &quot;Arial&quot;;</string>
     </property>
     <property name="text">
-        <string>Allow CRKN Data</string>
+     <string>Allow CRKN Data</string>
     </property>
-</widget>
-
+   </widget>
   </widget>
  </widget>
  <resources/>
