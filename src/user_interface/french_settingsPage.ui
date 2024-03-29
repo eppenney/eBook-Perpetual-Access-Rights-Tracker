@@ -389,7 +389,7 @@ color: rgb(0, 0, 0);</string>
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>570</y>
+      <y>560</y>
       <width>581</width>
       <height>51</height>
      </rect>
@@ -451,6 +451,41 @@ QTextEdit:hover {
     </property>
     <property name="text">
      <string>Gérer la base de données locale</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="manageInstitution">
+    <property name="geometry">
+     <rect>
+      <x>465</x>
+      <y>620</y>
+      <width>300</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+            QPushButton {
+                font: 75 16pt &quot;Arial&quot;;
+                background-color: rgb(0, 85, 127);
+                border-radius: 10px;
+                color: rgb(255, 255, 255);
+            }
+
+            QPushButton:hover {
+                background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(0, 65, 107); /* Even darker color when clicked */
+            }
+            QPushButton:disabled {
+                background-color: rgb(180, 180, 180); /* Grey color for disabled state */
+                color: rgb(120, 120, 120); /* Darker text color for disabled state */
+            }
+        </string>
+    </property>
+    <property name="text">
+     <string>Gérer les institutions locales</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="addinstitution">

@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QDialog, QPushButton, QLabel, QFrame, QMessageBox
+from PyQt6.QtWidgets import QDialog, QPushButton, QLabel, QInputDialog, QFrame, QMessageBox
 from PyQt6.uic import loadUi
 from src.utility.upload import upload_and_process_file
 from src.data_processing.database import get_local_tables, connect_to_database, close_database, get_table_data
@@ -7,18 +7,18 @@ import os
 
 settings_manager = Settings()
 
-class ManageLocalDatabasesPopup(QDialog):
+class ManageInstitutionsPopup(QDialog):
     
     def __init__(self, parent=None):
         super().__init__(parent)
         self.language_value = settings_manager.get_setting("language")
-        self.setWindowTitle("Manage Local Databases" if self.language_value == "English" else "Gérer les bases de données locales")
+        self.setWindowTitle("Manage Institutions" if self.language_value == "English" else "Gérer les établissements")
     
-        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_manageDatabase.ui")
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_manageInstitution.ui")
         loadUi(ui_file, self) 
 
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
-        self.uploadButton.clicked.connect(self.upload_local_databases)
+        self.uploadButton.clicked.connect(self.upload_local_institution)
                 
         self.populate_table_information()  # Populate the table information initially
         
@@ -27,26 +27,18 @@ class ManageLocalDatabasesPopup(QDialog):
         
         # Get those tables
         connection = connect_to_database()
-        local_table_data = get_table_data(connection, "local_file_names")
-
-        print(local_table_data)
+        institutions = settings_manager.get_setting("local_institutions")
 
         # Populate the scroll area with table information
-        for table_data in local_table_data:
-            table_label = QLabel(f"{table_data[0]}, \n{'Date Added' if self.language_value == "English" else "Date ajoutée"}: {table_data[1]}")
+        for institution in institutions:
+            table_label = QLabel(f"{institution}")
             
             remove_button = QPushButton("Remove" if self.language_value == "English" else "Retirer")
-            remove_button.clicked.connect(lambda checked, table=table_data[0]: self.remove_table(table))
+            remove_button.clicked.connect(lambda checked, institution=institution: self.remove_institution(institution))
 
             line = QFrame()
             line.setFrameShape(QFrame.Shape.HLine)
             line.setFrameShadow(QFrame.Shadow.Sunken)
-            
-            # Create a horizontal layout for each row
-            # row_layout = QVBoxLayout()
-            # row_layout.addWidget(table_label)
-            # row_layout.addWidget(remove_button)
-            # row_layout.addWidget(line)
 
             # Add the horizontal layout to the main vertical layout
             self.scrollLayout.addWidget(table_label)
@@ -56,15 +48,16 @@ class ManageLocalDatabasesPopup(QDialog):
         close_database(connection)
 
         
-    def remove_table(self, table_name):
+    def remove_institution(self, institution):
         from src.utility.upload import remove_local_file
         confirm = QMessageBox.question(self, "Confirmation", 
-                                       f"Êtes-vous sûr de vouloir supprimer {table_name}?" if self.language_value == "English" else f"Êtes-vous sûr de vouloir supprimer {table_name}?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                                       f"Are you sure you want to remove {institution}?" if self.language_value == "English" else f"Êtes-vous sûr de vouloir supprimer {institution}?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if confirm == QMessageBox.StandardButton.Yes:
-            remove_local_file(table_name.lstrip("local_"))
+            print(institution)
+            settings_manager.remove_local_institution(institution)
             self.populate_table_information() 
             QMessageBox.information(self, "Success" if self.language_value == "English" else "Succès", 
-                                    f"{table_name} has been removed successfully." if self.language_value == "English" else f"{table_name} a été supprimé avec succès.")
+                                    f"{institution} has been removed successfully." if self.language_value == "English" else f"{institution} a été supprimé avec succès.")
             
     def deleteTableData(self):
         for i in reversed(range(self.scrollLayout.count())):
@@ -76,6 +69,12 @@ class ManageLocalDatabasesPopup(QDialog):
                     widget.setParent(None)
                     widget.deleteLater()
 
-    def upload_local_databases(self):
-        upload_and_process_file()
-        self.populate_table_information()
+    def upload_local_institution(self):
+        institution, ok_pressed = QInputDialog.getText(self, "Add Institution" if self.language_value == "English" else "Ajouter un établissement", 
+                                                       "Enter institution name:" if self.language_value == "English" else "Entrez le nom de l'établissement :")
+        if ok_pressed and institution.strip(): 
+            settings_manager.add_local_institution(institution)
+            self.populate_table_information()
+        else:
+            QMessageBox.warning(self, "Warning" if self.language_value == "English" else "Avertissement", 
+                                "No institution name entered or input is empty." if self.language_value == "English" else "Aucun nom d'institution saisi ou la saisie est vide.")

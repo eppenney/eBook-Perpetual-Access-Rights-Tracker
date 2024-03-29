@@ -146,8 +146,11 @@ class Settings(metaclass=SingletonMeta):
         Remove institution from local list.
         :param institution: institution to remove
         """
-        self.settings["local_institutions"].remove(institution)
-        self.save_settings()
+        try:
+            self.settings["local_institutions"].remove(institution)
+            self.save_settings()
+        except ValueError:
+            pass
 
     def set_CRKN_institutions(self, institutions):
         """
@@ -162,3 +165,4 @@ class Settings(metaclass=SingletonMeta):
         :return: list - containing CRKN_institutions and local_institutions
         """
         return self.settings.get("local_institutions") + self.settings.get("CRKN_institutions")
+    

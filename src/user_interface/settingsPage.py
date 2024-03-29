@@ -63,6 +63,10 @@ class settingsPage(QDialog):
         self.manageDatabaseButton = self.findChild(QPushButton, 'manageDatabase')
         self.manageDatabaseButton.clicked.connect(self.show_manage_local_databases_popup)
 
+        # Find the Push Button for manage local database
+        self.manageInstitutionButton = self.findChild(QPushButton, 'manageInstitution')
+        self.manageInstitutionButton.clicked.connect(self.show_manage_institutions_popup)
+
         # Finding the combobox for the SaveButton
         self.saveSettingsButton = self.findChild(QPushButton, 'saveSettings')
         self.saveSettingsButton.setToolTip("Click to save the settings")
@@ -266,6 +270,11 @@ class settingsPage(QDialog):
     def show_manage_local_databases_popup(self):
         from src.user_interface.manageDatabase import ManageLocalDatabasesPopup
         popup = ManageLocalDatabasesPopup(self)
+        popup.exec()
+
+    def show_manage_institutions_popup(self):
+        from src.user_interface.manageInstitutions import ManageInstitutionsPopup
+        popup = ManageInstitutionsPopup(self)
         popup.exec()
 
 
