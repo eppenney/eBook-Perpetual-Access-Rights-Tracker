@@ -94,6 +94,11 @@ class settingsPage(QDialog):
         self.crknURL.setText(current_crkn_url)
         self.crknURL.returnPressed.connect(self.save_CRKN_URL)
 
+        current_help_url = settings_manager.get_setting("github_link")
+        self.helpURL = self.findChild(QLineEdit, 'helpURL')
+        self.helpURL.setText(current_help_url)
+        self.helpURL.returnPressed.connect(self.save_help_url)
+
 
         self.set_current_settings_values()
 
@@ -184,6 +189,23 @@ class settingsPage(QDialog):
                             QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
         if (response == QMessageBox.StandardButton.Yes):
             settings_manager.set_crkn_url(crkn_url)
+        self.reset_app()
+
+    def save_help_url(self):
+        help_url = self.helpURL.text()
+        if (help_url == settings_manager.get_setting("github_link")):
+            return
+        if len(help_url.split("/")) < 3:
+            QMessageBox.warning(self, "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
+                                "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else 
+                                "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",QMessageBox.StandardButton.Ok)
+            self.reset_app()
+            return
+        response = QMessageBox.warning(self, "Change help URL" if self.language_value == "English" else "Modifier l'URL de l'aide", 
+                            "Are you sure you want to change the help URL?" if self.language_value == "English" else "Êtes-vous sûr de vouloir modifier l'URL d'aide ?",
+                            QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
+        if (response == QMessageBox.StandardButton.Yes):
+            settings_manager.set_github_link(help_url)
         self.reset_app()
 
     def save_allow_CRKN(self):
