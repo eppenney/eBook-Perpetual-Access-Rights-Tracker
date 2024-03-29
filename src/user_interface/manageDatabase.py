@@ -33,7 +33,7 @@ class ManageLocalDatabasesPopup(QDialog):
 
         # Populate the scroll area with table information
         for table_data in local_table_data:
-            table_label = QLabel(f"{table_data[0]}, \n{'Date Added' if self.language_value == "English" else "Date ajoutée"}: {table_data[1]}")
+            table_label = QLabel(f"{table_data[0]}, \n{'Date Added' if self.language_value == 'English' else 'Date ajoutée'}: {table_data[1]}")
             
             remove_button = QPushButton("Remove" if self.language_value == "English" else "Retirer")
             remove_button.clicked.connect(lambda checked, table=table_data[0]: self.remove_table(table))
@@ -55,11 +55,10 @@ class ManageLocalDatabasesPopup(QDialog):
         
         close_database(connection)
 
-        
     def remove_table(self, table_name):
         from src.utility.upload import remove_local_file
         confirm = QMessageBox.question(self, "Confirmation", 
-                                       f"Êtes-vous sûr de vouloir supprimer {table_name}?" if self.language_value == "English" else f"Êtes-vous sûr de vouloir supprimer {table_name}?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                                       f"Are you sure you want to remove {table_name}?" if self.language_value == "English" else f"Êtes-vous sûr de vouloir supprimer {table_name}?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if confirm == QMessageBox.StandardButton.Yes:
             remove_local_file(table_name.lstrip("local_"))
             self.populate_table_information() 
