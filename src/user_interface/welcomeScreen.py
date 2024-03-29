@@ -69,12 +69,12 @@ class WelcomePage(QDialog):
     def save_settings(self):
         # Get selected institution and language
         selected_institution = self.institutionSelection.currentText()
-        selected_language = self.findChild(QComboBox, 'languageSelection').currentText()
+        selected_language = self.findChild(QComboBox, 'languageSetting').currentText()
 
         settings_manager.set_institution(selected_institution)
         settings_manager.set_language(selected_language)
 
-        crkn_url = self.findChild(QLineEdit, 'crknURL').toPlainText()
+        crkn_url = self.findChild(QLineEdit, 'crknURL').text()
         if len(crkn_url.split("/")) < 3:
             QMessageBox.warning(self, "Incorrect URL format",
                                 "Incorrect URL format.\nEnsure URL begins with URL format, eg) http:// or https://.",
