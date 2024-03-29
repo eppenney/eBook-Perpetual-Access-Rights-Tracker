@@ -52,6 +52,7 @@ class settingsPage(QDialog):
         self.updateButton.clicked.connect(scrapeCRKN)
 
         self.update_CRKN_button()
+        self.update_CRKN_URL()
 
         # Finding the combobox for the institution
         self.institutionSelection = self.findChild(QComboBox, 'institutionSelection')
@@ -101,6 +102,11 @@ class settingsPage(QDialog):
         allow_crkn = settings_manager.get_setting("allow_CRKN")
         if allow_crkn != "True":
             self.updateButton.setEnabled(False)
+
+    def update_CRKN_URL(self):
+        allow_crkn = settings_manager.get_setting("allow_CRKN")
+        if allow_crkn != "True":
+            self.crknURL.setEnabled(False)
 
     def open_link(self):
         # Get the link from the settings manager or define it directly
@@ -271,6 +277,7 @@ class settingsPage(QDialog):
 
         # Update the state of the CRKN update button
         self.update_CRKN_button()
+        self.update_CRKN_URL()
 
     def show_manage_local_databases_popup(self):
         from src.user_interface.manageDatabase import ManageLocalDatabasesPopup

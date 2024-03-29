@@ -448,7 +448,12 @@ QLineEdit:focus {
 /* Styling for QLineEdit when hovered */
 QLineEdit:hover {
     border: 1px solid #999; /* Border color on hover */
-}</string>
+}
+QLineEdit:disabled {
+                background-color: rgb(180, 180, 180); /* Grey color for disabled state */
+                color: rgb(120, 120, 120); /* Darker text color for disabled state */
+            }
+</string>
     </property>
    </widget>
    <widget class="QPushButton" name="manageDatabase">
