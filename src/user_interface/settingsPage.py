@@ -191,23 +191,6 @@ class settingsPage(QDialog):
             event.ignore()  # Ignore the Escape key event
         else:
             super().keyPressEvent(event)
-
-    def addInstitution(self):
-        """
-        Used to add the institution currently in the settings page text field
-        """
-        add_institution_text = self.institutionSelection.currentText()
-        
-        all_institutions = settings_manager.get_institutions()
-        if add_institution_text in all_institutions:
-            QMessageBox.warning(self, 
-                                "Duplicate institution" if self.language_value == "English" else "Institution en double", 
-                                "The entered institution already exists." if self.language_value == "English" else "L'institution saisie existe déjà.", 
-                                QMessageBox.StandardButton.Ok)
-            return
-
-        # Add the new institution to the settings
-        settings_manager.add_local_institution(add_institution_text)
         
     def reset_app(self):        
         widget_count = self.widget.count()
