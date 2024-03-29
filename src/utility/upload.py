@@ -242,8 +242,9 @@ def get_new_institutions(file_df):
     for inst in headers[8:-2]:
         if inst not in settings_manager.get_setting("CRKN_institutions"):
             if inst not in settings_manager.get_setting("local_institutions"):
-                # If not in either list, add to new list
-                new_inst.append(inst)
+                if inst.strip():
+                    # If not in either list and isn't blank, add to new list
+                    new_inst.append(inst)
     return new_inst
 
 
