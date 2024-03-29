@@ -74,7 +74,7 @@ class startScreen(QDialog):
         self.internetConnectionLabel = self.findChild(QLabel, 'internetConnection')
         self.updateConnectionStatus(False)
 
-        # timer clock that will work with the google time (Qtimer should be used)
+        # timer clock that will work with the Google time (Qtimer should be used)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.checkInternetConnection)
         self.timer.start(5000)

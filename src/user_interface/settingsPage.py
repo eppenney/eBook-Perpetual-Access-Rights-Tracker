@@ -20,7 +20,7 @@ class settingsPage(QDialog):
         if not cls._instance:
             cls._instance = cls(arg)
         return cls._instance
-    
+
     @classmethod
     def replace_instance(cls, arg1):
         if cls._instance:
@@ -73,9 +73,8 @@ class settingsPage(QDialog):
         self.openLinkButton.setToolTip("Click to open the link")
         self.openLinkButton.clicked.connect(self.open_link)
 
-
         # Finding the languageButton from the QPushButton class
-        self.languageSelection = self.findChild(QComboBox,'languageSetting') 
+        self.languageSelection = self.findChild(QComboBox, 'languageSetting')
         self.languageSelection.activated.connect(self.save_language)
         self.languageSelection.setCurrentIndex(0 if settings_manager.get_setting("language") == "English" else 1)
 
@@ -101,7 +100,6 @@ class settingsPage(QDialog):
     def backToStartScreen2(self):
         self.widget.removeWidget(self.widget.currentWidget())
 
-
     def populate_institutions(self):
         # Clear the existing items in the combo box
         self.institutionSelection.clear()
@@ -123,17 +121,26 @@ class settingsPage(QDialog):
 
     # Testing to save institution working
     def save_selected(self):
-        self.save_institution()
-        self.save_language()
-        self.save_CRKN_URL()
-        # self.addInstitution()      
-        self.reset_app()
+        confirm_msg_box = QMessageBox(self)
+        confirm_msg_box.setIcon(QMessageBox.Icon.Question)
+        confirm_msg_box.setText("Are you sure you want to save the changes?")
+        confirm_msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        confirm_msg_box.setDefaultButton(QMessageBox.StandardButton.No)
+        response = confirm_msg_box.exec()
+
+        if response == QMessageBox.StandardButton.Yes:
+            # If user confirms, save the settings
+            self.save_institution()
+            self.save_language()
+            self.save_CRKN_URL()
+            # self.addInstitution()
+            self.reset_app()
 
     def save_language(self):
         selected_language = self.languageSetting.currentIndex()
-        settings_manager.set_language("English" if selected_language == 0 else "French")   
-        self.reset_app() 
-    
+        settings_manager.set_language("English" if selected_language == 0 else "French")
+        self.reset_app()
+
     def save_institution(self):
         selected_institution = self.institutionSelection.currentText()
         settings_manager.update_setting("institution", selected_institution)
@@ -155,16 +162,17 @@ class settingsPage(QDialog):
         Used to add the institution currently in the settings page text field
         """
         add_institution_text = self.institutionSelection.currentText()
-        
+
         all_institutions = settings_manager.get_institutions()
         if add_institution_text in all_institutions:
-            QMessageBox.warning(self, "Duplicate institution", "The entered institution already exists.", QMessageBox.StandardButton.Ok)
+            QMessageBox.warning(self, "Duplicate institution", "The entered institution already exists.",
+                                QMessageBox.StandardButton.Ok)
             return
 
         # Add the new institution to the settings
         settings_manager.add_local_institution(add_institution_text)
-        
-    def reset_app(self):        
+
+    def reset_app(self):
         widget_count = self.widget.count()
         for i in range(widget_count):
             current_widget = self.widget.widget(i)
@@ -172,7 +180,7 @@ class settingsPage(QDialog):
             self.widget.insertWidget(i, new_widget_instance)
             self.widget.removeWidget(current_widget)
             current_widget.deleteLater()
-        
+
         # Set the current index to the last widget added
         self.widget.setCurrentIndex(widget_count - 1)
 
@@ -223,7 +231,6 @@ class settingsPage(QDialog):
     def upload_button_clicked(self):
         upload_and_process_file()
 
-
     def set_current_settings_values(self):
         # Set the current language selection
         current_language = settings_manager.get_setting("language")
@@ -249,8 +256,6 @@ class settingsPage(QDialog):
         popup = ManageLocalDatabasesPopup(self)
         popup.exec()
 
-
-#Error i am encountering right now is based on the adding of institution and checking out if they already exist.
-#saving currently is not working as when clicked will shit down the application.
+# Error i am encountering right now is based on the adding of institution and checking out if they already exist.
+# saving currently is not working as when clicked will shit down the application.
 # I have to make the things working.
-
