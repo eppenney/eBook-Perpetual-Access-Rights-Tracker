@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string >background-color: rgb(220, 220, 220);color:black;</string>
+    <string>background-color: rgb(220, 220, 220);color:black;</string>
    </property>
    <widget class="QPushButton" name="backButton">
     <property name="geometry">
@@ -35,7 +35,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >
+     <string>
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
@@ -66,7 +66,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >	background-color: rgb(0, 85, 127);
+     <string>	background-color: rgb(0, 85, 127);
 </string>
     </property>
     <widget class="QLabel" name="label">
@@ -79,7 +79,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string >font: 75 36pt &quot;Arial&quot;;
+      <string>font: 75 36pt &quot;Arial&quot;;
         color: white;
       </string>
      </property>
@@ -148,7 +148,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >
+     <string>
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
@@ -179,7 +179,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >background-color: white;
+     <string>background-color: white;
         border-radius:10px;
         color: black;
      </string>

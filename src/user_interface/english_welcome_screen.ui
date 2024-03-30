@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string >background-color: rgb(220, 220, 220);color:black;</string>
+    <string>background-color: rgb(220, 220, 220);color:black;</string>
    </property>
    <widget class="QWidget" name="widget_2" native="true">
     <property name="geometry">
@@ -35,7 +35,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >background-color: rgb(0, 85, 127);</string>
+     <string>background-color: rgb(0, 85, 127);</string>
     </property>
     <widget class="QLabel" name="label">
      <property name="geometry">
@@ -47,7 +47,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string >font: 75 36pt &quot;Arial&quot;;
+      <string>font: 75 36pt &quot;Arial&quot;;
         color: white;
         text-align: center;
       </string>
@@ -56,29 +56,6 @@
       <string>ePAT</string>
      </property>
     </widget>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>125</y>
-      <width>200</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string >QLabel {
-        font-size: 15pt;
-        color: #333333; /* Text color */
-        background-color: #f0f0f0; /* Background color */
-        border: 2px solid #cccccc; /* Border */
-        padding: 8px; /* Padding */
-        border-radius: 5px; /* Rounded corners */
-    }</string>
-    </property>
-    <property name="text">
-     <string>Welcome to EPAT</string>
-    </property>
    </widget>
    <widget class="QLabel" name="UniversityLabel_5">
     <property name="geometry">
@@ -90,7 +67,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >font: 75 14pt &quot;Arial&quot;; color: black;</string>
+     <string>font: 75 14pt &quot;Arial&quot;; color: black;</string>
     </property>
     <property name="text">
      <string>Select Institution:</string>
@@ -106,7 +83,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >/* Styling for the QComboBox */
+     <string>/* Styling for the QComboBox */
         QComboBox {
             font: 75 16pt &quot;Arial&quot;;
             background-color: rgb(0, 85, 127);
@@ -160,7 +137,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >font: 75 14pt &quot;Arial&quot;; color: black;</string>
+     <string>font: 75 14pt &quot;Arial&quot;; color: black;</string>
     </property>
     <property name="text">
      <string>Select Language:</string>
@@ -176,16 +153,16 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >/* Styling for the QComboBox */
-    QComboBox {
-        font: 75 16pt &quot;Arial&quot;;
-        background-color: rgb(0, 85, 127);
-        border-radius: 10px;
-        color: white;
-    }
-     QComboBox::item {
-        background-color: rgb(220, 220, 220);
-        color: black;
+     <string>/* Styling for the QComboBox */
+        QComboBox {
+            font: 75 16pt &quot;Arial&quot;;
+            background-color: rgb(0, 85, 127);
+            border-radius: 10px;
+            color: white;
+        }
+         QComboBox::item {
+            background-color: rgb(220, 220, 220);
+            color: black;
         }
 
         QComboBox::item:selected {
@@ -239,7 +216,7 @@
         </rect>
     </property>
     <property name="styleSheet">
-        <string >font: 75 14pt "Arial";color:black;</string>
+        <string>font: 75 14pt "Arial";color:black;</string>
     </property>
     <property name="text">
         <string>Allow CRKN Data</string>
@@ -255,7 +232,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >font: 75 14pt &quot;Arial&quot;; color: black;</string>
+     <string>font: 75 14pt &quot;Arial&quot;; color: black;</string>
     </property>
     <property name="text">
      <string>CRKN eBook Data URL:</string>
@@ -271,7 +248,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >/* Styling for QLineEdit */
+     <string>/* Styling for QLineEdit */
         QLineEdit {
             font-family: Arial, sans-serif;
             font-size: 14px;
@@ -309,7 +286,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >font: 75 14pt &quot;Arial&quot;; color: black;</string>
+     <string>font: 75 14pt &quot;Arial&quot;; color: black;</string>
     </property>
     <property name="text">
      <string>Help Page URL:</string>
@@ -325,7 +302,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >/* Styling for QLineEdit */
+     <string>/* Styling for QLineEdit */
         QLineEdit {
             font-family: Arial, sans-serif;
             font-size: 14px;
@@ -358,7 +335,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >
+     <string>
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);

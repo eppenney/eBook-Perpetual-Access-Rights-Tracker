@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string >background-color: rgb(220, 220, 220);color:black;</string>
+    <string>background-color: rgb(220, 220, 220);color:black;</string>
    </property>
    <widget class="QWidget" name="widget_2" native="true">
     <property name="geometry">
@@ -35,7 +35,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string >background-color: rgb(0, 85, 127);
+     <string>background-color: rgb(0, 85, 127);
 </string>
     </property>
     <widget class="QLabel" name="label">
@@ -48,7 +48,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string >font: 75 36pt &quot;Arial&quot;;
+      <string>font: 75 36pt &quot;Arial&quot;;
 color: white;
 </string>
      </property>
@@ -66,7 +66,7 @@ color: white;
       </rect>
      </property>
      <property name="styleSheet">
-      <string >background-color: transparent;
+      <string>background-color: transparent;
         border-color: transparent;
         color: white;</string>
      </property>
@@ -85,7 +85,7 @@ color: white;
      </rect>
     </property>
     <property name="styleSheet">
-     <string >
+     <string>
             QLineEdit {
                 border-radius: 10px;
                 font: 16pt &quot;Arial&quot;;
@@ -107,7 +107,7 @@ color: white;
      </rect>
     </property>
     <property name="styleSheet">
-     <string >
+     <string>
             QPushButton {
                 font: 75 20pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
@@ -138,7 +138,7 @@ color: white;
      </rect>
     </property>
     <property name="styleSheet">
-     <string >
+     <string>
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
@@ -169,7 +169,7 @@ color: white;
      </rect>
     </property>
     <property name="styleSheet">
-     <string >
+     <string>
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
@@ -200,7 +200,7 @@ color: white;
      </rect>
     </property>
     <property name="styleSheet">
-     <string >
+     <string>
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
@@ -237,7 +237,7 @@ color: white;
      <set>Qt::AlignCenter</set>
     </property>
     <property name="styleSheet">
-     <string >
+     <string>
       QLabel {
        color: white;
        font: 75 16pt &quot;Arial&quot;;
@@ -258,7 +258,7 @@ color: white;
      </rect>
     </property>
     <property name="styleSheet">
-     <string >
+     <string>
             QComboBox {
                 color: white;
                 font: 75 12pt &quot;Arial&quot;;
@@ -319,7 +319,7 @@ color: white;
      </rect>
     </property>
     <property name="styleSheet">
-     <string >QLabel {
+     <string>QLabel {
     font: 75 11pt &quot;Arial&quot;;
     background-color: rgb(0, 85, 127);
     border-radius: 10px;
