@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Dialogue</string>
   </property>
   <widget class="QWidget" name="widget" native="true">
    <property name="geometry">
@@ -71,7 +71,7 @@ text-align: center;
 color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
-     <string>Select institution</string>
+     <string>Sélectionnez un établissement</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
@@ -94,7 +94,7 @@ color: rgb(0, 0, 0);</string>
     }</string>
     </property>
     <property name="text">
-     <string>Welcome to EPAT </string>
+     <string>Bienvenue à l'ePAT</string>
     </property>
    </widget>
    <widget class="QComboBox" name="institutionSelection">
@@ -108,22 +108,12 @@ color: rgb(0, 0, 0);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">/* Styling for the QComboBox */
-        QComboBox {
-            font: 75 16pt &quot;Arial&quot;;
-            background-color: rgb(0, 85, 127);
-            border-radius: 10px;
-            color: rgb(255, 255, 255);
-        }
-
-         QComboBox::item {
-            background-color: rgb(220, 220, 220);
-            color: black;
-        }
-
-        QComboBox::item:selected {
-            background-color: rgb(0, 85, 127);
-            color: white;
-        }
+QComboBox {
+    font: 75 16pt &quot;Arial&quot;;
+    background-color: rgb(0, 85, 127);
+    border-radius: 10px;
+    color: rgb(255, 255, 255);
+}
 
 /* Styling for the QComboBox when hovered */
 QComboBox:hover {
@@ -165,7 +155,7 @@ QComboBox::down-arrow {
 color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
-     <string>Select Language:</string>
+     <string>Choisir la langue:</string>
     </property>
    </widget>
    <widget class="QComboBox" name="languageSetting">
@@ -179,21 +169,12 @@ color: rgb(0, 0, 0);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">/* Styling for the QComboBox */
-    QComboBox {
-        font: 75 16pt &quot;Arial&quot;;
-        background-color: rgb(0, 85, 127);
-        border-radius: 10px;
-        color: rgb(255, 255, 255);
-    }
-     QComboBox::item {
-        background-color: rgb(220, 220, 220);
-        color: black;
-        }
-
-        QComboBox::item:selected {
-            background-color: rgb(0, 85, 127);
-            color: white;
-        }
+QComboBox {
+    font: 75 16pt &quot;Arial&quot;;
+    background-color: rgb(0, 85, 127);
+    border-radius: 10px;
+    color: rgb(255, 255, 255);
+}
 
 /* Styling for the QComboBox when hovered */
 QComboBox:hover {
@@ -222,12 +203,12 @@ QComboBox::down-arrow {
     </property>
     <item>
      <property name="text">
-      <string>English</string>
+      <string>Anglais</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>French</string>
+      <string>Français</string>
      </property>
     </item>
    </widget>
@@ -295,7 +276,7 @@ QLineEdit:hover {
 color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
-     <string>Help URL</string>
+     <string>URL d'aide</string>
     </property>
    </widget>
    <widget class="QPushButton" name="saveSettings">
@@ -330,7 +311,7 @@ color: rgb(0, 0, 0);</string>
         </string>
     </property>
     <property name="text">
-     <string>Save Settings</string>
+     <string>Enregistrer les paramètres</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="crknURL">
@@ -344,32 +325,26 @@ color: rgb(0, 0, 0);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">/* Styling for QLineEdit */
-        QLineEdit {
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            color: #333; /* Text color */
-            background-color: #fff; /* Background color */
-            border: 1px solid #ccc; /* Border color */
-            border-radius: 5px; /* Border radius */
-            padding: 8px; /* Padding inside the QLineEdit */
-        }
+QLineEdit {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333; /* Text color */
+    background-color: #fff; /* Background color */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 5px; /* Border radius */
+    padding: 8px; /* Padding inside the QLineEdit */
+}
 
-        /* Styling for QLineEdit when it's focused */
-        QLineEdit:focus {
-            border: 1px solid #4d90fe; /* Focused border color */
-            outline: none; /* Remove default focus outline */
-        }
+/* Styling for QLineEdit when it's focused */
+QLineEdit:focus {
+    border: 1px solid #4d90fe; /* Focused border color */
+    outline: none; /* Remove default focus outline */
+}
 
-        /* Styling for QLineEdit when hovered */
-        QLineEdit:hover {
-            border: 1px solid #999; /* Border color on hover */
-         }
-         QLineEdit:disabled {
-            background-color: rgb(180, 180, 180); /* Grey color for disabled state */
-            color: rgb(120, 120, 120); /* Darker text color for disabled state */
-        }
-
-     </string>
+/* Styling for QLineEdit when hovered */
+QLineEdit:hover {
+    border: 1px solid #999; /* Border color on hover */
+}</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="allowCRKNData">
@@ -385,7 +360,7 @@ color: rgb(0, 0, 0);</string>
         <string notr="true">font: 75 14pt "Arial";color:black;</string>
     </property>
     <property name="text">
-        <string>Allow CRKN Data</string>
+        <string>Autoriser les données du CRKN</string>
     </property>
 </widget>
 

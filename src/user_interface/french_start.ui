@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(220, 220, 220);</string>
+    <string notr="true">background-color: rgb(220, 220, 220);color:black;</string>
    </property>
    <widget class="QWidget" name="widget_2" native="true">
     <property name="geometry">
@@ -230,23 +230,24 @@ color: rgb(255, 255, 255);
       <height>50</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">
-            QLabel {
-                color: rgb(255, 255, 255);
-                font: 75 16pt &quot;Arial&quot;;
-                background-color: rgb(0, 85, 127);
-                border-radius: 10px;
-            }
-        </string>
-    </property>
     <property name="text">
      <string>OU</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
     </property>
-   </widget>
+    <property name="styleSheet">
+     <string notr="true">
+      QLabel {
+       color: rgb(255, 255, 255);
+       font: 75 16pt &quot;Arial&quot;;
+       background-color: rgb(0, 85, 127);
+       border-radius: 10px;
+      }
+     </string>
+    </property>
+</widget>
+
    <widget class="QComboBox" name="booleanBoxRight">
     <property name="geometry">
      <rect>

@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(220, 220, 220);</string>
+    <string notr="true">background-color: rgb(220, 220, 220);color:black;</string>
    </property>
    <widget class="QPushButton" name="backButton">
     <property name="geometry">

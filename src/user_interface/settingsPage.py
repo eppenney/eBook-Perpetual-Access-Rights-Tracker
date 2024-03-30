@@ -66,7 +66,7 @@ class settingsPage(QDialog):
 
         # Find the Push Button for manage local database
         self.manageInstitutionButton = self.findChild(QPushButton, 'manageInstitution')
-        self.manageInstitutionButton.setToolTip("Add or remove local institutes")
+        self.manageInstitutionButton.setToolTip("View, add, or remove local institutions")
         self.manageInstitutionButton.clicked.connect(self.show_manage_institutions_popup)
 
         # Finding the combobox for the SaveButton
@@ -75,8 +75,9 @@ class settingsPage(QDialog):
         self.saveSettingsButton.clicked.connect(self.save_selected)
 
         # Finding the linkButton from the QPushButton class
+        current_help_url = settings_manager.get_setting("github_link")
         self.openLinkButton = self.findChild(QPushButton, 'helpButton')
-        self.openLinkButton.setToolTip("Click to open the link")
+        self.openLinkButton.setToolTip(current_help_url)
         self.openLinkButton.clicked.connect(self.open_link)
 
         # Finding the languageButton from the QPushButton class
@@ -95,7 +96,6 @@ class settingsPage(QDialog):
         self.crknURL.setToolTip("Press Enter to confirm changes")
         self.crknURL.returnPressed.connect(self.save_CRKN_URL)
 
-        current_help_url = settings_manager.get_setting("github_link")
         self.helpURL = self.findChild(QLineEdit, 'helpURL')
         self.helpURL.setText(current_help_url)
         self.helpURL.setToolTip("Press Enter to confirm changes")
