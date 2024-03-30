@@ -32,13 +32,9 @@ def main():
                                      'Would you like to update CRKN database before proceeding?' if language == "English" else "Souhaitez-vous mettre à jour la base de données du RCDR avant de continuer ?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             if reply == QMessageBox.StandardButton.Yes:
                 scrapeCRKN()
-        welcome_page = WelcomePage()
-        welcome_page.exec()
+        welcome_page = WelcomePage(widget)
 
-        start = startScreen.get_instance(widget)  # Pass the widget to startScreen
-        widget.addWidget(start)
-
-        widget.addWidget(start)
+        widget.addWidget(welcome_page)
         widget.setMinimumHeight(800)
         widget.setMinimumWidth(1200)
         widget.show()
