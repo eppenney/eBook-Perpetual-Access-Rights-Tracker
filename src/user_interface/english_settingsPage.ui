@@ -332,7 +332,7 @@ color: black;</string>
      <string >font: 75 14pt &quot;Arial&quot;; color: black;</string>
     </property>
     <property name="text">
-     <string>Help Page URL</string>
+     <string>Help Page URL:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="helpURL">
@@ -438,9 +438,9 @@ QLineEdit:hover {
    <widget class="QPushButton" name="manageDatabase">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>610</x>
       <y>640</y>
-      <width>251</width>
+      <width>250</width>
       <height>41</height>
      </rect>
     </property>
@@ -473,7 +473,7 @@ QLineEdit:hover {
    <widget class="QPushButton" name="manageInstitution">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>350</x>
       <y>640</y>
       <width>250</width>
       <height>41</height>
