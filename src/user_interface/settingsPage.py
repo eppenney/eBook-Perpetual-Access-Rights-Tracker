@@ -3,7 +3,7 @@
 
 """
 
-from PyQt6.QtCore import pyqtSignal, QUrl, Qt
+from PyQt6.QtCore import QUrl, Qt
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QComboBox, QMessageBox, QCheckBox, QLineEdit
@@ -84,11 +84,6 @@ class settingsPage(QDialog):
 
         self.manageInstitutionButton.clicked.connect(self.show_manage_institutions_popup)
 
-        # # Finding the combobox for the SaveButton
-        # self.saveSettingsButton = self.findChild(QPushButton, 'saveSettings')
-        # self.saveSettingsButton.setToolTip("Click to save the settings")
-        # self.saveSettingsButton.clicked.connect(self.save_selected)
-
         # Finding the linkButton from the QPushButton class
         current_help_url = settings_manager.get_setting("github_link")
         self.openLinkButton = self.findChild(QPushButton, 'helpButton')
@@ -151,6 +146,8 @@ class settingsPage(QDialog):
         # Get the list of institutions from the settings manager
         institutions = settings_manager.get_institutions()
 
+        self.institutionSelection.addItem(" ")
+
         # Populate the combo box with institution names
         self.institutionSelection.addItems(institutions)
 
@@ -161,13 +158,6 @@ class settingsPage(QDialog):
                 # Set the current index to the item that matches the desired value
                 self.institutionSelection.setCurrentIndex(index)
                 break
-
-    # Testing to save institution working
-    # def save_selected(self):
-    #     self.save_institution()
-    #     self.save_language()
-    #     self.save_CRKN_URL()
-    #     self.reset_app()
 
     def save_language(self):
         current_language = settings_manager.get_setting("language")
@@ -189,7 +179,10 @@ class settingsPage(QDialog):
                             "Are you sure you want to change the institution?" if self.language_value == "English" else "Etes-vous sûr de vouloir changer d'établissement?",
                             QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
         if (response == QMessageBox.StandardButton.Yes):
-            settings_manager.set_institution(selected_institution)
+            if (selected_institution.strip()):
+                settings_manager.set_institution(selected_institution)
+            else:
+                settings_manager.set_institution("")
         self.reset_app()
 
     def save_CRKN_URL(self):

@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QDialog, QPushButton, QLabel, QFrame, QMessageBox
 from PyQt6.uic import loadUi
 from src.utility.upload import upload_and_process_file
-from src.data_processing.database import get_local_tables, connect_to_database, close_database, get_table_data
+from src.data_processing.database import connect_to_database, close_database, get_table_data
 from src.utility.settings_manager import Settings
 import os
 
