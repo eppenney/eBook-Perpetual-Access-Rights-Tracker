@@ -173,7 +173,7 @@ color: rgb(255, 255, 255);
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
-                border-radius: 20px;
+                border-radius: 10px;
                 color: rgb(255, 255, 255);
             }
 
@@ -204,7 +204,7 @@ color: rgb(255, 255, 255);
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
-                border-radius: 20px;
+                border-radius: 10px;
                 color: rgb(255, 255, 255);
             }
 
