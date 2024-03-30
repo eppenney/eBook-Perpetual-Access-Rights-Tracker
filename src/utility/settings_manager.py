@@ -1,5 +1,6 @@
 import json
 import os
+from src.data_processing import Scraping
 
 
 '''
@@ -164,5 +165,6 @@ class Settings(metaclass=SingletonMeta):
         Get combined list of CRKN and local institutions
         :return: list - containing CRKN_institutions and local_institutions
         """
+        Scraping.get_CRKN_institutions()
         return self.settings.get("local_institutions") + self.settings.get("CRKN_institutions")
     

@@ -4,8 +4,12 @@
 
 """
 import os
+<<<<<<< HEAD
 from PyQt6.QtWidgets import QWidget, QDialog, QComboBox, QPushButton, QLineEdit, QMessageBox, QSizePolicy
 from PyQt6.QtCore import QPropertyAnimation, QEasingCurve
+=======
+from PyQt6.QtWidgets import QDialog, QComboBox, QPushButton, QLineEdit, QMessageBox, QCheckBox
+>>>>>>> 0483e9d8b3d7a30659ffe4704d2d54269ffbb87b
 from PyQt6.uic import loadUi
 from src.utility.settings_manager import Settings
 
@@ -19,20 +23,23 @@ class WelcomePage(QDialog):
         ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_welcome_screen.ui")
         loadUi(ui_file, self)
 
+<<<<<<< HEAD
         self.widget = widget
 
         self.animation = QPropertyAnimation(self, b"windowOpacity")
         self.animation.setDuration(1000)  # 1 second duration
         self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
 
+=======
+>>>>>>> 0483e9d8b3d7a30659ffe4704d2d54269ffbb87b
         # Populate institution selection combobox
-        # Finding the combobox for the institution
         self.institutionSelection = self.findChild(QComboBox, 'institutionSelection')
         self.populate_institutions()
         self.set_institution(settings_manager.get_setting("institution"))
 
-        # Populate language selection combobox
-        # self.populate_languages()
+        # Allow CRKN checkbox
+        self.allowCRKN = self.findChild(QCheckBox, "allowCRKNData")
+        self.allowCRKN.setChecked(settings_manager.get_setting("allow_CRKN") == "True")
 
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL = self.findChild(QLineEdit, 'crknURL')
@@ -46,6 +53,7 @@ class WelcomePage(QDialog):
         self.saveButton = self.findChild(QPushButton, 'saveSettings')
         self.saveButton.clicked.connect(self.save_settings)
 
+<<<<<<< HEAD
         self.original_widget_values = None
 
     def showEvent(self, event):
@@ -54,6 +62,8 @@ class WelcomePage(QDialog):
         self.animation.setEndValue(1.0)  # End with opacity 1
         self.animation.start()
 
+=======
+>>>>>>> 0483e9d8b3d7a30659ffe4704d2d54269ffbb87b
     def populate_institutions(self):
         # Clear the existing items in the combo box
         self.institutionSelection.clear()
@@ -69,11 +79,6 @@ class WelcomePage(QDialog):
                 # Set the current index to the item that matches the desired value
                 self.institutionSelection.setCurrentIndex(index)
                 break
-
-    # def populate_languages(self):
-    #     # Populate the language selection combobox
-    #     languageSelection = self.findChild(QComboBox, 'languageSetting')
-    #     languageSelection.addItems(["English", "French"])
 
     def save_settings(self):
         from src.user_interface.startScreen import startScreen
