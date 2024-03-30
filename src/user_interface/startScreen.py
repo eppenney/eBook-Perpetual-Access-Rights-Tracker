@@ -15,6 +15,7 @@ from src.user_interface.settingsPage import settingsPage
 from src.data_processing.database import connect_to_database, \
     close_database, search_database
 from src.utility.settings_manager import Settings
+import sys
 import os
 
 """
@@ -59,6 +60,15 @@ class RotatableButton(QPushButton):
         rotated_pixmap = pixmap.transformed(transform)
         return QIcon(rotated_pixmap)
 
+# Needed to dynamically load images when ran via executable
+def get_image_path(image_filename):
+    if hasattr(sys, '_MEIPASS'):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, "resources", image_filename)
+
+
 class startScreen(QDialog):
     _instance = None
     @classmethod
@@ -71,7 +81,7 @@ class startScreen(QDialog):
     def replace_instance(cls, arg):
         cls._instance = cls(arg)
         return cls._instance
-    
+
     def __init__(self, widget):
         super(startScreen, self).__init__()
         self.language_value = settings_manager.get_setting("language")
@@ -124,7 +134,7 @@ class startScreen(QDialog):
         self.widget = widget  # Store the QStackedWidget reference
 
         self.helpIcon = self.findChild(QLabel, 'helpIcon')
-        self.helpIcon.setPixmap(QPixmap('resources/helpIcon.png'))
+        self.helpIcon.setPixmap(QPixmap(get_image_path("helpIcon.png")))
         clickable_help_icon = ClickableLabel(self)
         clickable_help_icon.setGeometry(self.helpIcon.geometry())
         self.helpIcon.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
@@ -141,7 +151,7 @@ class startScreen(QDialog):
         # self.settingMenuButton.setIconSize(icon_size)
         # self.settingMenuButton.clicked.connect(self.settingsDisplay)
 
-        self.settingMenuButton = RotatableButton("resources/Gear-icon.png", self.settingsDisplay, self)
+        self.settingMenuButton = RotatableButton(get_image_path("Gear-icon.png"), self.settingsDisplay, self)
         self.settingMenuButton.clicked.connect(self.settingsDisplay)
         self.widget = widget
 
@@ -178,10 +188,10 @@ class startScreen(QDialog):
 
     def updateConnectionStatus(self, isConnected):
         if isConnected:
-            self.internetConnectionLabel.setPixmap(QPixmap('resources/green_signal.png'))
+            self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("green_signal.png")))
             self.internetConnectionLabel.setToolTip("Internet Connection: Online")
         else:
-            self.internetConnectionLabel.setPixmap(QPixmap('resources/red_signal.png'))
+            self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("red_signal.png")))
             self.internetConnectionLabel.setToolTip("Internet Connection: Offline")
 
     def displayInstitutionName(self):
