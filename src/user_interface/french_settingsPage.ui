@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(220, 220, 220);color:black;</string>
+    <string >background-color: rgb(220, 220, 220);color:black;</string>
    </property>
    <widget class="QWidget" name="widget_2" native="true">
     <property name="geometry">
@@ -35,7 +35,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 85, 127);</string>
+     <string >background-color: rgb(0, 85, 127);</string>
     </property>
     <widget class="QLabel" name="label">
      <property name="geometry">
@@ -47,8 +47,8 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 75 36pt &quot;Arial&quot;;
-color: rgb(255, 255, 255);
+      <string >font: 75 36pt &quot;Arial&quot;;
+color: white;
 </string>
      </property>
      <property name="text">
@@ -66,12 +66,12 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string >
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: rgb(255, 255, 255);
+                color: white;
             }
 
             QPushButton:hover {
@@ -97,12 +97,12 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string >
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: rgb(255, 255, 255);
+                color: white;
             }
 
             QPushButton:hover {
@@ -128,12 +128,12 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string >
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: rgb(255, 255, 255);
+                color: white;
             }
 
             QPushButton:hover {
@@ -163,8 +163,8 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 75 14pt &quot;Arial&quot;;
-color: rgb(0, 0, 0);</string>
+     <string >font: 75 14pt &quot;Arial&quot;;
+color: black;</string>
     </property>
     <property name="text">
      <string>Sélectionnez l'établissement</string>
@@ -180,12 +180,12 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">/* Styling for the QComboBox */
+     <string >/* Styling for the QComboBox */
         QComboBox {
             font: 75 16pt &quot;Arial&quot;;
             background-color: rgb(0, 85, 127);
             border-radius: 10px;
-            color: rgb(255, 255, 255);
+            color: white;
         }
          QComboBox::item {
         background-color: rgb(220, 220, 220);
@@ -233,8 +233,8 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 75 14pt &quot;Arial&quot;;
-color: rgb(0, 0, 0);</string>
+     <string >font: 75 14pt &quot;Arial&quot;;
+color: black;</string>
     </property>
     <property name="text">
      <string>Lnlien d'aide</string>
@@ -250,12 +250,12 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">/* Styling for the QComboBox */
+     <string >/* Styling for the QComboBox */
         QComboBox {
             font: 75 16pt &quot;Arial&quot;;
             background-color: rgb(0, 85, 127);
             border-radius: 10px;
-            color: rgb(255, 255, 255);
+            color: white;
         }
 
           QComboBox::item {
@@ -314,8 +314,8 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 75 14pt &quot;Arial&quot;;
-color: rgb(0, 0, 0);</string>
+     <string >font: 75 14pt &quot;Arial&quot;;
+color: black;</string>
     </property>
     <property name="text">
      <string>URL du CRKN</string>
@@ -331,7 +331,7 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">/* Styling for QLineEdit */
+     <string >/* Styling for QLineEdit */
 QLineEdit {
     font-family: Arial, sans-serif;
     font-size: 14px;
@@ -364,8 +364,8 @@ QLineEdit:hover {
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 75 14pt &quot;Arial&quot;;
-color: rgb(0, 0, 0);</string>
+     <string >font: 75 14pt &quot;Arial&quot;;
+color: black;</string>
     </property>
     <property name="text">
      <string>URL d'aide</string>
@@ -381,12 +381,12 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string >
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: rgb(255, 255, 255);
+                color: white;
             }
 
             QPushButton:hover {
@@ -412,7 +412,7 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string >
         QLineEdit {
             font-family: Arial, sans-serif;
             font-size: 14px;
@@ -448,12 +448,12 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string >
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: rgb(255, 255, 255);
+                color: white;
             }
 
             QPushButton:hover {
@@ -483,12 +483,12 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string >
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: rgb(255, 255, 255);
+                color: white;
             }
 
             QPushButton:hover {
@@ -518,7 +518,7 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string >
          font: 75 14pt &quot;Arial&quot;;
          color: black;
      </string>
