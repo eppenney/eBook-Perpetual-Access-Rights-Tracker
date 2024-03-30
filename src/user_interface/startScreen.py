@@ -23,7 +23,10 @@ class ClickableLabel(QLabel):
         super().__init__(parent)
 
     def mousePressEvent(self, event):
-        QDesktopServices.openUrl(QUrl('https://www.youtube.com/watch?v=dQw4w9WgXcQ'))
+        # Get the GitHub link from the settings manager
+        github_link = settings_manager.get_setting('github_link')
+        # Open the URL in the default web browser
+        QDesktopServices.openUrl(QUrl(github_link))
 
 
 class RotatableButton(QPushButton):
@@ -147,9 +150,10 @@ class startScreen(QDialog):
         self.dupTextEdit = None
 
     def open_url(self, event):
-        # Open the specified URL in the default web browser
-        url = QUrl('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-        QDesktopServices.openUrl(url)
+        # Get the GitHub link from the settings manager
+        github_link = settings_manager.get_setting('github_link')
+        # Open the URL in the default web browser
+        QDesktopServices.openUrl(QUrl(github_link))
 
     # This is for this internet connection check and changes the color accordingly
     def checkInternetConnection(self):

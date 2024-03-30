@@ -94,6 +94,8 @@ class settingsPage(QDialog):
         self.allowCRKN = self.findChild(QCheckBox, "allowCRKNData")
         self.allowCRKN.clicked.connect(self.save_allow_CRKN)
         self.allowCRKN.setChecked(settings_manager.get_setting("allow_CRKN") == "True")
+        self.allowCRKN.setToolTip(
+            "Please tick the box to allow CRKN data to be updated or untick to search local files")
 
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL = self.findChild(QLineEdit, 'crknURL')

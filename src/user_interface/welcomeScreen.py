@@ -74,6 +74,15 @@ class WelcomePage(QDialog):
         settings_manager.set_institution(selected_institution)
         settings_manager.set_language(selected_language)
 
+        helpUrl = self.findChild(QLineEdit, 'helpURL').text()
+
+        if not helpUrl:
+            helpUrl = settings_manager.get_setting('github_link')
+
+        settings_manager.set_github_link(helpUrl)
+
+
+
         crkn_url = self.findChild(QLineEdit, 'crknURL').text()
         if len(crkn_url.split("/")) < 3:
             QMessageBox.warning(self, "Incorrect URL format",
