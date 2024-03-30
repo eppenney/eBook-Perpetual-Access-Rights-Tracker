@@ -369,7 +369,7 @@ color: rgb(0, 0, 0);</string>
             color: rgb(120, 120, 120); /* Darker text color for disabled state */
         }
 
-}</string>
+     </string>
     </property>
    </widget>
    <widget class="QCheckBox" name="allowCRKNData">
