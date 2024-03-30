@@ -34,7 +34,7 @@ class settingsPage(QDialog):
         return cls._instance
 
     def __init__(self, widget):
-        current_language = settings_manager.get_setting("language")
+
 
         super(settingsPage, self).__init__()
         self.language_value = settings_manager.get_setting("language")
@@ -65,25 +65,19 @@ class settingsPage(QDialog):
 
         # Find the Push Button for manage local database
         self.manageDatabaseButton = self.findChild(QPushButton, 'manageDatabase')
-        if current_language == "English":
+        if self.language_value == "English":
             self.manageDatabaseButton.setToolTip("View, add, or remove local databases")
-        elif current_language == "French":
+        elif self.language_value == "French":
             self.manageDatabaseButton.setToolTip("Afficher, ajouter ou supprimer les bases de données locales")
-        else:
-            self.manageDatabaseButton.setToolTip(
-                "View, add, or remove local databases")  # Default to English tooltip if language is not specified
 
         self.manageDatabaseButton.clicked.connect(self.show_manage_local_databases_popup)
 
         # Find the Push Button for manage local database
         self.manageInstitutionButton = self.findChild(QPushButton, 'manageInstitution')
-        if current_language == "English":
+        if self.language_value == "English":
             self.manageInstitutionButton.setToolTip("View, add, or remove local institutions")
-        elif current_language == "French":
+        elif self.language_value == "French":
             self.manageInstitutionButton.setToolTip("Afficher, ajouter ou supprimer les institutions locales")
-        else:
-            self.manageInstitutionButton.setToolTip(
-                "View, add, or remove local institutions")  # Default to English tooltip if language is not specified
 
         self.manageInstitutionButton.clicked.connect(self.show_manage_institutions_popup)
 
