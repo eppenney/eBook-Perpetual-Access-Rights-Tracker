@@ -14,9 +14,13 @@ settings_manager = Settings()
 class WelcomePage(QDialog):
     def __init__(self, widget):
         super().__init__()
-        self.language_value = settings_manager.get_setting("language").lower()
+
+        language_choice = self.language_selection()
+        settings_manager.set_language(language_choice)
+        self.language_value = settings_manager.get_setting("language")
+
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_welcome_screen.ui")
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_welcome_screen.ui")
         loadUi(ui_file, self)
 
         self.widget = widget
@@ -60,29 +64,39 @@ class WelcomePage(QDialog):
                 self.institutionSelection.setCurrentIndex(index)
                 break
 
-    def save_settings(self):
-        from src.user_interface.startScreen import startScreen
+    def save_crkn_url(self):
         crkn_url = self.crknURL.text()
         if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
             QMessageBox.warning(self, "Incorrect CRKN URL format", "Incorrect CRKN URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
             return
+        settings_manager.set_crkn_url(crkn_url)
+        
+    def save_help_url(self):
         help_url = self.helpURL.text()
         if not (help_url.startswith("https://") or help_url.startswith("http://")):
             QMessageBox.warning(self, "Incorrect GitHub URL format",
                                 "Incorrect GitHub URL format.\nEnsure URL begins with http:// or https://.",
                                 QMessageBox.StandardButton.Ok)
             return
-
-        # Get selected institution and language
+        settings_manager.set_github_url(help_url)
+        
+    def save_institution(self):
         selected_institution = self.institutionSelection.currentText()
-        selected_language = self.findChild(QComboBox, 'languageSetting').currentText()
-
         settings_manager.set_institution(selected_institution)
+
+    def save_language(self):
+        selected_language_index = self.findChild(QComboBox, 'languageSetting').currentIndex()
+        selected_language = "English" if selected_language_index == 0 else "French"
         settings_manager.set_language(selected_language)
 
-        settings_manager.set_crkn_url(crkn_url)
-        settings_manager.set_github_url(help_url)
 
+    def save_settings(self):
+        from src.user_interface.startScreen import startScreen
+
+        self.save_crkn_url()
+        self.save_help_url()
+        self.save_institution()
+        self.save_language()
         settings_manager.save_settings()
 
         start_page = startScreen.get_instance(self.widget)
@@ -93,9 +107,9 @@ class WelcomePage(QDialog):
 
     def update_all_sizes(self):
         """
-        This was made by ChatGPT, do not sue me.
+        This was made by ChatGPT, do not sue me. 
         -Ethan
-        Feb 27, 2024
+        Feb 27, 2024 
         """
         original_width = 1200
         original_height = 800
@@ -129,7 +143,29 @@ class WelcomePage(QDialog):
                 if original_font_size is not None:
                     font.setPointSize(int(original_font_size * (new_width / original_width)))
                 widget.setFont(font)
-
     def resizeEvent(self, event):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
         super().resizeEvent(event)
+        self.update_all_sizes()
+
+    def language_selection(self):
+        msg_box = QMessageBox()
+        msg_box.setWindowTitle("Language Selection")
+        msg_box.setText("Please select your language / Veuillez sélectionner votre langue")
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        msg_box.setDefaultButton(QMessageBox.StandardButton.Yes)
+        
+        button_en = msg_box.button(QMessageBox.StandardButton.Yes)
+        button_en.setText("English")
+        
+        button_fr = msg_box.button(QMessageBox.StandardButton.No)
+        button_fr.setText("Français")
+
+        msg_box.exec()
+        
+        if msg_box.clickedButton() == button_en:
+            return "English"
+        elif msg_box.clickedButton() == button_fr:
+            return "French"
+        else:
+            return None

@@ -27,13 +27,13 @@ def main():
         close_database(connection_obj)
 
     if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/src/utility/settings.json"):
+        welcome_page = WelcomePage(widget)
+        language = settings_manager.get_setting("language")
         if settings_manager.get_setting('allow_CRKN') == "True":
             reply = QMessageBox.question(None, 'Update CRKN' if language == "English" else "Mettre à jour de RCDR",
                                      'Would you like to update CRKN database before proceeding?' if language == "English" else "Souhaitez-vous mettre à jour la base de données du RCDR avant de continuer ?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             if reply == QMessageBox.StandardButton.Yes:
                 scrapeCRKN()
-        welcome_page = WelcomePage(widget)
-
         widget.addWidget(welcome_page)
         widget.setMinimumHeight(800)
         widget.setMinimumWidth(1200)
