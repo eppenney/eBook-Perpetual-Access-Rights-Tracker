@@ -162,9 +162,9 @@ class ScrapingThread(QThread):
                         self.progress_update.emit(progress)
                         update_tables([file], "CRKN", connection, "DELETE")
 
-        database.close_database(connection)
-        get_CRKN_institutions()
+        settings_manager.get_CRKN_institutions(connection)
 
+        database.close_database(connection)
         self.progress_update.emit(100)
 
     def wait_for_response(self):
@@ -521,19 +521,3 @@ def check_file_format(file_df):
         return "The 'PA-Rights' sheet does not exist."
     else:
         return "Unknown error."
-
-
-def get_CRKN_institutions():
-    connection = database.connect_to_database()
-    # Scrape CRKN institution list from a CRKN file in the database
-    crkn_tables = connection.execute("SELECT file_name FROM CRKN_file_names;").fetchall()
-    # strip the apostrophes/parentheses from formatting
-    crkn_tables = [row[0] for row in crkn_tables]
-
-    if len(crkn_tables) > 0:
-        institutions = connection.cursor().execute(f'select * from [{crkn_tables[0]}]')
-        institutions = [description[0] for description in institutions.description[8:-2]]
-    else:
-        institutions = []
-    settings_manager.set_CRKN_institutions(institutions)
-    database.close_database(connection)
