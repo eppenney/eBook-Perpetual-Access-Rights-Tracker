@@ -167,7 +167,7 @@ color: white;
 color: black;</string>
     </property>
     <property name="text">
-     <string>Sélectionnez l'Institution :</string>
+     <string>Sélectionnez l'établissement :</string>
     </property>
    </widget>
    <widget class="QComboBox" name="institutionSelection">
@@ -505,7 +505,7 @@ color: black;</string>
         </string>
     </property>
     <property name="text">
-     <string>Gérer les institutions locales</string>
+     <string>Gérer les établissements locals</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="allowCRKNData">

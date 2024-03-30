@@ -50,7 +50,7 @@
      <item>
       <widget class="QPushButton" name="uploadButton">
        <property name="text">
-        <string>Ajouter une institution locale</string>
+        <string>Ajouter un établissement locale</string>
        </property>
       </widget>
      </item>

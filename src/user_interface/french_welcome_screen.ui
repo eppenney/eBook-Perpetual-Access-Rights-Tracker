@@ -70,7 +70,7 @@
      <string>font: 75 14pt &quot;Arial&quot;; color: black;</string>
     </property>
     <property name="text">
-     <string>Sélectionnez une Institution :</string>
+     <string>Sélectionnez un Établissements :</string>
     </property>
    </widget>
    <widget class="QComboBox" name="institutionSelection">
