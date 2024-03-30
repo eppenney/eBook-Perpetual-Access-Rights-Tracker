@@ -80,8 +80,8 @@
      </property>
      <property name="styleSheet">
       <string notr="true">font: 75 36pt &quot;Arial&quot;;
-color: rgb(255, 255, 255);
-</string>
+        color: rgb(255, 255, 255);
+      </string>
      </property>
      <property name="text">
       <string>ePAT</string>
@@ -180,8 +180,9 @@ color: rgb(255, 255, 255);
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(255, 255, 255);
-border-radius:20px;
-</string>
+        border-radius:10px;
+        color: rgb(0, 0, 0);
+     </string>
     </property>
     <property name="text">
      <string/>

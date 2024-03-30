@@ -335,7 +335,7 @@ QLineEdit:hover {
 }</string>
     </property>
    </widget>
-   <widget class="QLabel" name="helpURL">
+   <widget class="QLabel" name="helpURLlabel">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -428,31 +428,29 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">/* Styling for QLineEdit */
-QLineEdit {
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    color: #333; /* Text color */
-    background-color: #fff; /* Background color */
-    border: 1px solid #ccc; /* Border color */
-    border-radius: 5px; /* Border radius */
-    padding: 8px; /* Padding inside the QLineEdit */
-}
+     <string notr="true">
+        QLineEdit {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #333; /* Text color */
+            background-color: #fff; /* Background color */
+            border: 1px solid #ccc; /* Border color */
+            border-radius: 5px; /* Border radius */
+            padding: 8px; /* Padding inside the QLineEdit */
+        }
 
-/* Styling for QLineEdit when it's focused */
-QLineEdit:focus {
-    border: 1px solid #4d90fe; /* Focused border color */
-    outline: none; /* Remove default focus outline */
-}
+        QLineEdit:focus {
+            border: 1px solid #4d90fe; /* Focused border color */
+            outline: none; /* Remove default focus outline */
+        }
 
-/* Styling for QLineEdit when hovered */
-QLineEdit:hover {
-    border: 1px solid #999; /* Border color on hover */
-}
-QLineEdit:disabled {
-                background-color: rgb(180, 180, 180); /* Grey color for disabled state */
-                color: rgb(120, 120, 120); /* Darker text color for disabled state */
-            }
+        QLineEdit:hover {
+            border: 1px solid #999; /* Border color on hover */
+        }
+        QLineEdit:disabled {
+                        background-color: rgb(180, 180, 180); /* Grey color for disabled state */
+                        color: rgb(120, 120, 120); /* Darker text color for disabled state */
+                    }
 </string>
     </property>
    </widget>
