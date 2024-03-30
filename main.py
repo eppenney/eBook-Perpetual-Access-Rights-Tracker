@@ -1,5 +1,4 @@
 import sys
-from PyQt6.uic import loadUi
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QApplication, QMessageBox
 from src.user_interface.startScreen import startScreen

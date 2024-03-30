@@ -36,7 +36,7 @@ class WelcomePage(QDialog):
         self.crknURL = self.findChild(QLineEdit, 'crknURL')
         self.crknURL.setText(current_crkn_url)
 
-        current_help_url = settings_manager.get_setting("github_url")
+        current_help_url = settings_manager.get_setting("github_link")
         self.helpURL = self.findChild(QLineEdit, 'helpURL')
         self.helpURL.setText(current_help_url)
 

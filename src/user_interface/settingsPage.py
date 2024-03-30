@@ -1,7 +1,7 @@
 from PyQt6.QtCore import pyqtSignal, QUrl, Qt
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QLineEdit, QComboBox, QMessageBox, QCheckBox, QLineEdit
+from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QComboBox, QMessageBox, QCheckBox, QLineEdit
 from src.user_interface.scraping_ui import scrapeCRKN
 from src.utility.upload import upload_and_process_file
 from src.utility.settings_manager import Settings
@@ -89,11 +89,9 @@ class settingsPage(QDialog):
         self.allowCRKN.setChecked(settings_manager.get_setting("allow_CRKN") == "True")
 
         current_crkn_url = settings_manager.get_setting("CRKN_url")
-        print("Current crkn url: ", current_crkn_url)
         self.crknURL = self.findChild(QLineEdit, 'crknURL')
         self.crknURL.setText(current_crkn_url)
         self.crknURL.setToolTip("Press Enter to confirm changes")
-        print("QLine texT: ", self.crknURL.text())
         self.crknURL.returnPressed.connect(self.save_CRKN_URL)
 
         current_help_url = settings_manager.get_setting("github_link")

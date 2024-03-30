@@ -262,7 +262,7 @@ QLineEdit:hover {
 }</string>
     </property>
    </widget>
-   <widget class="QLabel" name="helpURL">
+   <widget class="QLabel" name="helpURLlabel">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -357,7 +357,7 @@ QLineEdit:hover {
         </rect>
     </property>
     <property name="styleSheet">
-        <string notr="true">font: 75 14pt "Arial";</string>
+        <string notr="true">font: 75 14pt "Arial";color:black;</string>
     </property>
     <property name="text">
         <string>Allow CRKN Data</string>

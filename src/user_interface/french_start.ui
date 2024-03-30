@@ -59,17 +59,16 @@ color: rgb(255, 255, 255);
     <widget class="QPushButton" name="settingButton1">
      <property name="geometry">
       <rect>
-       <x>40</x>
-       <y>20</y>
-       <width>61</width>
-       <height>61</height>
+       <x>15</x>
+       <y>15</y>
+       <width>50</width>
+       <height>50</height>
       </rect>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: transparent;
-border-radius:3px;
-font: 18pt &quot;Arial&quot;;
-color: rgb(255, 255, 255);</string>
+        border-color: transparent;
+        color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
       <string/>
@@ -91,8 +90,9 @@ color: rgb(255, 255, 255);</string>
                 border-radius: 10px;
                 font: 16pt &quot;Arial&quot;;
                 background-color: rgb(255, 255, 255);
-                padding-top: 1px; 
-                padding-bottom: 1px; 
+                padding-top: 1px;
+                padding-bottom: 1px;
+                color:black;
             }
         </string>
     </property>

@@ -353,7 +353,7 @@ QLineEdit:hover {
 }</string>
     </property>
    </widget>
-   <widget class="QLabel" name="helpURL">
+   <widget class="QLabel" name="helpURLlabel">
     <property name="geometry">
      <rect>
       <x>320</x>
