@@ -275,6 +275,7 @@ class settingsPage(QDialog):
 
     def upload_button_clicked(self):
         upload_and_process_file()
+        self.reset_app()
 
 
     def set_current_settings_values(self):
