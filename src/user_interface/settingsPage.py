@@ -13,6 +13,7 @@ settings_manager = Settings()
 class settingsPage(QDialog):
     _instance = None
 
+
     @classmethod
     def get_instance(cls, arg):
         if not cls._instance:
@@ -31,6 +32,8 @@ class settingsPage(QDialog):
         return cls._instance
 
     def __init__(self, widget):
+
+
         super(settingsPage, self).__init__()
         self.language_value = settings_manager.get_setting("language")
         ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_settingsPage.ui")
@@ -60,11 +63,20 @@ class settingsPage(QDialog):
 
         # Find the Push Button for manage local database
         self.manageDatabaseButton = self.findChild(QPushButton, 'manageDatabase')
+        if self.language_value == "English":
+            self.manageDatabaseButton.setToolTip("View, add, or remove local databases")
+        elif self.language_value == "French":
+            self.manageDatabaseButton.setToolTip("Afficher, ajouter ou supprimer les bases de données locales")
+
         self.manageDatabaseButton.clicked.connect(self.show_manage_local_databases_popup)
 
         # Find the Push Button for manage local database
         self.manageInstitutionButton = self.findChild(QPushButton, 'manageInstitution')
-        self.manageInstitutionButton.setToolTip("View, add, or remove local institutions")
+        if self.language_value == "English":
+            self.manageInstitutionButton.setToolTip("View, add, or remove local institutions")
+        elif self.language_value == "French":
+            self.manageInstitutionButton.setToolTip("Afficher, ajouter ou supprimer les institutions locales")
+
         self.manageInstitutionButton.clicked.connect(self.show_manage_institutions_popup)
 
         # Finding the combobox for the SaveButton
@@ -230,11 +242,7 @@ class settingsPage(QDialog):
         self.widget.setCurrentIndex(widget_count - 1)
 
     def update_all_sizes(self):
-        """
-        This was made by ChatGPT, do not sue me. 
-        -Ethan
-        Feb 27, 2024 
-        """
+
         original_width = 1200
         original_height = 800
         new_width = self.width() + 25

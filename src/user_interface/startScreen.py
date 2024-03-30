@@ -1,3 +1,9 @@
+
+"""
+    This is the main screen of the application where user can initiate search
+
+"""
+
 import urllib
 
 from PyQt6.QtCore import QTimer, Qt, QUrl
@@ -93,12 +99,13 @@ class startScreen(QDialog):
         self.booleanSearchType = self.findChild(QComboBox, 'booleanBoxRight')
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
         self.institutionButton = self.findChild(QPushButton, "institutionButton")
-        self.textEdit.returnPressed.connect(self.search_button_clicked)
         self.institutionName = self.findChild(QLabel, "institutionName")
+        self.institutionName.setToolTip("Currently Selected Institution")
 
         # Clear Button
         self.clearButton = self.findChild(QPushButton, "clearButton")
         self.clearButton.clicked.connect(self.clearSearch)
+        self.clearButton.setToolTip("Clear all results")
 
         self.duplicateCount = 0
         self.orLabel.hide()
@@ -106,9 +113,12 @@ class startScreen(QDialog):
         # Add and remove field buttons:
         self.addFieldButton = self.findChild(QPushButton, 'pushButton')
         self.addFieldButton.clicked.connect(self.duplicateTextEdit)
+        self.addFieldButton.setToolTip("Add search field")
 
         self.removeFieldButton = self.findChild(QPushButton, 'removeButton') #finding child pushButton from the parent class
         self.removeFieldButton.clicked.connect(self.removeTextEdit)
+        self.removeFieldButton.setToolTip("Remove search field")
+
 
         self.search.clicked.connect(self.search_button_clicked)
         self.widget = widget  # Store the QStackedWidget reference
@@ -350,7 +360,16 @@ class startScreen(QDialog):
         search = searchDisplay.replace_instance(self.widget, results)
         self.widget.addWidget(search)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
-        # search.display_results_in_table(results) 
+        # search.display_results_in_table(results)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
+            # Call the search_button_clicked method when Enter key is pressed
+            self.search_button_clicked()
+        elif event.key() == Qt.Key.Key_Escape:
+            event.ignore()  # Ignore the Escape key event
+        else:
+            super().keyPressEvent(event)
 
     # This method is responsible sending the text in the back end for the searching the value
     def search_button_clicked(self):
@@ -407,9 +426,6 @@ class startScreen(QDialog):
 
     
     """
-    This was made my chatGPT yo, do not sue me. 
-    - Ethan
-    Feb 27, 2024 
 
     You may notice this differs from the update_all_sizes method on other pages. Search boxes required extra functionality. 
     There is issues with I think empty widgets being stored, but I just threw in a try/except that seems to bandaid it. 
@@ -461,10 +477,5 @@ class startScreen(QDialog):
         super().resizeEvent(event)
         self.update_all_sizes()
 
-    def keyPressEvent(self, event):
-        # Override keyPressEvent method to ignore Escape key event
-        if event.key() == Qt.Key.Key_Escape:
-            event.ignore()  # Ignore the Escape key event
-        else:
-            super().keyPressEvent(event)
+
 
