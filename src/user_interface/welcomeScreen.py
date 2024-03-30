@@ -1,6 +1,8 @@
 """
  This will act as the come page which will only open for the first time the application is opened.
  The settings saved from here will be saved for the first time.
+ The page starts 2 major pop up that would be Lnagauge selection and Update ?
+ Then selection shall be opening.
 
 """
 import os
