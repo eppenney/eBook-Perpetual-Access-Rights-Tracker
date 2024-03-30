@@ -12,12 +12,14 @@ from src.utility.settings_manager import Settings
 settings_manager = Settings()
 
 class WelcomePage(QDialog):
-    def __init__(self):
+    def __init__(self, widget):
         super().__init__()
         self.language_value = settings_manager.get_setting("language").lower()
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_welcome_screen.ui")
         loadUi(ui_file, self)
+
+        self.widget = widget
 
         self.animation = QPropertyAnimation(self, b"windowOpacity")
         self.animation.setDuration(1000)  # 1 second duration
@@ -74,6 +76,7 @@ class WelcomePage(QDialog):
     #     languageSelection.addItems(["English", "French"])
 
     def save_settings(self):
+        from src.user_interface.startScreen import startScreen
         crkn_url = self.crknURL.text()
         if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
             QMessageBox.warning(self, "Incorrect CRKN URL format", "Incorrect CRKN URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
@@ -97,8 +100,11 @@ class WelcomePage(QDialog):
 
         settings_manager.save_settings()
 
+        start_page = startScreen.get_instance(self.widget) 
+        self.widget.addWidget(start_page)
         # Close the come page
-        self.accept()
+        # self.accept()
+        self.deleteLater()
     def update_all_sizes(self):
         """
         This was made by ChatGPT, do not sue me. 
