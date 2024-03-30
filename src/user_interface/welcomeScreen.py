@@ -13,7 +13,6 @@ settings_manager = Settings()
 
 class WelcomePage(QDialog):
     def __init__(self, widget):
-    def __init__(self, widget):
         super().__init__()
         self.language_value = settings_manager.get_setting("language").lower()
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -25,15 +24,6 @@ class WelcomePage(QDialog):
 
         self.widget = widget
 
-<<<<<<< HEAD
-        self.widget = widget
-
-        self.animation = QPropertyAnimation(self, b"windowOpacity")
-        self.animation.setDuration(1000)  # 1 second duration
-        self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
-
-=======
->>>>>>> 0483e9d8b3d7a30659ffe4704d2d54269ffbb87b
         # Populate institution selection combobox
         self.institutionSelection = self.findChild(QComboBox, 'institutionSelection')
         self.populate_institutions()
