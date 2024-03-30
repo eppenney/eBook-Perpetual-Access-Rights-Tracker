@@ -1,5 +1,4 @@
 import sys
-from PyQt6.uic import loadUi
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QApplication, QMessageBox
 from src.user_interface.startScreen import startScreen
@@ -9,6 +8,7 @@ from src.user_interface.welcomeScreen import WelcomePage
 from src.utility.settings_manager import Settings
 from src.utility.logger import m_logger
 import os
+import qdarktheme
 
 
 def main():
@@ -18,6 +18,7 @@ def main():
     language = settings_manager.get_setting("language")
 
     app = QApplication(sys.argv)
+    qdarktheme.setup_theme("light")
     app.setApplicationDisplayName("ePat")
     widget = QtWidgets.QStackedWidget()
 

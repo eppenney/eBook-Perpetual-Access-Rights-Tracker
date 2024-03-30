@@ -119,7 +119,7 @@ class Settings(metaclass=SingletonMeta):
         self.settings["CRKN_root_url"] = "/".join(url.split("/")[:3])
         self.save_settings()
 
-    def set_github_link(self, link):
+    def set_github_url(self, link):
         """
         Set the GitHub link for the project.
         :param link: new link
