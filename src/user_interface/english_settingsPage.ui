@@ -90,9 +90,9 @@ color: rgb(255, 255, 255);
    <widget class="QPushButton" name="uploadButton">
     <property name="geometry">
      <rect>
-      <x>1049</x>
+      <x>1050</x>
       <y>120</y>
-      <width>111</width>
+      <width>121</width>
       <height>41</height>
      </rect>
     </property>
@@ -115,15 +115,15 @@ color: rgb(255, 255, 255);
         </string>
     </property>
     <property name="text">
-     <string>Upload</string>
+     <string>Upload Data</string>
     </property>
    </widget>
    <widget class="QPushButton" name="updateCRKN">
     <property name="geometry">
      <rect>
-      <x>875</x>
+      <x>834</x>
       <y>120</y>
-      <width>150</width>
+      <width>191</width>
       <height>41</height>
      </rect>
     </property>
@@ -150,7 +150,7 @@ color: rgb(255, 255, 255);
         </string>
     </property>
     <property name="text">
-     <string>Update CRKN</string>
+     <string>Update CRKN Data</string>
     </property>
    </widget>
    <widget class="QLabel" name="UniversityLabel_5">
@@ -543,11 +543,10 @@ color: rgb(0, 0, 0);</string>
      <string>Manage Local Institutions</string>
     </property>
    </widget>
-
    <widget class="QCheckBox" name="allowCRKNData">
     <property name="geometry">
      <rect>
-      <x>675</x>
+      <x>600</x>
       <y>128</y>
       <width>200</width>
       <height>30</height>
