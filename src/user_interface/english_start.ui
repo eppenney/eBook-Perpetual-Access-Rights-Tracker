@@ -349,10 +349,10 @@ color: white;
    <widget class="QLabel" name="helpIcon">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>170</x>
       <y>280</y>
-      <width>41</width>
-      <height>41</height>
+      <width>50</width>
+      <height>50</height>
      </rect>
     </property>
     <property name="text">
