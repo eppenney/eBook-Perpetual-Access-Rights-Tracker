@@ -146,7 +146,6 @@ def search_database(connection, query, terms, searchTypes):
                 query += f"{searchTypes[i]} LIKE ?"
                 if any(char in terms[i] for char in wildcards):
                     query += " ESCAPE '\\'"
-                print(terms[i])
             else:
                 query += f"LOWER({searchTypes[i]}) = LOWER(?)"
         else:
