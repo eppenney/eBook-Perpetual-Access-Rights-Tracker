@@ -60,7 +60,7 @@ color: white;
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>110</y>
+      <y>100</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -90,9 +90,9 @@ color: white;
    <widget class="QPushButton" name="uploadButton">
     <property name="geometry">
      <rect>
-      <x>880</x>
-      <y>120</y>
-      <width>301</width>
+      <x>875</x>
+      <y>100</y>
+      <width>300</width>
       <height>41</height>
      </rect>
     </property>
@@ -121,8 +121,8 @@ color: white;
    <widget class="QPushButton" name="updateCRKN">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>120</y>
+      <x>495</x>
+      <y>100</y>
       <width>371</width>
       <height>41</height>
      </rect>
@@ -227,7 +227,7 @@ color: black;</string>
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>410</y>
+      <y>310</y>
       <width>251</width>
       <height>41</height>
      </rect>
@@ -237,7 +237,7 @@ color: black;</string>
 color: black;</string>
     </property>
     <property name="text">
-     <string>Lnlien d'aide</string>
+     <string>Sélectionnez la langue</string>
     </property>
    </widget>
    <widget class="QComboBox" name="languageSetting">
@@ -318,7 +318,7 @@ color: black;</string>
 color: black;</string>
     </property>
     <property name="text">
-     <string>URL du CRKN</string>
+     <string>URL du RCDR</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="helpURL">
@@ -511,9 +511,9 @@ color: black;</string>
    <widget class="QCheckBox" name="allowCRKNData">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>120</y>
-      <width>301</width>
+      <x>240</x>
+      <y>105</y>
+      <width>220</width>
       <height>30</height>
      </rect>
     </property>
@@ -524,7 +524,7 @@ color: black;</string>
      </string>
     </property>
     <property name="text">
-     <string>Autoriser les données du CRKN</string>
+     <string>Autoriser les données du RCDR</string>
     </property>
    </widget>
   </widget>
