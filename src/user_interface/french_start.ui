@@ -90,8 +90,9 @@ color: rgb(255, 255, 255);
                 border-radius: 10px;
                 font: 16pt &quot;Arial&quot;;
                 background-color: rgb(255, 255, 255);
-                padding-top: 1px; 
-                padding-bottom: 1px; 
+                padding-top: 1px;
+                padding-bottom: 1px;
+                color:black;
             }
         </string>
     </property>

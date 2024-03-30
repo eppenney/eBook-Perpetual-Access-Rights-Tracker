@@ -23,7 +23,10 @@ class ClickableLabel(QLabel):
         super().__init__(parent)
 
     def mousePressEvent(self, event):
-        QDesktopServices.openUrl(QUrl('https://www.youtube.com/watch?v=dQw4w9WgXcQ'))
+        # Get the GitHub link from the settings manager
+        github_link = settings_manager.get_setting('github_link')
+        # Open the URL in the default web browser
+        QDesktopServices.openUrl(QUrl(github_link))
 
 
 class RotatableButton(QPushButton):
@@ -146,10 +149,11 @@ class startScreen(QDialog):
 
         self.dupTextEdit = None
 
-    def open_url(self, event):
-        # Open the specified URL in the default web browser
-        url = QUrl('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-        QDesktopServices.openUrl(url)
+    def open_url(self):
+        # Get the GitHub link from the settings manager
+        github_link = settings_manager.get_setting('github_link')
+        # Open the URL in the default web browser
+        QDesktopServices.openUrl(QUrl(github_link))
 
     # This is for this internet connection check and changes the color accordingly
     def checkInternetConnection(self):
@@ -189,7 +193,7 @@ class startScreen(QDialog):
     # This method responsible for making the new text edit each time the plus sign is clicked.
     # Basically we are only having limit of 5 searches at the same time
     def duplicateTextEdit(self):
-      if (self.dupTextEdit == None):
+      if self.dupTextEdit == None:
           self.dupTextEdit = self.newTextEdit()
       MAX_DUPLICATES = 5
 

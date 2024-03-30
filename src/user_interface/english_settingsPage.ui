@@ -181,32 +181,41 @@ color: rgb(0, 0, 0);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">/* Styling for the QComboBox */
-QComboBox {
-    font: 75 16pt &quot;Arial&quot;;
-    background-color: rgb(0, 85, 127);
-    border-radius: 10px;
-    color: rgb(255, 255, 255);
-}
+        QComboBox {
+            font: 75 16pt &quot;Arial&quot;;
+            background-color: rgb(0, 85, 127);
+            border-radius: 10px;
+            color: rgb(255, 255, 255);
+        }
+         QComboBox::item {
+        background-color: rgb(220, 220, 220);
+        color: black;
+        }
 
-/* Styling for the QComboBox when hovered */
-QComboBox:hover {
-    background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
-}
+        QComboBox::item:selected {
+            background-color: rgb(0, 85, 127);
+            color: white;
+        }
 
-/* Styling for the QComboBox when the dropdown is activated */
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: right center;
-    width: 15px;
-    border-left-width: 0px;
-    border-left-color: darkgray;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 10px; /* same radius as the QComboBox */
-    border-bottom-right-radius: 10px; /* same radius as the QComboBox */
-}
+        /* Styling for the QComboBox when hovered */
+        QComboBox:hover {
+            background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+        }
 
-/* Styling for the QComboBox when the dropdown button is pressed */
-QComboBox::down-arrow {
+        /* Styling for the QComboBox when the dropdown is activated */
+        QComboBox::drop-down {
+            subcontrol-origin: padding;
+            subcontrol-position: right center;
+            width: 15px;
+            border-left-width: 0px;
+            border-left-color: darkgray;
+            border-left-style: solid; /* just a single line */
+            border-top-right-radius: 10px; /* same radius as the QComboBox */
+            border-bottom-right-radius: 10px; /* same radius as the QComboBox */
+        }
+
+            /* Styling for the QComboBox when the dropdown button is pressed */
+            QComboBox::down-arrow {
                 image: url(resources/dropdown_icon.png);
                 width: 21px;
                 height: 15px;
@@ -242,32 +251,42 @@ color: rgb(0, 0, 0);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">/* Styling for the QComboBox */
-QComboBox {
-    font: 75 16pt &quot;Arial&quot;;
-    background-color: rgb(0, 85, 127);
-    border-radius: 10px;
-    color: rgb(255, 255, 255);
-}
+        QComboBox {
+            font: 75 16pt &quot;Arial&quot;;
+            background-color: rgb(0, 85, 127);
+            border-radius: 10px;
+            color: rgb(255, 255, 255);
+        }
 
-/* Styling for the QComboBox when hovered */
-QComboBox:hover {
-    background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
-}
+          QComboBox::item {
+        background-color: rgb(220, 220, 220);
+        color: black;
+        }
 
-/* Styling for the QComboBox when the dropdown is activated */
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: right center;
-    width: 15px;
-    border-left-width: 0px;
-    border-left-color: darkgray;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 10px; /* same radius as the QComboBox */
-    border-bottom-right-radius: 10px; /* same radius as the QComboBox */
-}
+        QComboBox::item:selected {
+            background-color: rgb(0, 85, 127);
+            color: white;
+        }
 
-/* Styling for the QComboBox when the dropdown button is pressed */
-QComboBox::down-arrow {
+        /* Styling for the QComboBox when hovered */
+        QComboBox:hover {
+            background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+        }
+
+        /* Styling for the QComboBox when the dropdown is activated */
+        QComboBox::drop-down {
+            subcontrol-origin: padding;
+            subcontrol-position: right center;
+            width: 15px;
+            border-left-width: 0px;
+            border-left-color: darkgray;
+            border-left-style: solid; /* just a single line */
+            border-top-right-radius: 10px; /* same radius as the QComboBox */
+            border-bottom-right-radius: 10px; /* same radius as the QComboBox */
+        }
+
+        /* Styling for the QComboBox when the dropdown button is pressed */
+        QComboBox::down-arrow {
                 image: url(resources/dropdown_icon.png);
                 width: 21px;
                 height: 15px;
@@ -535,7 +554,10 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 75 14pt &quot;Arial&quot;;</string>
+     <string notr="true">
+         font: 75 14pt &quot;Arial&quot;;
+         color: black;
+     </string>
     </property>
     <property name="text">
      <string>Allow CRKN Data</string>
