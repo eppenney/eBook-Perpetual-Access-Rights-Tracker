@@ -357,7 +357,7 @@ QLineEdit:hover {
         </rect>
     </property>
     <property name="styleSheet">
-        <string notr="true">font: 75 14pt "Arial";</string>
+        <string notr="true">font: 75 14pt "Arial";color:black;</string>
     </property>
     <property name="text">
         <string>Allow CRKN Data</string>
