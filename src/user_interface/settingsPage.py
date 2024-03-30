@@ -275,12 +275,17 @@ class settingsPage(QDialog):
 
     def upload_button_clicked(self):
         upload_and_process_file()
+        insts = settings_manager.get_institutions()
+        if not settings_manager.get_setting("institution") and len(insts) > 0:
+            settings_manager.set_institution(insts[0])
         self.reset_app()
 
     def update_button_clicked(self):
         scrapeCRKN()
+        insts = settings_manager.get_institutions()
+        if not settings_manager.get_setting("institution") and len(insts) > 0:
+            settings_manager.set_institution(insts[0])
         self.reset_app()
-
 
     def set_current_settings_values(self):
         # Set the current language selection
