@@ -10,6 +10,29 @@ from src.utility.logger import m_logger
 import os
 
 
+def language_selection():
+    msg_box = QMessageBox()
+    msg_box.setWindowTitle("Language Selection")
+    msg_box.setText("Please select your language / Veuillez sélectionner votre langue")
+    msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+    msg_box.setDefaultButton(QMessageBox.StandardButton.Yes)
+    
+    button_en = msg_box.button(QMessageBox.StandardButton.Yes)
+    button_en.setText("English")
+    
+    button_fr = msg_box.button(QMessageBox.StandardButton.No)
+    button_fr.setText("Français")
+
+    msg_box.exec()
+    
+    if msg_box.clickedButton() == button_en:
+        return "English"
+    elif msg_box.clickedButton() == button_fr:
+        return "French"
+    else:
+        return None
+
+
 def main():
     m_logger.info("Application started")
     settings_manager = Settings()
@@ -27,13 +50,16 @@ def main():
         close_database(connection_obj)
 
     if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/src/utility/settings.json"):
-        welcome_page = WelcomePage(widget)
+        language_choice = language_selection()
+        settings_manager.set_language(language_choice)
+
         language = settings_manager.get_setting("language")
         if settings_manager.get_setting('allow_CRKN') == "True":
             reply = QMessageBox.question(None, 'Update CRKN' if language == "English" else "Mettre à jour de RCDR",
                                      'Would you like to update CRKN database before proceeding?' if language == "English" else "Souhaitez-vous mettre à jour la base de données du RCDR avant de continuer ?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             if reply == QMessageBox.StandardButton.Yes:
                 scrapeCRKN()
+        welcome_page = WelcomePage.get_instance(widget)
         widget.addWidget(welcome_page)
         widget.setMinimumHeight(800)
         widget.setMinimumWidth(1200)
@@ -41,8 +67,6 @@ def main():
 
     else:
         start = startScreen.get_instance(widget)  # Pass the widget to startScreen
-        widget.addWidget(start)
-
         widget.addWidget(start)
         widget.setMinimumHeight(800)
         widget.setMinimumWidth(1200)

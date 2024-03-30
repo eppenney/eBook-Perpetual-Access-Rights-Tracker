@@ -388,6 +388,9 @@ class startScreen(QDialog):
         searchTypeIndex = self.booleanSearchType.currentIndex()
         searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
         searchTypes = [searchType]
+        if "*" in searchText and searchType != "Title":
+            QMessageBox.information(self, "Invalid Search", "Partial search is unavailable for ISBN or OCN searches.")
+            return
         query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM table_name WHERE "
 
         if self.sender() == self.textEdit:
@@ -401,6 +404,9 @@ class startScreen(QDialog):
             searchTypeIndex = self.duplicateSearchTypes[i].currentIndex()
             searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
             searchTypes.append(searchType)
+            if "*" in terms[i] and searchType != "Title":
+                QMessageBox.information(self, "Invalid Search", "Partial search is unavailable for ISBN or OCN searches.")
+                return
 
         if len(terms) == 0:
             QMessageBox.information(self, "No Search Items" if self.language_value == "English" else "Aucun Terme de Recherche", "There are no search items in the search boxes." if self.language_value == "English" else "Il n'y a aucun terme de recherche dans les cases de recherche.")

@@ -9,16 +9,32 @@ import os
 from PyQt6.QtWidgets import QWidget, QDialog, QComboBox, QPushButton, QLineEdit, QMessageBox, QCheckBox, QSizePolicy
 from PyQt6.uic import loadUi
 from src.utility.settings_manager import Settings
+from PyQt6.QtCore import Qt
 
 settings_manager = Settings()
 
 
 class WelcomePage(QDialog):
+    _instance = None
+    @classmethod
+    def get_instance(cls, arg):
+        if not cls._instance:
+            cls._instance = cls(arg)
+        return cls._instance
+    
+    @classmethod
+    def replace_instance(cls, arg1):
+        if cls._instance:
+            # Remove the previous instance's reference from its parent widget
+            cls._instance.setParent(None)
+            # Explicitly delete the previous instance
+            del cls._instance
+            print("Deleting instance")
+        cls._instance = cls(arg1)
+        return cls._instance
+    
     def __init__(self, widget):
         super().__init__()
-
-        language_choice = self.language_selection()
-        settings_manager.set_language(language_choice)
         self.language_value = settings_manager.get_setting("language")
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -31,24 +47,34 @@ class WelcomePage(QDialog):
         self.institutionSelection = self.findChild(QComboBox, 'institutionSelection')
         self.populate_institutions()
         self.set_institution(settings_manager.get_setting("institution"))
+        self.institutionSelection.activated.connect(lambda: [self.save_institution(), self.resetApp()])
 
         # Allow CRKN checkbox
         self.allowCRKN = self.findChild(QCheckBox, "allowCRKNData")
         self.allowCRKN.setChecked(settings_manager.get_setting("allow_CRKN") == "True")
+        self.allowCRKN.clicked.connect(lambda: [self.save_allow_crkn(), self.resetApp()])
+
 
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL = self.findChild(QLineEdit, 'crknURL')
         self.crknURL.setText(current_crkn_url)
+        self.crknURL.returnPressed.connect(lambda: [self.save_crkn_url(), self.resetApp()])
 
         current_help_url = settings_manager.get_setting("github_link")
         self.helpURL = self.findChild(QLineEdit, 'helpURL')
         self.helpURL.setText(current_help_url)
+        self.helpURL.returnPressed.connect(lambda: [self.save_help_url(), self.resetApp()])
 
         # Connect save button click event
         self.saveButton = self.findChild(QPushButton, 'saveSettings')
         self.saveButton.clicked.connect(self.save_settings)
 
+        self.language_box = self.findChild(QComboBox, 'languageSetting')
+        self.language_box.activated.connect(lambda: [self.save_language(), self.resetApp()])
+
         self.original_widget_values = None
+
+        self.set_current_settings_values()
 
     def populate_institutions(self):
         # Clear the existing items in the combo box
@@ -68,6 +94,9 @@ class WelcomePage(QDialog):
 
     def save_crkn_url(self):
         crkn_url = self.crknURL.text()
+        if crkn_url == settings_manager.get_setting("CRKN_url"):
+            self.resetApp()
+            return
         if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
             QMessageBox.warning(self, "Incorrect CRKN URL format", "Incorrect CRKN URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
             return
@@ -87,10 +116,13 @@ class WelcomePage(QDialog):
         settings_manager.set_institution(selected_institution)
 
     def save_language(self):
-        selected_language_index = self.findChild(QComboBox, 'languageSetting').currentIndex()
+        selected_language_index = self.language_box.currentIndex()
         selected_language = "English" if selected_language_index == 0 else "French"
         settings_manager.set_language(selected_language)
 
+    def save_allow_crkn(self):
+        allow = self.allowCRKN.isChecked()
+        settings_manager.set_allow_CRKN("True" if allow else "False")
 
     def save_settings(self):
         from src.user_interface.startScreen import startScreen
@@ -101,11 +133,41 @@ class WelcomePage(QDialog):
         self.save_language()
         settings_manager.save_settings()
 
+        widget_count = self.widget.count()
+        for i in range(widget_count):
+            current_widget = self.widget.widget(i)
+            self.widget.removeWidget(current_widget)
+            current_widget.deleteLater()
+
         start_page = startScreen.get_instance(self.widget)
         self.widget.addWidget(start_page)
+        # self.widget.setCurrentIndex(self.widget.currentIndex())
 
-        # Close the come page
-        self.deleteLater()
+    def set_current_settings_values(self):
+        # Set the current language selection
+        current_language = settings_manager.get_setting("language")
+        language_index = self.language_box.findText(current_language, Qt.MatchFlag.MatchFixedString)
+        if language_index >= 0:
+            self.language_box.setCurrentIndex(language_index)
+
+        # Set the current CRKN URL
+        current_crkn_url = settings_manager.get_setting("CRKN_url")
+        self.crknURL.setText(current_crkn_url)
+
+        # Set the current CRKN URL
+        current_help_url = settings_manager.get_setting("github_link")
+        self.helpURL.setText(current_help_url)
+
+        # Set the current institution selection
+        current_institution = settings_manager.get_setting("institution")
+        institution_index = self.institutionSelection.findText(current_institution, Qt.MatchFlag.MatchFixedString)
+        if institution_index >= 0:
+            self.institutionSelection.setCurrentIndex(institution_index)
+
+        allow_crkn = settings_manager.get_setting("allow_CRKN")
+        if allow_crkn != "True":
+            self.crknURL.setEnabled(False)
+
 
     def update_all_sizes(self):
 
@@ -146,24 +208,16 @@ class WelcomePage(QDialog):
         super().resizeEvent(event)
         self.update_all_sizes()
 
-    def language_selection(self):
-        msg_box = QMessageBox()
-        msg_box.setWindowTitle("Language Selection")
-        msg_box.setText("Please select your language / Veuillez sélectionner votre langue")
-        msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        msg_box.setDefaultButton(QMessageBox.StandardButton.Yes)
+    
         
-        button_en = msg_box.button(QMessageBox.StandardButton.Yes)
-        button_en.setText("English")
+    def resetApp(self):
+        widget_count = self.widget.count()
+        for i in range(widget_count):
+            current_widget = self.widget.widget(i)
+            new_widget_instance = type(current_widget).replace_instance(self.widget)
+            self.widget.insertWidget(i, new_widget_instance)
+            self.widget.removeWidget(current_widget)
+            current_widget.deleteLater()
         
-        button_fr = msg_box.button(QMessageBox.StandardButton.No)
-        button_fr.setText("Français")
-
-        msg_box.exec()
-        
-        if msg_box.clickedButton() == button_en:
-            return "English"
-        elif msg_box.clickedButton() == button_fr:
-            return "French"
-        else:
-            return None
+        # Set the current index to the last widget added
+        self.widget.setCurrentIndex(widget_count - 1)

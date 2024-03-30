@@ -1,6 +1,5 @@
 import json
 import os
-from src.data_processing import Scraping
 
 
 '''
@@ -160,11 +159,37 @@ class Settings(metaclass=SingletonMeta):
         """
         self.update_setting("CRKN_institutions", institutions)
 
+    def get_CRKN_institutions(self, connection):
+        # Scrape CRKN institution list from a CRKN file in the database
+        crkn_tables = connection.execute("SELECT file_name FROM CRKN_file_names;").fetchall()
+        # strip the apostrophes/parentheses from formatting
+        crkn_tables = [row[0] for row in crkn_tables]
+
+        if len(crkn_tables) > 0:
+            institutions = connection.cursor().execute(f'select * from [{crkn_tables[0]}]')
+            institutions = [description[0] for description in institutions.description[8:-2]]
+        else:
+            institutions = []
+        self.set_CRKN_institutions(institutions)
+
+    def set_local_institutions(self):
+        local_insts = self.get_setting("local_institutions")
+        CRKN_insts = self.get_setting("CRKN_institutions")
+        for inst in local_insts:
+            if inst in CRKN_insts:
+                local_insts.remove(inst)
+        self.update_setting("local_institutions", local_insts)
+
     def get_institutions(self):
         """
         Get combined list of CRKN and local institutions
         :return: list - containing CRKN_institutions and local_institutions
         """
-        Scraping.get_CRKN_institutions()
+        import sqlite3
+        connection = sqlite3.connect(self.get_setting("database_name"))
+        self.get_CRKN_institutions(connection)
+        connection.commit()
+        connection.close()
+        self.set_local_institutions()
         return self.settings.get("local_institutions") + self.settings.get("CRKN_institutions")
     

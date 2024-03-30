@@ -17,8 +17,6 @@ settings_manager = Settings()
 
 class settingsPage(QDialog):
     _instance = None
-    # # Should emit signal to the settings for saving the institution
-    institutionSelected = pyqtSignal(str)
 
 
     @classmethod
@@ -57,7 +55,7 @@ class settingsPage(QDialog):
 
         # Update Button
         self.updateButton = self.findChild(QPushButton, "updateCRKN")
-        self.updateButton.clicked.connect(scrapeCRKN)
+        self.updateButton.clicked.connect(self.update_button_clicked)
 
         self.update_CRKN_button()
         self.update_CRKN_URL()
@@ -294,7 +292,17 @@ class settingsPage(QDialog):
 
     def upload_button_clicked(self):
         upload_and_process_file()
+        insts = settings_manager.get_institutions()
+        if not settings_manager.get_setting("institution") and len(insts) > 0:
+            settings_manager.set_institution(insts[0])
+        self.reset_app()
 
+    def update_button_clicked(self):
+        scrapeCRKN()
+        insts = settings_manager.get_institutions()
+        if not settings_manager.get_setting("institution") and len(insts) > 0:
+            settings_manager.set_institution(insts[0])
+        self.reset_app()
 
     def set_current_settings_values(self):
         # Set the current language selection
