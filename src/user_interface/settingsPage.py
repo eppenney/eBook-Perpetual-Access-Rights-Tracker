@@ -1,4 +1,4 @@
-from PyQt6.QtCore import pyqtSignal, QUrl, Qt, QEvent
+from PyQt6.QtCore import pyqtSignal, QUrl, Qt
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QLineEdit, QComboBox, QMessageBox, QCheckBox, QLineEdit
