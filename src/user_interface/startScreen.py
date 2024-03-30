@@ -115,11 +115,11 @@ class startScreen(QDialog):
 
         self.helpIcon = self.findChild(QLabel, 'helpIcon')
         self.helpIcon.setPixmap(QPixmap('resources/helpIcon.png'))
-        clickable_help_icon = ClickableLabel(self)
-        clickable_help_icon.setGeometry(self.helpIcon.geometry())  # Match the geometry with the existing help icon
-        # self.helpIcon.setToolTip("All searches are ")
+        # clickable_help_icon = ClickableLabel(self)
+        # clickable_help_icon.setGeometry(self.helpIcon.geometry())  # Match the geometry with the existing help icon
+        self.helpIcon.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
 
-        clickable_help_icon.mousePressEvent = self.open_url  # Override the mousePressEvent
+        # clickable_help_icon.mousePressEvent = self.open_url  # Override the mousePressEvent
 
         # # making a group of different button to give a effect of burger menu
         self.buttonGroup = QButtonGroup()
@@ -196,7 +196,7 @@ class startScreen(QDialog):
     def duplicateTextEdit(self):
       if self.dupTextEdit == None:
           self.dupTextEdit = self.newTextEdit()
-      MAX_DUPLICATES = 5
+      MAX_DUPLICATES = 4
 
       if self.duplicateCount < MAX_DUPLICATES:
         self.duplicateCount += 1  # Use the corrected attribute name
@@ -225,7 +225,7 @@ class startScreen(QDialog):
         self.clearButton.setGeometry(self.clearButton.x(), newY, self.clearButton.width(), self.clearButton.height())
 
       else:
-          QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "Limite atteinte", f"You can only search {MAX_DUPLICATES+1} at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher que {MAX_DUPLICATES+1} à la fois.")
+          QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "Limite atteinte", f"You can only search with {MAX_DUPLICATES+1} fields at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher avec {MAX_DUPLICATES+1} cases à la fois.")
 
     def adjustDuplicateTextEditSize(self):
         for i in range(len(self.duplicateTextEdits)):
@@ -246,7 +246,6 @@ class startScreen(QDialog):
 
         newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 3)
         self.clearButton.setGeometry(self.clearButton.x(), newY, self.clearButton.width(), self.clearButton.height())
-        
 
     def newTextEdit(self):
         new_text_edit = QLineEdit(self)
