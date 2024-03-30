@@ -117,6 +117,7 @@ class startScreen(QDialog):
         self.helpIcon.setPixmap(QPixmap('resources/helpIcon.png'))
         clickable_help_icon = ClickableLabel(self)
         clickable_help_icon.setGeometry(self.helpIcon.geometry())  # Match the geometry with the existing help icon
+        # self.helpIcon.setToolTip("All searches are ")
 
         clickable_help_icon.mousePressEvent = self.open_url  # Override the mousePressEvent
 
