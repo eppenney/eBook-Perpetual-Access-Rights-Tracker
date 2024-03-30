@@ -115,8 +115,8 @@ class startScreen(QDialog):
 
         self.helpIcon = self.findChild(QLabel, 'helpIcon')
         self.helpIcon.setPixmap(QPixmap('resources/helpIcon.png'))
-        # clickable_help_icon = ClickableLabel(self)
-        # clickable_help_icon.setGeometry(self.helpIcon.geometry())  # Match the geometry with the existing help icon
+        clickable_help_icon = ClickableLabel(self)
+        clickable_help_icon.setGeometry(self.helpIcon.geometry())
         self.helpIcon.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
 
         # clickable_help_icon.mousePressEvent = self.open_url  # Override the mousePressEvent
