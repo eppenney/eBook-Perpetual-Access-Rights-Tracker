@@ -172,6 +172,14 @@ class Settings(metaclass=SingletonMeta):
             institutions = []
         self.set_CRKN_institutions(institutions)
 
+    def set_local_institutions(self):
+        local_insts = self.get_setting("local_institutions")
+        CRKN_insts = self.get_setting("CRKN_institutions")
+        for inst in local_insts:
+            if inst in CRKN_insts:
+                local_insts.remove(inst)
+        self.update_setting("local_institutions", local_insts)
+
     def get_institutions(self):
         """
         Get combined list of CRKN and local institutions
@@ -182,5 +190,6 @@ class Settings(metaclass=SingletonMeta):
         self.get_CRKN_institutions(connection)
         connection.commit()
         connection.close()
+        self.set_local_institutions()
         return self.settings.get("local_institutions") + self.settings.get("CRKN_institutions")
     
