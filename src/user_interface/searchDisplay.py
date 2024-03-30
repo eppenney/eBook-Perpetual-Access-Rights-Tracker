@@ -1,5 +1,5 @@
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QTableWidgetItem, QTextEdit, QComboBox, QWidget
+from PyQt6.QtWidgets import QDialog, QTableWidget, QTableWidgetItem, QTextEdit, QComboBox, QWidget, QHeaderView
 from src.utility.export import export_data
 from src.utility.settings_manager import Settings
 from PyQt6.QtCore import Qt
@@ -43,6 +43,7 @@ class searchDisplay(QDialog):
         self.original_widget_values = None
         self.column_labels = ["Access", "File_Name", "Platform", "Title", "Publisher", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code", "collection_name", "title_metadata_last_modified"]
 
+        self.tableWidget = self.findChild(QTableWidget, 'tableWidget')
         self.tableWidget.itemSelectionChanged.connect(self.updateCellNameDisplay)
 
         self.display_results_in_table()
@@ -72,6 +73,8 @@ class searchDisplay(QDialog):
             self.tableWidget.insertRow(row_number)
             for column_number, data in enumerate(row_data):
                 self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+        self.tableWidget.setStyleSheet(
+            "QHeaderView::section {color:white;background-color:rgb(0, 85, 127);}QTableView::item{color:black;}")
 
     def export_data_handler(self):
         export_data(self.results, self.column_labels)
