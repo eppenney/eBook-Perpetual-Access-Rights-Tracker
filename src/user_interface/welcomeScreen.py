@@ -14,10 +14,14 @@ settings_manager = Settings()
 class WelcomePage(QDialog):
     def __init__(self, widget):
         super().__init__()
-        self.language_value = settings_manager.get_setting("language").lower()
+
+        language_choice = self.language_selection()
+        settings_manager.set_language(language_choice)
+        self.language_value = settings_manager.get_setting("language")
+
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_welcome_screen.ui")
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_welcome_screen.ui")
         loadUi(ui_file, self)
 
         self.widget = widget
@@ -79,7 +83,8 @@ class WelcomePage(QDialog):
 
         # Get selected institution and language
         selected_institution = self.institutionSelection.currentText()
-        selected_language = self.findChild(QComboBox, 'languageSetting').currentText()
+        selected_language_index = self.findChild(QComboBox, 'languageSetting').currentIndex()
+        selected_language = "English" if selected_language_index == 0 else "French"
 
         settings_manager.set_institution(selected_institution)
         settings_manager.set_language(selected_language)
@@ -187,3 +192,25 @@ class WelcomePage(QDialog):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
         super().resizeEvent(event)
         self.update_all_sizes()
+
+    def language_selection(self):
+        msg_box = QMessageBox()
+        msg_box.setWindowTitle("Language Selection")
+        msg_box.setText("Please select your language / Veuillez sélectionner votre langue")
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        msg_box.setDefaultButton(QMessageBox.StandardButton.Yes)
+        
+        button_en = msg_box.button(QMessageBox.StandardButton.Yes)
+        button_en.setText("English")
+        
+        button_fr = msg_box.button(QMessageBox.StandardButton.No)
+        button_fr.setText("Français")
+
+        msg_box.exec()
+        
+        if msg_box.clickedButton() == button_en:
+            return "English"
+        elif msg_box.clickedButton() == button_fr:
+            return "French"
+        else:
+            return None
