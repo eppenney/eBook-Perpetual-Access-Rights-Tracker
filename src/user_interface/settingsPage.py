@@ -47,7 +47,7 @@ class settingsPage(QDialog):
 
         # Update Button
         self.updateButton = self.findChild(QPushButton, "updateCRKN")
-        self.updateButton.clicked.connect(scrapeCRKN)
+        self.updateButton.clicked.connect(self.update_button_clicked)
 
         self.update_CRKN_button()
         self.update_CRKN_URL()
@@ -275,6 +275,10 @@ class settingsPage(QDialog):
 
     def upload_button_clicked(self):
         upload_and_process_file()
+        self.reset_app()
+
+    def update_button_clicked(self):
+        scrapeCRKN()
         self.reset_app()
 
 
