@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1183</width>
+    <width>1201</width>
     <height>877</height>
    </rect>
   </property>
@@ -90,9 +90,9 @@ color: rgb(255, 255, 255);
    <widget class="QPushButton" name="uploadButton">
     <property name="geometry">
      <rect>
-      <x>1050</x>
+      <x>1000</x>
       <y>120</y>
-      <width>121</width>
+      <width>181</width>
       <height>41</height>
      </rect>
     </property>
@@ -115,13 +115,13 @@ color: rgb(255, 255, 255);
         </string>
     </property>
     <property name="text">
-     <string>Upload Data</string>
+     <string>Local Upload Data</string>
     </property>
    </widget>
    <widget class="QPushButton" name="updateCRKN">
     <property name="geometry">
      <rect>
-      <x>834</x>
+      <x>790</x>
       <y>120</y>
       <width>191</width>
       <height>41</height>
@@ -546,7 +546,7 @@ color: rgb(0, 0, 0);</string>
    <widget class="QCheckBox" name="allowCRKNData">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>580</x>
       <y>128</y>
       <width>200</width>
       <height>30</height>

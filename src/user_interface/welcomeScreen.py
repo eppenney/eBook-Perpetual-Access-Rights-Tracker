@@ -108,11 +108,7 @@ class WelcomePage(QDialog):
         self.deleteLater()
 
     def update_all_sizes(self):
-        """
-        This was made by ChatGPT, do not sue me. 
-        -Ethan
-        Feb 27, 2024 
-        """
+
         original_width = 1200
         original_height = 800
         new_width = self.width() + 25
