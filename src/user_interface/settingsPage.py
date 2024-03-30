@@ -1,3 +1,8 @@
+"""
+
+
+"""
+
 from PyQt6.QtCore import pyqtSignal, QUrl, Qt
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.uic import loadUi
@@ -79,10 +84,10 @@ class settingsPage(QDialog):
 
         self.manageInstitutionButton.clicked.connect(self.show_manage_institutions_popup)
 
-        # Finding the combobox for the SaveButton
-        self.saveSettingsButton = self.findChild(QPushButton, 'saveSettings')
-        self.saveSettingsButton.setToolTip("Click to save the settings")
-        self.saveSettingsButton.clicked.connect(self.save_selected)
+        # # Finding the combobox for the SaveButton
+        # self.saveSettingsButton = self.findChild(QPushButton, 'saveSettings')
+        # self.saveSettingsButton.setToolTip("Click to save the settings")
+        # self.saveSettingsButton.clicked.connect(self.save_selected)
 
         # Finding the linkButton from the QPushButton class
         current_help_url = settings_manager.get_setting("github_link")
@@ -103,7 +108,11 @@ class settingsPage(QDialog):
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL = self.findChild(QLineEdit, 'crknURL')
         self.crknURL.setText(current_crkn_url)
-        self.crknURL.setToolTip("Press Enter to confirm changes")
+        if self.language_value == "English":
+            self.crknURL.setToolTip("Press Enter to confirm changes")
+        elif self.language_value == "French":
+            self.crknURL.setToolTip("Appuyez sur Entrée pour confirmer les modifications")
+
         self.crknURL.returnPressed.connect(self.save_CRKN_URL)
 
         self.helpURL = self.findChild(QLineEdit, 'helpURL')
@@ -154,11 +163,11 @@ class settingsPage(QDialog):
                 break
 
     # Testing to save institution working
-    def save_selected(self):
-        self.save_institution()
-        self.save_language()
-        self.save_CRKN_URL()
-        self.reset_app()
+    # def save_selected(self):
+    #     self.save_institution()
+    #     self.save_language()
+    #     self.save_CRKN_URL()
+    #     self.reset_app()
 
     def save_language(self):
         current_language = settings_manager.get_setting("language")
