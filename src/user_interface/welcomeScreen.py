@@ -146,9 +146,7 @@ class WelcomePage(QDialog):
     def set_current_settings_values(self):
         # Set the current language selection
         current_language = settings_manager.get_setting("language")
-        language_index = self.language_box.findText(current_language, Qt.MatchFlag.MatchFixedString)
-        if language_index >= 0:
-            self.language_box.setCurrentIndex(language_index)
+        self.language_box.setCurrentIndex(0 if current_language == "English" else 1)
 
         # Set the current CRKN URL
         current_crkn_url = settings_manager.get_setting("CRKN_url")
