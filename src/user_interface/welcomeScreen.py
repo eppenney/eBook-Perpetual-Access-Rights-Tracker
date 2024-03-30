@@ -67,41 +67,44 @@ class WelcomePage(QDialog):
                 self.institutionSelection.setCurrentIndex(index)
                 break
 
-    def save_settings(self):
-        from src.user_interface.startScreen import startScreen
-        from src.user_interface.startScreen import startScreen
+    def save_crkn_url(self):
         crkn_url = self.crknURL.text()
         if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
             QMessageBox.warning(self, "Incorrect CRKN URL format", "Incorrect CRKN URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
             return
+        settings_manager.set_crkn_url(crkn_url)
+        
+    def save_help_url(self):
         help_url = self.helpURL.text()
         if not (help_url.startswith("https://") or help_url.startswith("http://")):
             QMessageBox.warning(self, "Incorrect GitHub URL format",
                                 "Incorrect GitHub URL format.\nEnsure URL begins with http:// or https://.",
                                 QMessageBox.StandardButton.Ok)
             return
-
-        # Get selected institution and language
+        settings_manager.set_github_url(help_url)
+        
+    def save_institution(self):
         selected_institution = self.institutionSelection.currentText()
+        settings_manager.set_institution(selected_institution)
+
+    def save_language(self):
         selected_language_index = self.findChild(QComboBox, 'languageSetting').currentIndex()
         selected_language = "English" if selected_language_index == 0 else "French"
-
-        settings_manager.set_institution(selected_institution)
         settings_manager.set_language(selected_language)
 
-        settings_manager.set_crkn_url(crkn_url)
-        settings_manager.set_github_url(help_url)
 
+    def save_settings(self):
+        from src.user_interface.startScreen import startScreen
+
+        self.save_crkn_url()
+        self.save_help_url()
+        self.save_institution()
+        self.save_language()
         settings_manager.save_settings()
 
         start_page = startScreen.get_instance(self.widget)
         self.widget.addWidget(start_page)
-
-        start_page = startScreen.get_instance(self.widget)
-        self.widget.addWidget(start_page)
-
-        start_page = startScreen.get_instance(self.widget) 
-        self.widget.addWidget(start_page)
+        
         # Close the come page
         self.deleteLater()
 
