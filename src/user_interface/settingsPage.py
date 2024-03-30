@@ -12,8 +12,6 @@ settings_manager = Settings()
 
 class settingsPage(QDialog):
     _instance = None
-    # # Should emit signal to the settings for saving the institution
-    institutionSelected = pyqtSignal(str)
 
     @classmethod
     def get_instance(cls, arg):
