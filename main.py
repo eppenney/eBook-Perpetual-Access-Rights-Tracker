@@ -31,7 +31,8 @@ def language_selection():
         return "French"
     else:
         return None
-    
+
+
 def main():
     m_logger.info("Application started")
     settings_manager = Settings()
@@ -49,8 +50,6 @@ def main():
         close_database(connection_obj)
 
     if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/src/utility/settings.json"):
-        welcome_page = WelcomePage.get_instance(widget)
-
         language_choice = language_selection()
         settings_manager.set_language(language_choice)
 
@@ -60,6 +59,7 @@ def main():
                                      'Would you like to update CRKN database before proceeding?' if language == "English" else "Souhaitez-vous mettre à jour la base de données du RCDR avant de continuer ?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             if reply == QMessageBox.StandardButton.Yes:
                 scrapeCRKN()
+        welcome_page = WelcomePage.get_instance(widget)
         widget.addWidget(welcome_page)
         widget.setMinimumHeight(800)
         widget.setMinimumWidth(1200)
