@@ -4,24 +4,26 @@
 
 """
 import os
-<<<<<<< HEAD
-from PyQt6.QtWidgets import QWidget, QDialog, QComboBox, QPushButton, QLineEdit, QMessageBox, QSizePolicy
-from PyQt6.QtCore import QPropertyAnimation, QEasingCurve
-=======
-from PyQt6.QtWidgets import QDialog, QComboBox, QPushButton, QLineEdit, QMessageBox, QCheckBox
->>>>>>> 0483e9d8b3d7a30659ffe4704d2d54269ffbb87b
+from PyQt6.QtWidgets import QWidget, QDialog, QComboBox, QPushButton, QLineEdit, QMessageBox, QCheckBox, QSizePolicy
 from PyQt6.uic import loadUi
 from src.utility.settings_manager import Settings
 
 settings_manager = Settings()
 
+
 class WelcomePage(QDialog):
+    def __init__(self, widget):
     def __init__(self, widget):
         super().__init__()
         self.language_value = settings_manager.get_setting("language").lower()
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_welcome_screen.ui")
         loadUi(ui_file, self)
+
+        self.widget = widget
+
+        self.widget = widget
 
 <<<<<<< HEAD
         self.widget = widget
@@ -53,17 +55,8 @@ class WelcomePage(QDialog):
         self.saveButton = self.findChild(QPushButton, 'saveSettings')
         self.saveButton.clicked.connect(self.save_settings)
 
-<<<<<<< HEAD
         self.original_widget_values = None
 
-    def showEvent(self, event):
-        # Override showEvent to start animation when the dialog is shown
-        self.animation.setStartValue(0.0)  # Start with opacity 0
-        self.animation.setEndValue(1.0)  # End with opacity 1
-        self.animation.start()
-
-=======
->>>>>>> 0483e9d8b3d7a30659ffe4704d2d54269ffbb87b
     def populate_institutions(self):
         # Clear the existing items in the combo box
         self.institutionSelection.clear()
@@ -81,6 +74,7 @@ class WelcomePage(QDialog):
                 break
 
     def save_settings(self):
+        from src.user_interface.startScreen import startScreen
         from src.user_interface.startScreen import startScreen
         crkn_url = self.crknURL.text()
         if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
@@ -105,9 +99,60 @@ class WelcomePage(QDialog):
 
         settings_manager.save_settings()
 
+        start_page = startScreen.get_instance(self.widget)
+        self.widget.addWidget(start_page)
+
+        start_page = startScreen.get_instance(self.widget)
+        self.widget.addWidget(start_page)
+
         start_page = startScreen.get_instance(self.widget) 
         self.widget.addWidget(start_page)
         # Close the come page
+        self.deleteLater()
+
+    def update_all_sizes(self):
+        """
+        This was made by ChatGPT, do not sue me.
+        -Ethan
+        Feb 27, 2024
+        """
+        original_width = 1200
+        original_height = 800
+        new_width = self.width() + 25
+        new_height = self.height()
+
+        if self.original_widget_values is None:
+            # If it's the first run, store the original values
+            self.original_widget_values = {}
+            for widget in self.findChildren(QWidget):
+                self.original_widget_values[widget] = {
+                    'geometry': widget.geometry(),
+                    'font_size': widget.font().pointSize() if isinstance(widget, (QLineEdit, QComboBox)) else None
+                }
+
+        # Iterate through every widget loaded using loadUi
+        for widget, original_values in self.original_widget_values.items():
+            # Calculate new geometry and size for each widget
+            x = int(original_values['geometry'].x() * (new_width / original_width))
+            y = int(original_values['geometry'].y() * (new_height / original_height))
+            width = int(original_values['geometry'].width() * (new_width / original_width))
+            height = int(original_values['geometry'].height() * (new_height / original_height))
+
+            # Set the new geometry and size
+            widget.setGeometry(x, y, width, height)
+
+            # If the widget is a QLineEdit or QComboBox, adjust font size
+            if isinstance(widget, (QLineEdit, QComboBox)):
+                font = widget.font()
+                original_font_size = original_values['font_size']
+                if original_font_size is not None:
+                    font.setPointSize(int(original_font_size * (new_width / original_width)))
+                widget.setFont(font)
+
+    def resizeEvent(self, event):
+        # Override the resizeEvent method to call update_all_sizes when the window is resized
+        super().resizeEvent(event)
+
         # self.accept()
         self.deleteLater()
     def update_all_sizes(self):

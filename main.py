@@ -33,9 +33,7 @@ def main():
             if reply == QMessageBox.StandardButton.Yes:
                 scrapeCRKN()
         welcome_page = WelcomePage(widget)
-        # welcome_page.exec()
 
-        # start = startScreen.get_instance(widget)  # Pass the widget to startScreen
         widget.addWidget(welcome_page)
         widget.setMinimumHeight(800)
         widget.setMinimumWidth(1200)
