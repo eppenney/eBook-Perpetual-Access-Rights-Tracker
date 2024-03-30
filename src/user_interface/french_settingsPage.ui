@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1189</width>
-    <height>877</height>
+    <width>1185</width>
+    <height>787</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
    <widget class="QWidget" name="widget_2" native="true">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>0</y>
       <width>1200</width>
       <height>90</height>
@@ -115,7 +115,7 @@ color: rgb(255, 255, 255);
         </string>
     </property>
     <property name="text">
-     <string>charger des données locales</string>
+      <string>Charger des données locales</string>
     </property>
    </widget>
    <widget class="QPushButton" name="updateCRKN">
@@ -181,32 +181,41 @@ color: rgb(0, 0, 0);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">/* Styling for the QComboBox */
-QComboBox {
-    font: 75 16pt &quot;Arial&quot;;
-    background-color: rgb(0, 85, 127);
-    border-radius: 10px;
-    color: rgb(255, 255, 255);
-}
+        QComboBox {
+            font: 75 16pt &quot;Arial&quot;;
+            background-color: rgb(0, 85, 127);
+            border-radius: 10px;
+            color: rgb(255, 255, 255);
+        }
+         QComboBox::item {
+        background-color: rgb(220, 220, 220);
+        color: black;
+        }
 
-/* Styling for the QComboBox when hovered */
-QComboBox:hover {
-    background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
-}
+        QComboBox::item:selected {
+            background-color: rgb(0, 85, 127);
+            color: white;
+        }
 
-/* Styling for the QComboBox when the dropdown is activated */
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: right center;
-    width: 15px;
-    border-left-width: 0px;
-    border-left-color: darkgray;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 10px; /* same radius as the QComboBox */
-    border-bottom-right-radius: 10px; /* same radius as the QComboBox */
-}
+        /* Styling for the QComboBox when hovered */
+        QComboBox:hover {
+            background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+        }
 
-/* Styling for the QComboBox when the dropdown button is pressed */
-QComboBox::down-arrow {
+        /* Styling for the QComboBox when the dropdown is activated */
+        QComboBox::drop-down {
+            subcontrol-origin: padding;
+            subcontrol-position: right center;
+            width: 15px;
+            border-left-width: 0px;
+            border-left-color: darkgray;
+            border-left-style: solid; /* just a single line */
+            border-top-right-radius: 10px; /* same radius as the QComboBox */
+            border-bottom-right-radius: 10px; /* same radius as the QComboBox */
+        }
+
+            /* Styling for the QComboBox when the dropdown button is pressed */
+            QComboBox::down-arrow {
                 image: url(resources/dropdown_icon.png);
                 width: 21px;
                 height: 15px;
@@ -214,7 +223,7 @@ QComboBox::down-arrow {
             }</string>
     </property>
    </widget>
-   <widget class="QLabel" name="UniversityLabel_6">
+    <widget class="QLabel" name="UniversityLabel_6">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -231,23 +240,6 @@ color: rgb(0, 0, 0);</string>
      <string>Lnlien d'aide</string>
     </property>
    </widget>
-   <widget class="QLabel" name="UniversityLabel_7">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>300</y>
-      <width>151</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 75 14pt &quot;Arial&quot;;
-color: rgb(0, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>Choisir la langue:</string>
-    </property>
-   </widget>
    <widget class="QComboBox" name="languageSetting">
     <property name="geometry">
      <rect>
@@ -259,32 +251,42 @@ color: rgb(0, 0, 0);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">/* Styling for the QComboBox */
-QComboBox {
-    font: 75 16pt &quot;Arial&quot;;
-    background-color: rgb(0, 85, 127);
-    border-radius: 10px;
-    color: rgb(255, 255, 255);
-}
+        QComboBox {
+            font: 75 16pt &quot;Arial&quot;;
+            background-color: rgb(0, 85, 127);
+            border-radius: 10px;
+            color: rgb(255, 255, 255);
+        }
 
-/* Styling for the QComboBox when hovered */
-QComboBox:hover {
-    background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
-}
+          QComboBox::item {
+        background-color: rgb(220, 220, 220);
+        color: black;
+        }
 
-/* Styling for the QComboBox when the dropdown is activated */
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: right center;
-    width: 15px;
-    border-left-width: 0px;
-    border-left-color: darkgray;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 10px; /* same radius as the QComboBox */
-    border-bottom-right-radius: 10px; /* same radius as the QComboBox */
-}
+        QComboBox::item:selected {
+            background-color: rgb(0, 85, 127);
+            color: white;
+        }
 
-/* Styling for the QComboBox when the dropdown button is pressed */
-QComboBox::down-arrow {
+        /* Styling for the QComboBox when hovered */
+        QComboBox:hover {
+            background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+        }
+
+        /* Styling for the QComboBox when the dropdown is activated */
+        QComboBox::drop-down {
+            subcontrol-origin: padding;
+            subcontrol-position: right center;
+            width: 15px;
+            border-left-width: 0px;
+            border-left-color: darkgray;
+            border-left-style: solid; /* just a single line */
+            border-top-right-radius: 10px; /* same radius as the QComboBox */
+            border-bottom-right-radius: 10px; /* same radius as the QComboBox */
+        }
+
+        /* Styling for the QComboBox when the dropdown button is pressed */
+        QComboBox::down-arrow {
                 image: url(resources/dropdown_icon.png);
                 width: 21px;
                 height: 15px;
@@ -410,31 +412,29 @@ color: rgb(0, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">/* Styling for QLineEdit */
-QLineEdit {
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    color: #333; /* Text color */
-    background-color: #fff; /* Background color */
-    border: 1px solid #ccc; /* Border color */
-    border-radius: 5px; /* Border radius */
-    padding: 8px; /* Padding inside the QLineEdit */
-}
+     <string notr="true">
+        QLineEdit {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #333; /* Text color */
+            background-color: #fff; /* Background color */
+            border: 1px solid #ccc; /* Border color */
+            border-radius: 5px; /* Border radius */
+            padding: 8px; /* Padding inside the QLineEdit */
+        }
 
-/* Styling for QLineEdit when it's focused */
-QLineEdit:focus {
-    border: 1px solid #4d90fe; /* Focused border color */
-    outline: none; /* Remove default focus outline */
-}
+        QLineEdit:focus {
+            border: 1px solid #4d90fe; /* Focused border color */
+            outline: none; /* Remove default focus outline */
+        }
 
-/* Styling for QLineEdit when hovered */
-QLineEdit:hover {
-    border: 1px solid #999; /* Border color on hover */
-}
-QLineEdit:disabled {
-                background-color: rgb(180, 180, 180); /* Grey color for disabled state */
-                color: rgb(120, 120, 120); /* Darker text color for disabled state */
-            }
+        QLineEdit:hover {
+            border: 1px solid #999; /* Border color on hover */
+        }
+        QLineEdit:disabled {
+                        background-color: rgb(180, 180, 180); /* Grey color for disabled state */
+                        color: rgb(120, 120, 120); /* Darker text color for disabled state */
+                    }
 </string>
     </property>
    </widget>
@@ -508,39 +508,6 @@ QLineEdit:disabled {
      <string>Gérer les institutions locales</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="helpLink">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>460</y>
-      <width>581</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">/* Styling for QLineEdit */
-QLineEdit {
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    color: #333; /* Text color */
-    background-color: #fff; /* Background color */
-    border: 1px solid #ccc; /* Border color */
-    border-radius: 5px; /* Border radius */
-    padding: 8px; /* Padding inside the QLineEdit */
-}
-
-/* Styling for QLineEdit when it's focused */
-QLineEdit:focus {
-    border: 1px solid #4d90fe; /* Focused border color */
-    outline: none; /* Remove default focus outline */
-}
-
-/* Styling for QLineEdit when hovered */
-QLineEdit:hover {
-    border: 1px solid #999; /* Border color on hover */
-}</string>
-    </property>
-   </widget>
    <widget class="QCheckBox" name="allowCRKNData">
     <property name="geometry">
      <rect>
@@ -551,7 +518,10 @@ QLineEdit:hover {
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 75 14pt &quot;Arial&quot;;</string>
+     <string notr="true">
+         font: 75 14pt &quot;Arial&quot;;
+         color: black;
+     </string>
     </property>
     <property name="text">
      <string>Autoriser les données du CRKN</string>
