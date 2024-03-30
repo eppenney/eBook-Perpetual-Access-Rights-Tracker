@@ -356,10 +356,10 @@ QLabel:pressed {
    <widget class="QLabel" name="helpIcon">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>270</y>
-      <width>41</width>
-      <height>41</height>
+      <x>170</x>
+      <y>280</y>
+      <width>50</width>
+      <height>50</height>
      </rect>
     </property>
     <property name="text">

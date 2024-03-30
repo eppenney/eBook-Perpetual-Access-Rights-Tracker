@@ -1,5 +1,5 @@
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QTableWidget, QTableWidgetItem, QTextEdit, QComboBox, QWidget, QHeaderView
+from PyQt6.QtWidgets import QDialog, QTableWidget, QTableWidgetItem, QTextEdit, QComboBox, QWidget
 from src.utility.export import export_data
 from src.utility.settings_manager import Settings
 from PyQt6.QtCore import Qt
