@@ -190,7 +190,7 @@ class startScreen(QDialog):
             self.institutionName.setText(institution_name)
         else:
             self.institutionName.setText(
-                "No Institution Selected" if self.language_value == "English" else "Aucune institution sélectionnée")
+                "No Institution Selected" if self.language_value == "English" else "Aucun établissement sélectionné")
 
         # Adjust label size dynamically based on text length
         font = self.institutionName.font()
