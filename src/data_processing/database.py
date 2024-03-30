@@ -133,18 +133,24 @@ def search_database(connection, query, terms, searchTypes):
     list_of_tables = get_tables(connection)
 
     # Constructs the final query with all terms
+    wildcards = ["%", "_", "[", "]", "^", "-", "{", "}"]  # sql special characters
     for i in range(len(terms)):
         # initial query won't use OR
         if i > 0:
             query += " OR "
-        if '*' in terms[i]:
-            terms[i] = terms[i].replace("*", "%")
-            query += f"{searchTypes[i]} LIKE ?"
-        else:
-            if searchTypes[i] == "Title":
-                query += f"LOWER({searchTypes[i]}) = LOWER(?)"
+        if searchTypes[i] == "Title":
+            if '*' in terms[i]:
+                for char in wildcards:  # handles special characters that aren't intended to be used
+                    terms[i] = terms[i].replace(char, f"\\{char}")
+                terms[i] = terms[i].replace("*", "%")
+                query += f"{searchTypes[i]} LIKE ?"
+                if any(char in terms[i] for char in wildcards):
+                    query += " ESCAPE '\\'"
+                print(terms[i])
             else:
-                query += f"{searchTypes[i]} = ?"
+                query += f"LOWER({searchTypes[i]}) = LOWER(?)"
+        else:
+            query += f"{searchTypes[i]} = ?"
 
     # Searches for matching items through each table one by one and adds any matches to the list
     for table in list_of_tables:
@@ -160,6 +166,8 @@ def search_database(connection, query, terms, searchTypes):
 
             results.extend(cursor.fetchall())
     return results
+
+
 def get_table_data(connection, table_name):
     """
     Retrieve information from a specific table in the database.
