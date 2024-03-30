@@ -66,6 +66,7 @@ class settingsPage(QDialog):
 
         # Find the Push Button for manage local database
         self.manageInstitutionButton = self.findChild(QPushButton, 'manageInstitution')
+        self.manageInstitutionButton.setToolTip("Add or remove local institutes")
         self.manageInstitutionButton.clicked.connect(self.show_manage_institutions_popup)
 
         # Finding the combobox for the SaveButton

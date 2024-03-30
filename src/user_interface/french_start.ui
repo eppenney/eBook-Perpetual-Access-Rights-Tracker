@@ -223,21 +223,15 @@ color: rgb(255, 255, 255);
    </widget>
    <widget class="QLabel" name="orLabel">
     <property name="geometry">
-        <rect>
-            <x>205</x>
-            <y>280</y>
-            <width>75</width>
-            <height>50</height>
-        </rect>
-    </property>
-    <property name="text">
-        <string>OU</string>
-    </property>
-    <property name="alignment">
-        <set>Qt::AlignCenter</set>
+     <rect>
+      <x>205</x>
+      <y>280</y>
+      <width>75</width>
+      <height>50</height>
+     </rect>
     </property>
     <property name="styleSheet">
-        <string notr="true">
+     <string notr="true">
             QLabel {
                 color: rgb(255, 255, 255);
                 font: 75 16pt &quot;Arial&quot;;
@@ -246,8 +240,13 @@ color: rgb(255, 255, 255);
             }
         </string>
     </property>
-</widget>
-
+    <property name="text">
+     <string>OU</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
    <widget class="QComboBox" name="booleanBoxRight">
     <property name="geometry">
      <rect>
@@ -313,9 +312,9 @@ color: rgb(255, 255, 255);
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>750</y>
-      <width>271</width>
-      <height>31</height>
+      <y>740</y>
+      <width>281</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
