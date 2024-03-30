@@ -1,6 +1,5 @@
 import sys
-from PyQt6 import QtWidgets
-from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMessageBox, QStackedWidget
 from src.user_interface.startScreen import startScreen
 from src.data_processing.database import connect_to_database, create_file_name_tables, close_database
 from src.user_interface.scraping_ui import scrapeCRKN
@@ -41,7 +40,7 @@ def main():
 
     app = QApplication(sys.argv)
     app.setApplicationDisplayName("ePat")
-    widget = QtWidgets.QStackedWidget()
+    widget = QStackedWidget()
 
     if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/src/utility/ebook_database.db"):
         # Create database and structure
