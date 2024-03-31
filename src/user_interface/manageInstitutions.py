@@ -1,11 +1,11 @@
 from PyQt6.QtWidgets import QDialog, QPushButton, QLabel, QInputDialog, QFrame, QMessageBox
 from PyQt6.uic import loadUi
-from src.utility.upload import upload_and_process_file
-from src.data_processing.database import get_local_tables, connect_to_database, close_database, get_table_data
+from src.data_processing.database import connect_to_database, close_database
 from src.utility.settings_manager import Settings
 import os
 
 settings_manager = Settings()
+
 
 class ManageInstitutionsPopup(QDialog):
     
@@ -14,7 +14,7 @@ class ManageInstitutionsPopup(QDialog):
         self.language_value = settings_manager.get_setting("language")
         self.setWindowTitle("Manage Institutions" if self.language_value == "English" else "Gérer les établissements")
     
-        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_manageInstitution.ui")
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_manageInstitution.ui")
         loadUi(ui_file, self) 
 
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
@@ -47,7 +47,6 @@ class ManageInstitutionsPopup(QDialog):
         
         close_database(connection)
 
-        
     def remove_institution(self, institution):
         from src.utility.upload import remove_local_file
         confirm = QMessageBox.question(self, "Confirmation", 

@@ -1,12 +1,12 @@
 import sys
-from PyQt6 import QtWidgets
-from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMessageBox, QStackedWidget
 from src.user_interface.startScreen import startScreen
 from src.data_processing.database import connect_to_database, create_file_name_tables, close_database
 from src.user_interface.scraping_ui import scrapeCRKN
 from src.user_interface.welcomeScreen import WelcomePage
 from src.utility.settings_manager import Settings
 from src.utility.logger import m_logger
+from src.utility.utils import get_base_path
 import os
 
 
@@ -41,15 +41,18 @@ def main():
 
     app = QApplication(sys.argv)
     app.setApplicationDisplayName("ePat")
-    widget = QtWidgets.QStackedWidget()
+    widget = QStackedWidget()
 
-    if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/src/utility/ebook_database.db"):
+    settings_path = os.path.join(get_base_path(), 'settings.json')
+    db_path = os.path.join(get_base_path(), 'ebook_database.db')
+
+    if not os.path.exists(db_path):
         # Create database and structure
         connection_obj = connect_to_database()
         create_file_name_tables(connection_obj)
         close_database(connection_obj)
 
-    if not os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/src/utility/settings.json"):
+    if not os.path.exists(settings_path):
         language_choice = language_selection()
         settings_manager.set_language(language_choice)
 

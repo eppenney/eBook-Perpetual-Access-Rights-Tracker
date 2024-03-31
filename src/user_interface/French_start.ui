@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Dialogue</string>
   </property>
   <widget class="QWidget" name="widget" native="true">
    <property name="geometry">
@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(220, 220, 220);color:black;</string>
+    <string>background-color: rgb(220, 220, 220);color:black;</string>
    </property>
    <widget class="QWidget" name="widget_2" native="true">
     <property name="geometry">
@@ -35,8 +35,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 85, 127);
-</string>
+     <string>background-color: rgb(0, 85, 127);</string>
     </property>
     <widget class="QLabel" name="label">
      <property name="geometry">
@@ -48,9 +47,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 75 36pt &quot;Arial&quot;;
-color: rgb(255, 255, 255);
-</string>
+      <string>font: 75 36pt &quot;Arial&quot;; color: white;</string>
      </property>
      <property name="text">
       <string>ePAT</string>
@@ -66,10 +63,9 @@ color: rgb(255, 255, 255);
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: transparent;
-          border-color: transparent;
-          color: rgb(255, 255, 255);
-      </string>
+      <string>background-color: transparent;
+        border-color: transparent;
+        color: white;</string>
      </property>
      <property name="text">
       <string/>
@@ -86,14 +82,14 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string>
             QLineEdit {
                 border-radius: 10px;
                 font: 16pt &quot;Arial&quot;;
-                background-color: rgb(255, 255, 255);
-                padding-top: 1px; 
+                background-color: white;
+                padding-top: 1px;
                 padding-bottom: 1px;
-                color: black;
+                color:black;
             }
         </string>
     </property>
@@ -108,12 +104,12 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string>
             QPushButton {
                 font: 75 20pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: rgb(255, 255, 255);
+                color: white;
             }
 
             QPushButton:hover {
@@ -126,7 +122,7 @@ color: rgb(255, 255, 255);
         </string>
     </property>
     <property name="text">
-     <string>Search </string>
+     <string>Rechercher</string>
     </property>
    </widget>
    <widget class="QPushButton" name="clearButton">
@@ -139,12 +135,12 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string>
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: rgb(255, 255, 255);
+                color: white;
             }
 
             QPushButton:hover {
@@ -157,7 +153,7 @@ color: rgb(255, 255, 255);
         </string>
     </property>
     <property name="text">
-     <string>Clear</string>
+     <string>Effacer</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
@@ -170,12 +166,12 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string>
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
-                border-radius: 10px;
-                color: rgb(255, 255, 255);
+                border-radius: 20px;
+                color: white;
             }
 
             QPushButton:hover {
@@ -201,12 +197,12 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string>
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
-                border-radius: 10px;
-                color: rgb(255, 255, 255);
+                border-radius: 20px;
+                color: white;
             }
 
             QPushButton:hover {
@@ -231,21 +227,21 @@ color: rgb(255, 255, 255);
       <height>50</height>
      </rect>
     </property>
+    <property name="text">
+     <string>OU</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string>
       QLabel {
-       color: rgb(255, 255, 255);
+       color: white;
        font: 75 16pt &quot;Arial&quot;;
        background-color: rgb(0, 85, 127);
        border-radius: 10px;
       }
      </string>
-    </property>
-    <property name="text">
-     <string>OR</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QComboBox" name="booleanBoxRight">
@@ -258,9 +254,9 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string>
             QComboBox {
-                color: rgb(255, 255, 255);
+                color: white;
                 font: 75 12pt &quot;Arial&quot;;
                 border-radius: 10px;
                 background-color: rgb(0, 85, 127);
@@ -286,7 +282,7 @@ color: rgb(255, 255, 255);
             }
 
             QComboBox QAbstractItemView {
-                color: rgb(255, 255, 255);
+                color: white;
                 background-color: rgb(0, 85, 127);
                 border-bottom-right-radius: 20px;
                 border-bottom-left-radius: 20px;
@@ -295,7 +291,7 @@ color: rgb(255, 255, 255);
     </property>
     <item>
      <property name="text">
-      <string>Title</string>
+      <string>Titre</string>
      </property>
     </item>
     <item>
@@ -319,15 +315,23 @@ color: rgb(255, 255, 255);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">QLabel {
-    font: 75 11pt &quot;Arial&quot;;
-    background-color: rgb(0, 85, 127);
-    border-radius: 10px;
-    color: rgb(255, 255, 255);
-    padding: 10px; /* Add padding to center the text */
-    qproperty-alignment: AlignCenter; /* Align text to the center */
-}
-</string>
+     <string>
+         QLabel {
+            font: 75 11pt &quot;Arial&quot;;
+            background-color: rgb(0, 85, 127);
+            border-radius: 10px;
+            color: white;
+            padding: 10px; /* Add padding to center the text */
+            qproperty-alignment: AlignCenter; /* Align text to the center */
+        }
+
+        QLabel:hover {
+            background-color: rgb(0, 75, 117); /* Slightly darker color when hovered */
+        }
+
+        QLabel:pressed {
+            background-color: rgb(0, 65, 107); /* Even darker color when clicked */
+        }</string>
     </property>
     <property name="text">
      <string/>
@@ -350,9 +354,9 @@ color: rgb(255, 255, 255);
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>270</y>
-      <width>41</width>
-      <height>41</height>
+      <y>280</y>
+      <width>40</width>
+      <height>50</height>
      </rect>
     </property>
     <property name="text">

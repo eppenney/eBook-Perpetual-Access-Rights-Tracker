@@ -16,6 +16,7 @@ settings_manager = Settings()
 
 class WelcomePage(QDialog):
     _instance = None
+
     @classmethod
     def get_instance(cls, arg):
         if not cls._instance:
@@ -38,7 +39,7 @@ class WelcomePage(QDialog):
         self.language_value = settings_manager.get_setting("language")
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_welcome_screen.ui")
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_welcome_screen.ui")
         loadUi(ui_file, self)
 
         self.widget = widget
@@ -53,7 +54,6 @@ class WelcomePage(QDialog):
         self.allowCRKN = self.findChild(QCheckBox, "allowCRKNData")
         self.allowCRKN.setChecked(settings_manager.get_setting("allow_CRKN") == "True")
         self.allowCRKN.clicked.connect(lambda: [self.save_allow_crkn(), self.resetApp()])
-
 
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL = self.findChild(QLineEdit, 'crknURL')
@@ -146,9 +146,7 @@ class WelcomePage(QDialog):
     def set_current_settings_values(self):
         # Set the current language selection
         current_language = settings_manager.get_setting("language")
-        language_index = self.language_box.findText(current_language, Qt.MatchFlag.MatchFixedString)
-        if language_index >= 0:
-            self.language_box.setCurrentIndex(language_index)
+        self.language_box.setCurrentIndex(0 if current_language == "English" else 1)
 
         # Set the current CRKN URL
         current_crkn_url = settings_manager.get_setting("CRKN_url")
@@ -167,7 +165,6 @@ class WelcomePage(QDialog):
         allow_crkn = settings_manager.get_setting("allow_CRKN")
         if allow_crkn != "True":
             self.crknURL.setEnabled(False)
-
 
     def update_all_sizes(self):
 
@@ -203,13 +200,12 @@ class WelcomePage(QDialog):
                 if original_font_size is not None:
                     font.setPointSize(int(original_font_size * (new_width / original_width)))
                 widget.setFont(font)
+
     def resizeEvent(self, event):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
         super().resizeEvent(event)
         self.update_all_sizes()
 
-    
-        
     def resetApp(self):
         widget_count = self.widget.count()
         for i in range(widget_count):

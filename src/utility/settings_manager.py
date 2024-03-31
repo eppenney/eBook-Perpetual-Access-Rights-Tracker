@@ -1,5 +1,6 @@
 import json
 import os
+from src.utility.utils import get_base_path
 
 
 '''
@@ -45,7 +46,7 @@ class Settings(metaclass=SingletonMeta):
     def __init__(self, settings_file=None):
         if not hasattr(self, 'initialized'):  # Avoid reinitialization
             if settings_file is None:
-                settings_file = f"{os.path.abspath(os.path.dirname(__file__))}/settings.json"
+                settings_file = os.path.join(get_base_path(), "settings.json")
             self.settings_file = settings_file
             self.settings = self.load_settings()
             self.initialized = True
@@ -57,7 +58,7 @@ class Settings(metaclass=SingletonMeta):
                 settings = json.load(file)
         except FileNotFoundError:
             # Write default settings to a new settings.json
-            default_db_path = os.path.join(os.path.dirname(self.settings_file), 'ebook_database.db')
+            default_db_path = os.path.join(get_base_path(), 'ebook_database.db')
             settings = {
                 "language": "English",
                 "allow_CRKN": "True",
@@ -67,7 +68,7 @@ class Settings(metaclass=SingletonMeta):
                 "CRKN_institutions": [],
                 "local_institutions": [],
                 "database_name": default_db_path,
-                "github_link": "https://github.com/eppenney/eBook-Perpetual-Access-Rights-Tracker"
+                "github_link": "https://github.com/eppenney/eBook-Perpetual-Access-Rights-Tracker/wiki/Help-‐-Home"
             }
             # Set the CRKN root url from the CRKN url
             url_parts = settings["CRKN_url"].split('/')

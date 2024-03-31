@@ -1,5 +1,5 @@
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QTableWidget, QTableWidgetItem, QTextEdit, QComboBox, QWidget, QHeaderView
+from PyQt6.QtWidgets import QDialog, QTableWidget, QTableWidgetItem, QTextEdit, QComboBox, QWidget
 from src.utility.export import export_data
 from src.utility.settings_manager import Settings
 from PyQt6.QtCore import Qt
@@ -31,7 +31,7 @@ class searchDisplay(QDialog):
 
     def __init__(self, widget, results):
         super(searchDisplay, self).__init__()
-        language_value = settings_manager.get_setting("language").lower()
+        language_value = settings_manager.get_setting("language")
         ui_file = os.path.join(os.path.dirname(__file__), f"{language_value}_searchDisplay.ui")
         loadUi(ui_file, self)
 
@@ -57,10 +57,8 @@ class searchDisplay(QDialog):
         else:
             self.cellName.setText("No cell selected")
 
-
     def backToStartScreen(self):
         self.widget.removeWidget(self.widget.currentWidget())
-
 
     def display_results_in_table(self):
         self.tableWidget.setRowCount(0) 

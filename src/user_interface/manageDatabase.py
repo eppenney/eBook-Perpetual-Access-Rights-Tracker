@@ -1,11 +1,12 @@
 from PyQt6.QtWidgets import QDialog, QPushButton, QLabel, QFrame, QMessageBox
 from PyQt6.uic import loadUi
 from src.utility.upload import upload_and_process_file
-from src.data_processing.database import get_local_tables, connect_to_database, close_database, get_table_data
+from src.data_processing.database import connect_to_database, close_database, get_table_data
 from src.utility.settings_manager import Settings
 import os
 
 settings_manager = Settings()
+
 
 class ManageLocalDatabasesPopup(QDialog):
     
@@ -14,7 +15,7 @@ class ManageLocalDatabasesPopup(QDialog):
         self.language_value = settings_manager.get_setting("language")
         self.setWindowTitle("Manage Local Databases" if self.language_value == "English" else "Gérer les bases de données locales")
     
-        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_manageDatabase.ui")
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_manageDatabase.ui")
         loadUi(ui_file, self) 
 
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
