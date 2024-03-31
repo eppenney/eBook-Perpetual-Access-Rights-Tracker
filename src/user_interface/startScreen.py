@@ -110,12 +110,12 @@ class startScreen(QDialog):
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
         self.institutionButton = self.findChild(QPushButton, "institutionButton")
         self.institutionName = self.findChild(QLabel, "institutionName")
-        self.institutionName.setToolTip("Currently Selected Institution")
+        self.institutionName.setToolTip("Currently Selected Institution" if self.language_value == "English" else "établissement sélectionné")
 
         # Clear Button
         self.clearButton = self.findChild(QPushButton, "clearButton")
         self.clearButton.clicked.connect(self.clearSearch)
-        self.clearButton.setToolTip("Clear all results")
+        self.clearButton.setToolTip("Reset search fields" if self.language_value == "English" else "Réinitialiser les champs de recherche")
 
         self.duplicateCount = 0
         self.orLabel.hide()
@@ -123,11 +123,11 @@ class startScreen(QDialog):
         # Add and remove field buttons:
         self.addFieldButton = self.findChild(QPushButton, 'pushButton')
         self.addFieldButton.clicked.connect(self.duplicateTextEdit)
-        self.addFieldButton.setToolTip("Add search field")
+        self.addFieldButton.setToolTip("Add search field" if self.language_value == "English" else "Ajouter un champ de recherche")
 
-        self.removeFieldButton = self.findChild(QPushButton, 'removeButton') #finding child pushButton from the parent class
+        self.removeFieldButton = self.findChild(QPushButton, 'removeButton')
         self.removeFieldButton.clicked.connect(self.removeTextEdit)
-        self.removeFieldButton.setToolTip("Remove search field")
+        self.removeFieldButton.setToolTip("Remove search field" if self.language_value == "English" else "Supprimer le champ de recherche")
 
 
         self.search.clicked.connect(self.search_button_clicked)
@@ -137,7 +137,10 @@ class startScreen(QDialog):
         self.helpIcon.setPixmap(QPixmap(get_image_path("helpIcon.png")))
         clickable_help_icon = ClickableLabel(self)
         clickable_help_icon.setGeometry(self.helpIcon.geometry())
-        self.helpIcon.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
+        if self.language_value == "English":
+            self.helpIcon.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
+        else:
+            self.helpIcon.setToolTip("Toutes les recherches sont des recherches exactes.\nPour effectuer une recherche par mot-clé, entourez votre recherche d’astérisques.")
 
         # clickable_help_icon.mousePressEvent = self.open_url  # Override the mousePressEvent
 
@@ -187,12 +190,20 @@ class startScreen(QDialog):
             self.updateConnectionStatus(False)
 
     def updateConnectionStatus(self, isConnected):
-        if isConnected:
-            self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("green_signal.png")))
-            self.internetConnectionLabel.setToolTip("Internet Connection: Online")
+        if self.language_value == "English":
+            if isConnected:
+                self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("green_signal.png")))
+                self.internetConnectionLabel.setToolTip("Internet Connection: Online")
+            else:
+                self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("red_signal.png")))
+                self.internetConnectionLabel.setToolTip("Internet Connection: Offline")
         else:
-            self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("red_signal.png")))
-            self.internetConnectionLabel.setToolTip("Internet Connection: Offline")
+            if isConnected:
+                self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("green_signal.png")))
+                self.internetConnectionLabel.setToolTip("Connexion Internet : en ligne")
+            else:
+                self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("red_signal.png")))
+                self.internetConnectionLabel.setToolTip("Internet Connection : hors ligne")
 
     def displayInstitutionName(self):
         institution_name = settings_manager.get_setting('institution')
