@@ -41,7 +41,7 @@ class settingsPage(QDialog):
 
         super(settingsPage, self).__init__()
         self.language_value = settings_manager.get_setting("language")
-        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_settingsPage.ui")
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_settingsPage.ui")
         loadUi(ui_file, self)
 
         self.backButton2 = self.findChild(QPushButton, 'backButton')  # finding child pushButton from the parent class

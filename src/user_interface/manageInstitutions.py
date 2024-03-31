@@ -13,7 +13,7 @@ class ManageInstitutionsPopup(QDialog):
         self.language_value = settings_manager.get_setting("language")
         self.setWindowTitle("Manage Institutions" if self.language_value == "English" else "Gérer les établissements")
     
-        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_manageInstitution.ui")
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_manageInstitution.ui")
         loadUi(ui_file, self) 
 
         self.uploadButton = self.findChild(QPushButton, 'uploadButton')
