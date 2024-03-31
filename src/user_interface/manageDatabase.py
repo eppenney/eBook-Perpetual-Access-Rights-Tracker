@@ -7,6 +7,7 @@ import os
 
 settings_manager = Settings()
 
+
 class ManageLocalDatabasesPopup(QDialog):
     
     def __init__(self, parent=None):

@@ -18,7 +18,6 @@ settings_manager = Settings()
 class settingsPage(QDialog):
     _instance = None
 
-
     @classmethod
     def get_instance(cls, arg):
         if not cls._instance:
@@ -37,8 +36,6 @@ class settingsPage(QDialog):
         return cls._instance
 
     def __init__(self, widget):
-
-
         super(settingsPage, self).__init__()
         self.language_value = settings_manager.get_setting("language")
         ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_settingsPage.ui")
@@ -95,7 +92,7 @@ class settingsPage(QDialog):
         self.languageSelection.activated.connect(self.save_language)
         self.languageSelection.setCurrentIndex(0 if settings_manager.get_setting("language") == "English" else 1)
 
-        # Allow CRKN tickbox 
+        # Allow CRKN checkbox
         self.allowCRKN = self.findChild(QCheckBox, "allowCRKNData")
         self.allowCRKN.clicked.connect(self.save_allow_CRKN)
         self.allowCRKN.setChecked(settings_manager.get_setting("allow_CRKN") == "True")
@@ -112,9 +109,11 @@ class settingsPage(QDialog):
 
         self.helpURL = self.findChild(QLineEdit, 'helpURL')
         self.helpURL.setText(current_help_url)
-        self.helpURL.setToolTip("Press Enter to confirm changes")
+        if self.language_value == "English":
+            self.crknURL.setToolTip("Press Enter to confirm changes")
+        elif self.language_value == "French":
+            self.crknURL.setToolTip("Appuyez sur Entrée pour confirmer les modifications")
         self.helpURL.returnPressed.connect(self.save_help_url)
-
 
         self.set_current_settings_values()
 
@@ -166,7 +165,7 @@ class settingsPage(QDialog):
             return
         reply = QMessageBox.question(None, "Language Change" if current_language == "English" else "Changement de langue", 
                                      "Are you sure you want to change your language setting?" if current_language == "English" else "Êtes-vous sûr de vouloir modifier votre paramètre de langue ?", 
-                                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
             settings_manager.set_language("English" if selected_language == 0 else "French")   
         self.reset_app()
@@ -178,8 +177,8 @@ class settingsPage(QDialog):
         response = QMessageBox.warning(self, "Change Institution" if self.language_value == "English" else "Changer d'établissement", 
                             "Are you sure you want to change the institution?" if self.language_value == "English" else "Etes-vous sûr de vouloir changer d'établissement?",
                             QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
-        if (response == QMessageBox.StandardButton.Yes):
-            if (selected_institution.strip()):
+        if response == QMessageBox.StandardButton.Yes:
+            if selected_institution.strip():
                 settings_manager.set_institution(selected_institution)
             else:
                 settings_manager.set_institution("")
@@ -198,7 +197,7 @@ class settingsPage(QDialog):
         response = QMessageBox.warning(self, "Change CRKN URL" if self.language_value == "English" else "Modifier l'URL du CRKN", 
                             "Are you sure you want to change the CRKN retrieval URL?" if self.language_value == "English" else "Êtes-vous sûr de vouloir modifier l'URL de récupération du CRKN?",
                             QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
-        if (response == QMessageBox.StandardButton.Yes):
+        if response == QMessageBox.StandardButton.Yes:
             settings_manager.set_crkn_url(crkn_url)
         self.reset_app()
 
@@ -215,7 +214,7 @@ class settingsPage(QDialog):
         response = QMessageBox.warning(self, "Change help URL" if self.language_value == "English" else "Modifier l'URL de l'aide", 
                             "Are you sure you want to change the help URL?" if self.language_value == "English" else "Êtes-vous sûr de vouloir modifier l'URL d'aide ?",
                             QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
-        if (response == QMessageBox.StandardButton.Yes):
+        if response == QMessageBox.StandardButton.Yes:
             settings_manager.set_github_url(help_url)
         self.reset_app()
 
@@ -333,9 +332,3 @@ class settingsPage(QDialog):
         popup = ManageInstitutionsPopup(self)
         popup.finished.connect(self.reset_app)
         popup.exec()
-
-
-#Error i am encountering right now is based on the adding of institution and checking out if they already exist.
-#saving currently is not working as when clicked will shit down the application.
-# I have to make the things working.
-

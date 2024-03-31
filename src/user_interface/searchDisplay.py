@@ -57,10 +57,8 @@ class searchDisplay(QDialog):
         else:
             self.cellName.setText("No cell selected")
 
-
     def backToStartScreen(self):
         self.widget.removeWidget(self.widget.currentWidget())
-
 
     def display_results_in_table(self):
         self.tableWidget.setRowCount(0) 

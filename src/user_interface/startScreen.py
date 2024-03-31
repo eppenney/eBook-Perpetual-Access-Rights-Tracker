@@ -110,12 +110,12 @@ class startScreen(QDialog):
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
         self.institutionButton = self.findChild(QPushButton, "institutionButton")
         self.institutionName = self.findChild(QLabel, "institutionName")
-        self.institutionName.setToolTip("Currently Selected Institution")
+        self.institutionName.setToolTip("Currently Selected Institution" if self.language_value == "English" else "établissement sélectionné")
 
         # Clear Button
         self.clearButton = self.findChild(QPushButton, "clearButton")
         self.clearButton.clicked.connect(self.clearSearch)
-        self.clearButton.setToolTip("Clear all results")
+        self.clearButton.setToolTip("Reset search fields" if self.language_value == "English" else "Réinitialiser les champs de recherche")
 
         self.duplicateCount = 0
         self.orLabel.hide()
@@ -123,11 +123,11 @@ class startScreen(QDialog):
         # Add and remove field buttons:
         self.addFieldButton = self.findChild(QPushButton, 'pushButton')
         self.addFieldButton.clicked.connect(self.duplicateTextEdit)
-        self.addFieldButton.setToolTip("Add search field")
+        self.addFieldButton.setToolTip("Add search field" if self.language_value == "English" else "Ajouter un champ de recherche")
 
-        self.removeFieldButton = self.findChild(QPushButton, 'removeButton') #finding child pushButton from the parent class
+        self.removeFieldButton = self.findChild(QPushButton, 'removeButton')
         self.removeFieldButton.clicked.connect(self.removeTextEdit)
-        self.removeFieldButton.setToolTip("Remove search field")
+        self.removeFieldButton.setToolTip("Remove search field" if self.language_value == "English" else "Supprimer le champ de recherche")
 
 
         self.search.clicked.connect(self.search_button_clicked)
@@ -137,20 +137,17 @@ class startScreen(QDialog):
         self.helpIcon.setPixmap(QPixmap(get_image_path("helpIcon.png")))
         clickable_help_icon = ClickableLabel(self)
         clickable_help_icon.setGeometry(self.helpIcon.geometry())
-        self.helpIcon.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
+        if self.language_value == "English":
+            self.helpIcon.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
+        else:
+            self.helpIcon.setToolTip("Toutes les recherches sont des recherches exactes.\nPour effectuer une recherche par mot-clé, entourez votre recherche d’astérisques.")
 
         # clickable_help_icon.mousePressEvent = self.open_url  # Override the mousePressEvent
 
         # # making a group of different button to give a effect of burger menu
         self.buttonGroup = QButtonGroup()
 
-        # # Settings
-        # self.settingMenuButton.setIcon(QIcon("resources/Gear-icon.png"))
-        # self.settingMenuButton.setGeometry(15, 15, self.settingMenuButton.width(), self.settingMenuButton.height())
-        # icon_size = self.settingMenuButton.size()
-        # self.settingMenuButton.setIconSize(icon_size)
-        # self.settingMenuButton.clicked.connect(self.settingsDisplay)
-
+        # Settings button
         self.settingMenuButton = RotatableButton(get_image_path("Gear-icon.png"), self.settingsDisplay, self)
         self.settingMenuButton.clicked.connect(self.settingsDisplay)
         self.widget = widget
@@ -187,12 +184,20 @@ class startScreen(QDialog):
             self.updateConnectionStatus(False)
 
     def updateConnectionStatus(self, isConnected):
-        if isConnected:
-            self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("green_signal.png")))
-            self.internetConnectionLabel.setToolTip("Internet Connection: Online")
+        if self.language_value == "English":
+            if isConnected:
+                self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("green_signal.png")))
+                self.internetConnectionLabel.setToolTip("Internet Connection: Online")
+            else:
+                self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("red_signal.png")))
+                self.internetConnectionLabel.setToolTip("Internet Connection: Offline")
         else:
-            self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("red_signal.png")))
-            self.internetConnectionLabel.setToolTip("Internet Connection: Offline")
+            if isConnected:
+                self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("green_signal.png")))
+                self.internetConnectionLabel.setToolTip("Connexion Internet : en ligne")
+            else:
+                self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("red_signal.png")))
+                self.internetConnectionLabel.setToolTip("Internet Connection : hors ligne")
 
     def displayInstitutionName(self):
         institution_name = settings_manager.get_setting('institution')
@@ -214,38 +219,38 @@ class startScreen(QDialog):
     # This method responsible for making the new text edit each time the plus sign is clicked.
     # Basically we are only having limit of 5 searches at the same time
     def duplicateTextEdit(self):
-      if self.dupTextEdit == None:
-          self.dupTextEdit = self.newTextEdit()
-      MAX_DUPLICATES = 4
+        if self.dupTextEdit == None:
+            self.dupTextEdit = self.newTextEdit()
+        MAX_DUPLICATES = 4
 
-      if self.duplicateCount < MAX_DUPLICATES:
-        self.duplicateCount += 1  # Use the corrected attribute name
+        if self.duplicateCount < MAX_DUPLICATES:
+            self.duplicateCount += 1  # Use the corrected attribute name
 
-        new_text = self.newTextEdit()
-        self.duplicateTextEdits.append(new_text) # this will store in the system making it like a stack that way we can pop through when negative
-        new_text.show()
+            new_text = self.newTextEdit()
+            self.duplicateTextEdits.append(new_text) # this will store in the system making it like a stack that way we can pop through when negative
+            new_text.show()
         
 
-        new_and_or_box = self.newOrLabel()
-        self.duplicateCombos.append(new_and_or_box)
-        new_and_or_box.show()
+            new_and_or_box = self.newOrLabel()
+            self.duplicateCombos.append(new_and_or_box)
+            new_and_or_box.show()
 
-        new_search_type = self.newBooleanSearchType()
-        self.duplicateSearchTypes.append(new_search_type)
-        new_search_type.show()
+            new_search_type = self.newBooleanSearchType()
+            self.duplicateSearchTypes.append(new_search_type)
+            new_search_type.show()
 
-        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 1)
-        self.addFieldButton.setGeometry(self.addFieldButton.x(), newY, self.addFieldButton.width(), self.addFieldButton.height())
-        self.removeFieldButton.setGeometry(self.removeFieldButton.x(), newY, self.removeFieldButton.width(), self.removeFieldButton.height())
+            newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 1)
+            self.addFieldButton.setGeometry(self.addFieldButton.x(), newY, self.addFieldButton.width(), self.addFieldButton.height())
+            self.removeFieldButton.setGeometry(self.removeFieldButton.x(), newY, self.removeFieldButton.width(), self.removeFieldButton.height())
 
-        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 2)
-        self.search.setGeometry(self.search.x(), newY, self.search.width(), self.search.height())
+            newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 2)
+            self.search.setGeometry(self.search.x(), newY, self.search.width(), self.search.height())
 
-        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 3)
-        self.clearButton.setGeometry(self.clearButton.x(), newY, self.clearButton.width(), self.clearButton.height())
+            newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 3)
+            self.clearButton.setGeometry(self.clearButton.x(), newY, self.clearButton.width(), self.clearButton.height())
 
-      else:
-          QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "Limite atteinte", f"You can only search with {MAX_DUPLICATES+1} fields at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher avec {MAX_DUPLICATES+1} cases à la fois.")
+        else:
+            QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "Limite atteinte", f"You can only search with {MAX_DUPLICATES+1} fields at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher avec {MAX_DUPLICATES+1} cases à la fois.")
 
     def adjustDuplicateTextEditSize(self):
         for i in range(len(self.duplicateTextEdits)):
@@ -370,7 +375,6 @@ class startScreen(QDialog):
         search = searchDisplay.replace_instance(self.widget, results)
         self.widget.addWidget(search)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
-        # search.display_results_in_table(results)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
@@ -432,15 +436,10 @@ class startScreen(QDialog):
             return
 
         self.searchToDisplay(results)
-        
 
-    
     """
-
     You may notice this differs from the update_all_sizes method on other pages. Search boxes required extra functionality. 
     There is issues with I think empty widgets being stored, but I just threw in a try/except that seems to bandaid it. 
-    - Ethan
-    Mar 4th
     """
     def update_all_sizes(self):
         self.new_width = self.width() + 25
@@ -479,7 +478,6 @@ class startScreen(QDialog):
                 
             except RuntimeError:
                 continue
-                # print("Widget resizing error") # All these damn prints getting annoying - E
         self.adjustDuplicateTextEditSize()
 
     def resizeEvent(self, event):
