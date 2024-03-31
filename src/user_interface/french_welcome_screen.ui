@@ -140,7 +140,7 @@
      <string>font: 75 14pt &quot;Arial&quot;; color: black;</string>
     </property>
     <property name="text">
-     <string>Sélectionnez la Langue :</string>
+     <string>Sélectionnez la langue :</string>
     </property>
    </widget>
    <widget class="QComboBox" name="languageSetting">
