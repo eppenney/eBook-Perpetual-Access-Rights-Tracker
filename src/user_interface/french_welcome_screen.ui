@@ -220,7 +220,7 @@
      <string>font: 75 14pt &quot;Arial&quot;;color:black;</string>
     </property>
     <property name="text">
-     <string>Autoriser les données du CRKN</string>
+     <string>Autoriser les données du RCDR</string>
     </property>
    </widget>
    <widget class="QLabel" name="UniversityLabel_8">
