@@ -16,6 +16,7 @@ settings_manager = Settings()
 
 class WelcomePage(QDialog):
     _instance = None
+
     @classmethod
     def get_instance(cls, arg):
         if not cls._instance:
@@ -53,7 +54,6 @@ class WelcomePage(QDialog):
         self.allowCRKN = self.findChild(QCheckBox, "allowCRKNData")
         self.allowCRKN.setChecked(settings_manager.get_setting("allow_CRKN") == "True")
         self.allowCRKN.clicked.connect(lambda: [self.save_allow_crkn(), self.resetApp()])
-
 
         current_crkn_url = settings_manager.get_setting("CRKN_url")
         self.crknURL = self.findChild(QLineEdit, 'crknURL')
@@ -166,7 +166,6 @@ class WelcomePage(QDialog):
         if allow_crkn != "True":
             self.crknURL.setEnabled(False)
 
-
     def update_all_sizes(self):
 
         original_width = 1200
@@ -201,13 +200,12 @@ class WelcomePage(QDialog):
                 if original_font_size is not None:
                     font.setPointSize(int(original_font_size * (new_width / original_width)))
                 widget.setFont(font)
+
     def resizeEvent(self, event):
         # Override the resizeEvent method to call update_all_sizes when the window is resized
         super().resizeEvent(event)
         self.update_all_sizes()
 
-    
-        
     def resetApp(self):
         widget_count = self.widget.count()
         for i in range(widget_count):

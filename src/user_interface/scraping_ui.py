@@ -6,11 +6,13 @@ from src.utility.settings_manager import Settings
 settings_manager = Settings()
 language = settings_manager.get_setting("language")
 
+
 def scrapeCRKN():
     global language 
     language = settings_manager.get_setting("language")
     loading_popup = LoadingPopup()
     loading_popup.exec()
+
 
 class LoadingPopup(QDialog):
     def __init__(self):

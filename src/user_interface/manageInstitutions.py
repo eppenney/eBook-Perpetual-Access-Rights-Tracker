@@ -6,6 +6,7 @@ import os
 
 settings_manager = Settings()
 
+
 class ManageInstitutionsPopup(QDialog):
     
     def __init__(self, parent=None):
@@ -46,7 +47,6 @@ class ManageInstitutionsPopup(QDialog):
         
         close_database(connection)
 
-        
     def remove_institution(self, institution):
         from src.utility.upload import remove_local_file
         confirm = QMessageBox.question(self, "Confirmation", 
