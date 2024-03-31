@@ -31,7 +31,7 @@ class searchDisplay(QDialog):
 
     def __init__(self, widget, results):
         super(searchDisplay, self).__init__()
-        language_value = settings_manager.get_setting("language").lower()
+        language_value = settings_manager.get_setting("language")
         ui_file = os.path.join(os.path.dirname(__file__), f"{language_value}_searchDisplay.ui")
         loadUi(ui_file, self)
 

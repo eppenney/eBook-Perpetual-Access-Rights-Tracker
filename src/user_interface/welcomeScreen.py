@@ -38,7 +38,7 @@ class WelcomePage(QDialog):
         self.language_value = settings_manager.get_setting("language")
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value.lower()}_welcome_screen.ui")
+        ui_file = os.path.join(os.path.dirname(__file__), f"{self.language_value}_welcome_screen.ui")
         loadUi(ui_file, self)
 
         self.widget = widget
