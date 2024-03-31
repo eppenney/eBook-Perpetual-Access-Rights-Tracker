@@ -158,7 +158,7 @@ color: white;
      <rect>
       <x>310</x>
       <y>200</y>
-      <width>240</width>
+      <width>245</width>
       <height>41</height>
      </rect>
     </property>
@@ -237,7 +237,7 @@ color: black;</string>
 color: black;</string>
     </property>
     <property name="text">
-     <string>Sélectionnez la Langue :</string>
+     <string>Sélectionnez la langue :</string>
     </property>
    </widget>
    <widget class="QComboBox" name="languageSetting">
@@ -505,7 +505,7 @@ color: black;</string>
         </string>
     </property>
     <property name="text">
-     <string>Gérer les établissements locals</string>
+     <string>Gérer les établissements locales</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="allowCRKNData">
