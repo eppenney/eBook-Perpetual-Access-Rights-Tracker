@@ -133,14 +133,14 @@ class startScreen(QDialog):
         self.search.clicked.connect(self.search_button_clicked)
         self.widget = widget  # Store the QStackedWidget reference
 
-        self.helpIcon = self.findChild(QLabel, 'helpIcon')
-        self.helpIcon.setPixmap(QPixmap(get_image_path("helpIcon.png")))
-        clickable_help_icon = ClickableLabel(self)
-        clickable_help_icon.setGeometry(self.helpIcon.geometry())
-        if self.language_value == "English":
-            self.helpIcon.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
-        else:
-            self.helpIcon.setToolTip("Toutes les recherches sont des recherches exactes.\nPour effectuer une recherche par mot-clé, entourez votre recherche d’astérisques.")
+        # self.helpIcon = self.findChild(QLabel, 'helpIcon')
+        # self.helpIcon.setPixmap(QPixmap(get_image_path("helpIcon.png")))
+        # clickable_help_icon = ClickableLabel(self)
+        # clickable_help_icon.setGeometry(self.helpIcon.geometry())
+        # if self.language_value == "English":
+        #     self.helpIcon.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
+        # else:
+        #     self.helpIcon.setToolTip("Toutes les recherches sont des recherches exactes.\nPour effectuer une recherche par mot-clé, entourez votre recherche d’astérisques.")
 
         # clickable_help_icon.mousePressEvent = self.open_url  # Override the mousePressEvent
 

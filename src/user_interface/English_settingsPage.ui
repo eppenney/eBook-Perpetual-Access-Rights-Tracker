@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string>background-color: rgb(220, 220, 220);color:black;</string>
+    <string notr="true">background-color: rgb(220, 220, 220);color:black;</string>
    </property>
    <widget class="QWidget" name="widget_2" native="true">
     <property name="geometry">
@@ -35,7 +35,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string>background-color: rgb(0, 85, 127);</string>
+     <string notr="true">background-color: rgb(0, 85, 127);</string>
     </property>
     <widget class="QLabel" name="label">
      <property name="geometry">
@@ -47,8 +47,8 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string>font: 75 36pt &quot;Arial&quot;;
-color: white;
+      <string notr="true">font: 75 36pt &quot;Arial&quot;;
+color: rgb(255, 255, 255);
 </string>
      </property>
      <property name="text">
@@ -60,18 +60,18 @@ color: white;
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>100</y>
+      <y>110</y>
       <width>111</width>
       <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string>
+     <string notr="true">
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: white;
+                color: rgb(255, 255, 255);
             }
 
             QPushButton:hover {
@@ -84,25 +84,25 @@ color: white;
         </string>
     </property>
     <property name="text">
-     <string>Back</string>
+     <string>Home</string>
     </property>
    </widget>
    <widget class="QPushButton" name="uploadButton">
     <property name="geometry">
      <rect>
       <x>1000</x>
-      <y>100</y>
-      <width>180</width>
+      <y>120</y>
+      <width>181</width>
       <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string>
+     <string notr="true">
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: white;
+                color: rgb(255, 255, 255);
             }
 
             QPushButton:hover {
@@ -122,18 +122,18 @@ color: white;
     <property name="geometry">
      <rect>
       <x>790</x>
-      <y>100</y>
+      <y>120</y>
       <width>191</width>
       <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string>
+     <string notr="true">
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: white;
+                color: rgb(255, 255, 255);
             }
 
             QPushButton:hover {
@@ -157,16 +157,17 @@ color: white;
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>200</y>
+      <y>190</y>
       <width>151</width>
       <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string>font: 75 14pt &quot;Arial&quot;; color: black;</string>
+     <string notr="true">font: 75 14pt &quot;Arial&quot;;
+color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
-     <string>Select Institution:</string>
+     <string>Select institution</string>
     </property>
    </widget>
    <widget class="QComboBox" name="institutionSelection">
@@ -179,12 +180,12 @@ color: white;
      </rect>
     </property>
     <property name="styleSheet">
-     <string>/* Styling for the QComboBox */
+     <string notr="true">/* Styling for the QComboBox */
         QComboBox {
             font: 75 16pt &quot;Arial&quot;;
             background-color: rgb(0, 85, 127);
             border-radius: 10px;
-            color: white;
+            color: rgb(255, 255, 255);
         }
          QComboBox::item {
         background-color: rgb(220, 220, 220);
@@ -226,14 +227,14 @@ color: white;
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>320</y>
+      <y>300</y>
       <width>151</width>
       <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string>font: 75 14pt &quot;Arial&quot;;
-color: black;</string>
+     <string notr="true">font: 75 14pt &quot;Arial&quot;;
+color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
      <string>Select Language:</string>
@@ -249,12 +250,12 @@ color: black;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string>/* Styling for the QComboBox */
+     <string notr="true">/* Styling for the QComboBox */
         QComboBox {
             font: 75 16pt &quot;Arial&quot;;
             background-color: rgb(0, 85, 127);
             border-radius: 10px;
-            color: white;
+            color: rgb(255, 255, 255);
         }
 
           QComboBox::item {
@@ -306,46 +307,31 @@ color: black;</string>
    <widget class="QLabel" name="UniversityLabel_8">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>430</y>
-      <width>250</width>
-      <height>40</height>
+      <x>320</x>
+      <y>420</y>
+      <width>151</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string>font: 75 14pt &quot;Arial&quot;; color: black;</string>
+     <string notr="true">font: 75 14pt &quot;Arial&quot;;
+color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
-     <string>CRKN eBook Data URL:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="helpURLlabel">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>530</y>
-      <width>150</width>
-      <height>40</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string>font: 75 14pt &quot;Arial&quot;; color: black;</string>
-    </property>
-    <property name="text">
-     <string>Help Page URL:</string>
+     <string>CRKN URL</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="helpURL">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>320</x>
       <y>560</y>
-      <width>611</width>
+      <width>581</width>
       <height>51</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string>/* Styling for QLineEdit */
+     <string notr="true">/* Styling for QLineEdit */
 QLineEdit {
     font-family: Arial, sans-serif;
     font-size: 14px;
@@ -368,6 +354,23 @@ QLineEdit:hover {
 }</string>
     </property>
    </widget>
+   <widget class="QLabel" name="helpURLlabel">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>520</y>
+      <width>151</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 75 14pt &quot;Arial&quot;;
+color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string>Help URL</string>
+    </property>
+   </widget>
    <widget class="QPushButton" name="helpButton">
     <property name="geometry">
      <rect>
@@ -378,12 +381,12 @@ QLineEdit:hover {
      </rect>
     </property>
     <property name="styleSheet">
-     <string>
+     <string notr="true">
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: white;
+                color: rgb(255, 255, 255);
             }
 
             QPushButton:hover {
@@ -402,14 +405,14 @@ QLineEdit:hover {
    <widget class="QLineEdit" name="crknURL">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>320</x>
       <y>460</y>
-      <width>611</width>
+      <width>581</width>
       <height>51</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string>
+     <string notr="true">
         QLineEdit {
             font-family: Arial, sans-serif;
             font-size: 14px;
@@ -438,19 +441,19 @@ QLineEdit:hover {
    <widget class="QPushButton" name="manageDatabase">
     <property name="geometry">
      <rect>
-      <x>610</x>
+      <x>620</x>
       <y>640</y>
-      <width>250</width>
+      <width>251</width>
       <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string>
+     <string notr="true">
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: white;
+                color: rgb(255, 255, 255);
             }
 
             QPushButton:hover {
@@ -473,19 +476,19 @@ QLineEdit:hover {
    <widget class="QPushButton" name="manageInstitution">
     <property name="geometry">
      <rect>
-      <x>350</x>
+      <x>360</x>
       <y>640</y>
       <width>250</width>
       <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string>
+     <string notr="true">
             QPushButton {
                 font: 75 16pt &quot;Arial&quot;;
                 background-color: rgb(0, 85, 127);
                 border-radius: 10px;
-                color: white;
+                color: rgb(255, 255, 255);
             }
 
             QPushButton:hover {
@@ -508,14 +511,14 @@ QLineEdit:hover {
    <widget class="QCheckBox" name="allowCRKNData">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>105</y>
-      <width>150</width>
+      <x>580</x>
+      <y>128</y>
+      <width>200</width>
       <height>30</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string>
+     <string notr="true">
          font: 75 14pt &quot;Arial&quot;;
          color: black;
      </string>
