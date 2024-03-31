@@ -395,13 +395,16 @@ class startScreen(QDialog):
             return
 
         searchText = self.textEdit.text().strip()
-        if searchText != "":
-            terms = [searchText]
-        else:
-            terms = []
+        if searchText == "":
+            QMessageBox.information(self,
+                                    "No Search Items" if self.language_value == "English" else "Aucun Terme de Recherche",
+                                    "There are no search items in the first search box." if self.language_value == "English" else "Il n'y a aucun terme de recherche dans le premier cas de recherche.")
+            return
+        terms = [searchText]
         searchTypeIndex = self.booleanSearchType.currentIndex()
         searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
         searchTypes = [searchType]
+
         if "*" in searchText and searchType != "Title":
             QMessageBox.information(self, "Invalid Search", "Partial search is unavailable for ISBN or OCN searches.")
             return
@@ -413,18 +416,18 @@ class startScreen(QDialog):
         # grabs the terms and searchTypes of each textbox for the search query:
         for i in range(len(self.duplicateTextEdits)):
             searchText = self.duplicateTextEdits[i].text().strip()
-            if searchText != "":
-                terms.append(searchText)
+            if searchText == "":
+                QMessageBox.information(self,
+                                        "No Search Items" if self.language_value == "English" else "Aucun Terme de Recherche",
+                                        "There are no search items in one or more of the search boxes." if self.language_value == "English" else "Il n'y a aucun terme de recherche dans un ou plusieurs des cases de recherche.")
+                return
+            terms.append(searchText)
             searchTypeIndex = self.duplicateSearchTypes[i].currentIndex()
             searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
             searchTypes.append(searchType)
-            if "*" in terms[i] and searchType != "Title":
+            if "*" in terms[i+1] and searchType != "Title":
                 QMessageBox.information(self, "Invalid Search", "Partial search is unavailable for ISBN or OCN searches.")
                 return
-
-        if len(terms) == 0:
-            QMessageBox.information(self, "No Search Items" if self.language_value == "English" else "Aucun Terme de Recherche", "There are no search items in the search boxes." if self.language_value == "English" else "Il n'y a aucun terme de recherche dans les cases de recherche.")
-            return
 
         connection = connect_to_database()
         results = search_database(connection, query, terms, searchTypes)
