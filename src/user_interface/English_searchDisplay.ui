@@ -53,7 +53,7 @@
         </string>
     </property>
     <property name="text">
-     <string>Back</string>
+     <string>Home</string>
     </property>
    </widget>
    <widget class="QWidget" name="widget_2" native="true">

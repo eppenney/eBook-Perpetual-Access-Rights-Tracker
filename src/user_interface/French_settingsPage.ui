@@ -84,7 +84,7 @@ color: rgb(255, 255, 255);
         </string>
     </property>
     <property name="text">
-     <string>maison</string>
+     <string>Maison</string>
     </property>
    </widget>
    <widget class="QPushButton" name="uploadButton">
