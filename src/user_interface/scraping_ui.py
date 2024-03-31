@@ -2,6 +2,7 @@ from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QProgressBar, QMessageBox
 from src.data_processing.Scraping import ScrapingThread
 from src.utility.settings_manager import Settings
+from src.utility.logger import m_logger
 
 settings_manager = Settings()
 language = settings_manager.get_setting("language")
@@ -28,6 +29,9 @@ class LoadingPopup(QDialog):
 
         self.loading_thread = ScrapingThread()
         self.loading_thread.progress_update.connect(self.update_progress)
+
+        self.loading_thread.finished.connect(self.on_thread_finished)
+
         
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.loading_thread.start)
@@ -43,9 +47,11 @@ class LoadingPopup(QDialog):
         self.progress_bar.setValue(value)
         if value == 100 and not self.finished:
             self.finished = True
-            self.loading_thread = None
-            self.show_popup_once()
-            self.close()
+
+    def on_thread_finished(self):
+        self.show_popup_once()
+        m_logger.info("Thread has completed its execution safely.")
+        self.close()
     
     def handle_file_changes(self, file_changes):
         self.timer.stop()
