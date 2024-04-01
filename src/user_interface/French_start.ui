@@ -28,7 +28,7 @@
    <widget class="QWidget" name="widget_2" native="true">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>0</y>
       <width>1200</width>
       <height>90</height>
@@ -227,12 +227,6 @@
       <height>50</height>
      </rect>
     </property>
-    <property name="text">
-     <string>OU</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
     <property name="styleSheet">
      <string>
       QLabel {
@@ -242,6 +236,12 @@
        border-radius: 10px;
       }
      </string>
+    </property>
+    <property name="text">
+     <string>OU</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QComboBox" name="booleanBoxRight">
