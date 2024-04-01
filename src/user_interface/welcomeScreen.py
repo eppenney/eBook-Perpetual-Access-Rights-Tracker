@@ -98,15 +98,21 @@ class WelcomePage(QDialog):
             self.resetApp()
             return
         if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
-            QMessageBox.warning(self, "Incorrect CRKN URL format", "Incorrect CRKN URL format.\nEnsure URL begins with http:// or https://.",QMessageBox.StandardButton.Ok)
+            QMessageBox.warning(self,
+                                "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect",
+                                "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else
+                                "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",
+                                QMessageBox.StandardButton.Ok)
             return
         settings_manager.set_crkn_url(crkn_url)
         
     def save_help_url(self):
         help_url = self.helpURL.text()
         if not (help_url.startswith("https://") or help_url.startswith("http://")):
-            QMessageBox.warning(self, "Incorrect GitHub URL format",
-                                "Incorrect GitHub URL format.\nEnsure URL begins with http:// or https://.",
+            QMessageBox.warning(self,
+                                "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect",
+                                "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else
+                                "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",
                                 QMessageBox.StandardButton.Ok)
             return
         settings_manager.set_github_url(help_url)

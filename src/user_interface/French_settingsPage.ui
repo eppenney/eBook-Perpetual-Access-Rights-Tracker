@@ -59,7 +59,7 @@
      <rect>
       <x>20</x>
       <y>100</y>
-      <width>131</width>
+      <width>141</width>
       <height>41</height>
      </rect>
     </property>
@@ -508,9 +508,9 @@
    <widget class="QCheckBox" name="allowCRKNData">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>200</x>
       <y>105</y>
-      <width>250</width>
+      <width>290</width>
       <height>30</height>
      </rect>
     </property>
