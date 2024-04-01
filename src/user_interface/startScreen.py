@@ -26,17 +26,6 @@ Feb 27, 2024
 settings_manager = Settings()
 
 
-class ClickableLabel(QLabel):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-    def mousePressEvent(self, event):
-        # Get the GitHub link from the settings manager
-        github_link = settings_manager.get_setting('github_link')
-        # Open the URL in the default web browser
-        QDesktopServices.openUrl(QUrl(github_link))
-
-
 class RotatableButton(QPushButton):
     def __init__(self, icon_path, settings_display_func, parent=None):
         super().__init__(parent)
@@ -120,6 +109,14 @@ class startScreen(QDialog):
         self.clearButton.clicked.connect(self.clearSearch)
         self.clearButton.setToolTip("Reset search fields" if self.language_value == "English" else "Réinitialiser les champs de recherche")
 
+        self.questionButton = self.findChild(QPushButton, "questionButton")
+        self.questionButton.clicked.connect(self.open_link)
+        if self.language_value == "English":
+            self.questionButton.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
+        else:
+            self.questionButton.setToolTip("Toutes les recherches sont des recherches exactes.\nPour effectuer une recherche par mot-clé, entourez votre recherche d’astérisques.")
+
+
         self.duplicateCount = 0
         self.orLabel.hide()
 
@@ -132,19 +129,9 @@ class startScreen(QDialog):
         self.removeFieldButton.clicked.connect(self.removeTextEdit)
         self.removeFieldButton.setToolTip("Remove search field" if self.language_value == "English" else "Supprimer le champ de recherche")
 
+        self.search = self.findChild(QPushButton, "search")
         self.search.clicked.connect(self.search_button_clicked)
         self.widget = widget  # Store the QStackedWidget reference
-
-        # self.helpIcon = self.findChild(QLabel, 'helpIcon')
-        # self.helpIcon.setPixmap(QPixmap(get_image_path("helpIcon.png")))
-        # clickable_help_icon = ClickableLabel(self)
-        # clickable_help_icon.setGeometry(self.helpIcon.geometry())
-        # if self.language_value == "English":
-        #     self.helpIcon.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
-        # else:
-        #     self.helpIcon.setToolTip("Toutes les recherches sont des recherches exactes.\nPour effectuer une recherche par mot-clé, entourez votre recherche d’astérisques.")
-
-        # clickable_help_icon.mousePressEvent = self.open_url  # Override the mousePressEvent
 
         # # making a group of different button to give a effect of burger menu
         self.buttonGroup = QButtonGroup()
@@ -169,7 +156,7 @@ class startScreen(QDialog):
 
         self.dupTextEdit = None
 
-    def open_url(self):
+    def open_link(self):
         # Get the GitHub link from the settings manager
         github_link = settings_manager.get_setting('github_link')
         # Open the URL in the default web browser
@@ -249,6 +236,9 @@ class startScreen(QDialog):
             newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 3)
             self.clearButton.setGeometry(self.clearButton.x(), newY, self.clearButton.width(), self.clearButton.height())
 
+            newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 4)
+            self.questionButton.setGeometry(self.questionButton.x(), newY, self.questionButton.width(), self.questionButton.height())
+
         else:
             QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "Limite atteinte", f"You can only search with {MAX_DUPLICATES+1} fields at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher avec {MAX_DUPLICATES+1} cases à la fois.")
 
@@ -271,6 +261,9 @@ class startScreen(QDialog):
 
         newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 3)
         self.clearButton.setGeometry(self.clearButton.x(), newY, self.clearButton.width(), self.clearButton.height())
+
+        newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 4)
+        self.questionButton.setGeometry(self.questionButton.x(), newY, self.questionButton.width(), self.questionButton.height())
 
     def newTextEdit(self):
         new_text_edit = QLineEdit(self)
@@ -355,6 +348,9 @@ class startScreen(QDialog):
 
             newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 3)
             self.clearButton.setGeometry(self.clearButton.x(), newY, self.clearButton.width(), self.clearButton.height())
+
+            newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (self.duplicateCount + 4)
+            self.questionButton.setGeometry(self.questionButton.x(), newY, self.questionButton.width(),self.questionButton.height())
 
         else:
             QMessageBox.information(self, "Minimum Fields Reached" if self.language_value == "English" else "Cases minimum atteints", "There are no more search fields to remove." if self.language_value == "English" else "Il n'y a plus de cases de recherche à supprimer.")
