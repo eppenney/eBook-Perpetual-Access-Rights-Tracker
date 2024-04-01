@@ -1,5 +1,6 @@
 from PyQt6.uic import loadUi
-from PyQt6.QtWidgets import QDialog, QTableWidget, QTableWidgetItem, QTextEdit, QComboBox, QWidget
+from PyQt6.QtWidgets import QDialog, QTableWidget, QTableWidgetItem, QTextEdit, QComboBox, QWidget, QLabel
+from PyQt6.QtGui import QFontMetrics
 from src.utility.export import export_data
 from src.utility.settings_manager import Settings
 from PyQt6.QtCore import Qt
@@ -37,6 +38,7 @@ class searchDisplay(QDialog):
         # this is the back button that will take to the startscreen from the searchdisplay
         self.backButton.clicked.connect(self.backToStartScreen)
         self.exportButton.clicked.connect(self.export_data_handler)
+        self.institutionName = self.findChild(QLabel, "institutionName")
         self.widget = widget
         self.results = results
         self.original_widget_values = None
@@ -45,6 +47,7 @@ class searchDisplay(QDialog):
         self.tableWidget = self.findChild(QTableWidget, 'tableWidget')
         self.tableWidget.itemSelectionChanged.connect(self.updateCellNameDisplay)
 
+        self.displayInstitutionName()
         self.display_results_in_table()
 
     # using this method to show the results of the clicked cell on the top of the page whenever clicked on cell.
@@ -72,6 +75,19 @@ class searchDisplay(QDialog):
                 self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
         self.tableWidget.setStyleSheet(
             "QHeaderView::section {color:white;background-color:rgb(0, 85, 127);}QTableView::item{color:black;}")
+
+    def displayInstitutionName(self):
+        institution_name = settings_manager.get_setting('institution')
+        self.institutionName.setText(institution_name)
+
+        # Adjust label size dynamically based on text length
+        font = self.institutionName.font()
+        font_metrics = QFontMetrics(font)
+        text_width = font_metrics.horizontalAdvance(institution_name)
+        text_height = font_metrics.height()
+
+        # Set the minimum size for the label based on the text size
+        self.institutionName.setMinimumSize(text_width, text_height)
 
     def export_data_handler(self):
         export_data(self.results, self.column_labels)

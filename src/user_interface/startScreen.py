@@ -100,7 +100,6 @@ class startScreen(QDialog):
         self.orLabel = self.findChild(QLabel, 'orLabel')
         self.booleanSearchType = self.findChild(QComboBox, 'booleanBoxRight')
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
-        self.institutionButton = self.findChild(QPushButton, "institutionButton")
         self.institutionName = self.findChild(QLabel, "institutionName")
         self.institutionName.setToolTip("Currently Selected Institution" if self.language_value == "English" else "Établissement sélectionné")
 
