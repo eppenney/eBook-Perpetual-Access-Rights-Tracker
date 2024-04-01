@@ -50,7 +50,7 @@
      <item>
       <widget class="QPushButton" name="uploadButton">
        <property name="text">
-        <string>Upload Local Databases</string>
+        <string>Upload Local Files</string>
        </property>
       </widget>
      </item>
