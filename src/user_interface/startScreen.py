@@ -406,7 +406,7 @@ class startScreen(QDialog):
         searchTypes = [searchType]
 
         if "*" in searchText and searchType != "Title":
-            QMessageBox.information(self, "Invalid Search", "Partial search is unavailable for ISBN or OCN searches.")
+            QMessageBox.information(self, "Invalid Search" if self.language_value == "English" else "Recherche invalide", "Partial search is unavailable for ISBN or OCN searches." if self.language_value == "English" else "La recherche partielle n'est pas disponible pour les recherches ISBN ou OCN.")
             return
         query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM table_name WHERE "
 
