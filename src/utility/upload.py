@@ -137,7 +137,6 @@ class UploadThread(QThread):
                                         if language == "English" else f"{file_name_with_ext}\nUn fichier du même nom se trouve déjà dans la base de données locale. Souhaitez-vous le remplacer par le nouveau fichier ?")
             reply = self.wait_for_response()
             if reply == False:
-                print(language, language == "English")
                 self.error_signal.emit("File Upload Cancelled" if language == "English" else "Chargement de fichier annulé",
                                         f"{file_name_with_ext}\n{'This file will not be uploaded' if language == 'English' else 'Ce fichier ne sera pas chargé'}")
                 self.wait_for_response()

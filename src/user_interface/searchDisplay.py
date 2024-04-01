@@ -25,7 +25,6 @@ class searchDisplay(QDialog):
             cls._instance.setParent(None)
             # Explicitly delete the previous instance
             del cls._instance
-            print("Deleting instance")
         cls._instance = cls(arg1, arg2)
         return cls._instance
 

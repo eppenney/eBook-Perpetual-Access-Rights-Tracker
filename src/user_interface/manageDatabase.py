@@ -30,8 +30,6 @@ class ManageLocalDatabasesPopup(QDialog):
         connection = connect_to_database()
         local_table_data = get_table_data(connection, "local_file_names")
 
-        print(local_table_data)
-
         # Populate the scroll area with table information
         for table_data in local_table_data:
             table_label = QLabel(f"{table_data[0]}, \n{'Date Added' if self.language_value == 'English' else 'Date ajoutée'}: {table_data[1]}")

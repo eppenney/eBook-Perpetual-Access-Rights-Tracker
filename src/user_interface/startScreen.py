@@ -25,6 +25,7 @@ Feb 27, 2024
 """
 settings_manager = Settings()
 
+
 class ClickableLabel(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -60,6 +61,7 @@ class RotatableButton(QPushButton):
         rotated_pixmap = pixmap.transformed(transform)
         return QIcon(rotated_pixmap)
 
+
 # Needed to dynamically load images when ran via executable
 def get_image_path(image_filename):
     if hasattr(sys, '_MEIPASS'):
@@ -71,6 +73,7 @@ def get_image_path(image_filename):
 
 class startScreen(QDialog):
     _instance = None
+
     @classmethod
     def get_instance(cls, arg):
         if not cls._instance:
@@ -128,7 +131,6 @@ class startScreen(QDialog):
         self.removeFieldButton = self.findChild(QPushButton, 'removeButton')
         self.removeFieldButton.clicked.connect(self.removeTextEdit)
         self.removeFieldButton.setToolTip("Remove search field" if self.language_value == "English" else "Supprimer le champ de recherche")
-
 
         self.search.clicked.connect(self.search_button_clicked)
         self.widget = widget  # Store the QStackedWidget reference
@@ -204,8 +206,7 @@ class startScreen(QDialog):
         if institution_name:
             self.institutionName.setText(institution_name)
         else:
-            self.institutionName.setText(
-                "No Institution Selected" if self.language_value == "English" else "Aucun établissement sélectionné")
+            self.institutionName.setText("No Institution Selected" if self.language_value == "English" else "Aucun établissement sélectionné")
 
         # Adjust label size dynamically based on text length
         font = self.institutionName.font()
@@ -229,7 +230,6 @@ class startScreen(QDialog):
             new_text = self.newTextEdit()
             self.duplicateTextEdits.append(new_text) # this will store in the system making it like a stack that way we can pop through when negative
             new_text.show()
-        
 
             new_and_or_box = self.newOrLabel()
             self.duplicateCombos.append(new_and_or_box)
