@@ -52,7 +52,6 @@ class ManageInstitutionsPopup(QDialog):
         confirm = QMessageBox.question(self, "Confirmation", 
                                        f"Are you sure you want to remove {institution}?" if self.language_value == "English" else f"Êtes-vous sûr de vouloir supprimer {institution}?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if confirm == QMessageBox.StandardButton.Yes:
-            print(institution)
             settings_manager.remove_local_institution(institution)
             self.populate_table_information() 
             QMessageBox.information(self, "Success" if self.language_value == "English" else "Succès", 

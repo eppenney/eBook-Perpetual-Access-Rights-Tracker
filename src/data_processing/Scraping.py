@@ -1,8 +1,6 @@
 """
 This file includes functions for scraping from the CRKN website and uploading the new data to the database
-Some functions can also be re-used for the local file uploads (compare_file)
-
-I tested new files and the same files, but not when the file has a newer date (to update)
+Some functions can also be re-used for the local file uploads
 """
 import requests.exceptions
 import time
@@ -212,13 +210,13 @@ class ScrapingThread(QThread):
                     file_df = file_to_dataframe_csv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
 
                 # Check if in correct format, if it is, upload and update tables
-                valid_format = check_file_format(file_df)
+                valid_format = check_file_format(file_df, language)
                 if valid_format is True:
                     upload_to_database(file_df, file_first, connection)
                     update_tables([file_first, file_date], "CRKN", connection, command)
                 else:
                     m_logger.error(f"{file_link.split('/')[-1]} - The file was not in the correct format, so it was not uploaded.\n{valid_format}")
-                    self.error_signal.emit(f"{file_link.split('/')[-1]}\nThe file was not in the correct format, so it was not uploaded.\n{valid_format}")
+                    self.error_signal.emit(f"{file_link.split('/')[-1]}\nThe file was not in the correct format, so it was not uploaded.\n{valid_format}" if language == "English" else f"{file_link.split('/')[-1]}\nLe fichier n’était pas au bon format et n’a donc pas été chargé.\n{valid_format}")
 
         # Handle connection loss in middle of scraping
         except requests.exceptions.HTTPError as http_err:
@@ -234,8 +232,7 @@ class ScrapingThread(QThread):
             if language == "English":
                 error_message = ("Internet Connection Error : Connection to the internet was lost. Not all files have been successfully retreived. Please try updating CRKN again.")
             else:
-                error_message = (
-                    "Erreur de Connexion Internet : La connexion à l'internet a été perdue. Tous les fichiers n'ont pas été récupérés avec succès. Veuillez réessayer de mettre à jour RCDR de nouveau.")
+                error_message = ("Erreur de Connexion Internet : La connexion à l'internet a été perdue. Tous les fichiers n'ont pas été récupérés avec succès. Veuillez réessayer de mettre à jour RCDR de nouveau.")
             m_logger.error(conn_err)
             self.error_signal.emit(error_message)
         except requests.exceptions.Timeout as timeout_err:
@@ -249,8 +246,7 @@ class ScrapingThread(QThread):
         except Exception as e:
             # Handle any other exceptions
             if language == "English":
-                error_message = ("Unexpected Error : Not all files have been successfully retrieved. "
-                                 "Please try updating CRKN again.")
+                error_message = ("Unexpected Error : Not all files have been successfully retrieved. Please try updating CRKN again.")
             else:
                 error_message = "Erreur inattendue : Tous les fichiers n'ont pas été récupérés avec succès. Veuillez réessayer de mettre  à jour RCDR de nouveau."
             m_logger.error(e)
@@ -279,6 +275,7 @@ def compare_file(file, method, connection):
     :param connection: database connection object
     :return: False if no update needed. Update command if update needed (INSERT INTO or UPDATE)
     """
+    # Code error if this Exception occurs - no translation needed
     if method != "CRKN" and method != "local":
         raise Exception("Incorrect method type (CRKN or local) to indicate type/location of file")
 
@@ -313,6 +310,7 @@ def update_tables(file, method, connection, command):
     :param connection: database connection object
     :param command: INSERT INTO, UPDATE, or DELETE
     """
+    # Code error if this Exception occurs - no translation needed
     if method != "CRKN" and method != "local":
         raise Exception("Incorrect method type (CRKN or local) to indicate type/location of file")
 
@@ -478,10 +476,11 @@ def upload_to_database(df, table_name, connection):
         m_logger.error(f"Failed to upload data to {table_name}: {e}. Database remains unchanged.")
 
 
-def check_file_format(file_df):
+def check_file_format(file_df, language):
     """
     Checks the incoming file format to see if it is correct
     :param file_df: dataframe with file info (or None if unable to turn into dataframe
+    :param language: English or French to produce correct error message
     :return: True if valid, error string if not
     """
 
@@ -493,31 +492,55 @@ def check_file_format(file_df):
         for i in range(min(len(headers), 8)):
             if headers[i] != header_row[i]:
                 m_logger.error("The header row is incorrect")
-                return f"Missing or incorrect header column '{header_row[i]}' in column {i+1} (A=1)."
+                if language == "English":
+                    return f"Missing or incorrect header column '{header_row[i]}' in column {i+1} (A=1)."
+                else:
+                    return f"Colonne d'en-tête manquante ou incorrecte '{header_row[i]}' dans la colonne {i+1} (A=1)."
         if len(headers) < 8:
             m_logger.error("Missing columns in the header row")
-            return f"Missing columns in the header row."
+            if language == "English":
+                return "Missing columns in the header row."
+            else:
+                return "Colonnes manquantes dans la ligne d'en-tête."
 
         # Title, ISBN and Y/N Column complete
         df_series = file_df.count()
         rows = file_df.shape[0]
         if df_series["Title"] != rows:
             m_logger.error("Missing title data")
-            return "Missing title data."
-        # if df_series["Platform_eISBN"] != rows:
-        #     m_logger.error("Missing ISBN data")
-        #     return "Missing Platform_eISBN data."
+            if language == "English":
+                return "Missing title data."
+            else:
+                return "Données de titre manquantes."
+        if df_series["Platform_eISBN"] != rows:
+            m_logger.error("Missing ISBN data")
+            if language == "English":
+                return "Missing Platform_eISBN data."
+            else:
+                return "Données de Platform_eISBN manquantes."
         for institution_column in df_series[8:-2]:
             if institution_column != rows:
                 m_logger.error("Missing Y/N data")
-                return "Missing Y/N data"
+                if language == "English":
+                    return "Missing Y/N data"
+                else:
+                    return "Données de Y/N manquantes."
 
         return True
 
     # Failed to read the file into dataframe - return error instead
     elif file_df == "No Platform":
-        return "No platform listed in cell A1."
+        if language == "English":
+            return "No platform listed in cell A1."
+        else:
+            return "Aucune plate-forme répertoriée dans la cellule A1."
     elif file_df == "PA-Rights":
-        return "The 'PA-Rights' sheet does not exist."
+        if language == "English":
+            return "The 'PA-Rights' sheet does not exist."
+        else:
+            return "La fiche 'PA-Rights' n'existe pas."
     else:
-        return "Unknown error."
+        if language == "English":
+            return "Unknown error."
+        else:
+            return "Erreur inconnue."

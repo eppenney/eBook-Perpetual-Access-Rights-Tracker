@@ -31,7 +31,6 @@ class settingsPage(QDialog):
             cls._instance.setParent(None)
             # Explicitly delete the previous instance
             del cls._instance
-            print("Deleting instance")
         cls._instance = cls(arg1)
         return cls._instance
 
@@ -160,7 +159,7 @@ class settingsPage(QDialog):
 
     def save_language(self):
         current_language = settings_manager.get_setting("language")
-        selected_language = self.languageSetting.currentIndex()
+        selected_language = self.languageSelection.currentIndex()
         if current_language == ("English" if selected_language == 0 else "French"):
             return
         reply = QMessageBox.question(None, "Language Change" if current_language == "English" else "Changement de langue", 
