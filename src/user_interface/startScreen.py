@@ -133,14 +133,14 @@ class startScreen(QDialog):
         self.search.clicked.connect(self.search_button_clicked)
         self.widget = widget  # Store the QStackedWidget reference
 
-        self.helpIcon = self.findChild(QLabel, 'helpIcon')
-        self.helpIcon.setPixmap(QPixmap(get_image_path("helpIcon.png")))
-        clickable_help_icon = ClickableLabel(self)
-        clickable_help_icon.setGeometry(self.helpIcon.geometry())
-        if self.language_value == "English":
-            self.helpIcon.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
-        else:
-            self.helpIcon.setToolTip("Toutes les recherches sont des recherches exactes.\nPour effectuer une recherche par mot-clé, entourez votre recherche d’astérisques.")
+        # self.helpIcon = self.findChild(QLabel, 'helpIcon')
+        # self.helpIcon.setPixmap(QPixmap(get_image_path("helpIcon.png")))
+        # clickable_help_icon = ClickableLabel(self)
+        # clickable_help_icon.setGeometry(self.helpIcon.geometry())
+        # if self.language_value == "English":
+        #     self.helpIcon.setToolTip("All searches are exact searches.\nTo perform a keyword search, enclose your search with asterisks (*).")
+        # else:
+        #     self.helpIcon.setToolTip("Toutes les recherches sont des recherches exactes.\nPour effectuer une recherche par mot-clé, entourez votre recherche d’astérisques.")
 
         # clickable_help_icon.mousePressEvent = self.open_url  # Override the mousePressEvent
 
@@ -406,7 +406,7 @@ class startScreen(QDialog):
         searchTypes = [searchType]
 
         if "*" in searchText and searchType != "Title":
-            QMessageBox.information(self, "Invalid Search", "Partial search is unavailable for ISBN or OCN searches.")
+            QMessageBox.information(self, "Invalid Search" if self.language_value == "English" else "Recherche invalide", "Partial search is unavailable for ISBN or OCN searches." if self.language_value == "English" else "La recherche partielle n'est pas disponible pour les recherches ISBN ou OCN.")
             return
         query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM table_name WHERE "
 
@@ -426,7 +426,7 @@ class startScreen(QDialog):
             searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
             searchTypes.append(searchType)
             if "*" in terms[i+1] and searchType != "Title":
-                QMessageBox.information(self, "Invalid Search", "Partial search is unavailable for ISBN or OCN searches.")
+                QMessageBox.information(self, "Invalid Search" if self.language_value == "English" else "Recherche invalide", "Partial search is unavailable for ISBN or OCN searches." if self.language_value == "English" else "La recherche partielle n'est pas disponible pour les recherches ISBN ou OCN.")
                 return
 
         connection = connect_to_database()
