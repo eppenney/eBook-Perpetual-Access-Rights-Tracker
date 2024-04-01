@@ -216,7 +216,7 @@ class ScrapingThread(QThread):
                     update_tables([file_first, file_date], "CRKN", connection, command)
                 else:
                     m_logger.error(f"{file_link.split('/')[-1]} - The file was not in the correct format, so it was not uploaded.\n{valid_format}")
-                    self.error_signal.emit(f"{file_link.split('/')[-1]}\nThe file was not in the correct format, so it was not uploaded.\n{valid_format}" if language == "English" else f"{file_link.split('/')[-1]}\nLe fichier n’était pas au bon format et n’a donc pas été téléchargé.\n{valid_format}")
+                    self.error_signal.emit(f"{file_link.split('/')[-1]}\nThe file was not in the correct format, so it was not uploaded.\n{valid_format}" if language == "English" else f"{file_link.split('/')[-1]}\nLe fichier n’était pas au bon format et n’a donc pas été chargé.\n{valid_format}")
 
         # Handle connection loss in middle of scraping
         except requests.exceptions.HTTPError as http_err:

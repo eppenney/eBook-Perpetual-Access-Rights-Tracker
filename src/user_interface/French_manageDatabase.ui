@@ -50,7 +50,7 @@
      <item>
       <widget class="QPushButton" name="uploadButton">
        <property name="text">
-        <string>Télécharger des bases de données locales</string>
+        <string>Charger des bases de données locales</string>
        </property>
       </widget>
      </item>
