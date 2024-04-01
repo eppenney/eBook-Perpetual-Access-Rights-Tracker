@@ -244,8 +244,8 @@ class startScreen(QDialog):
 
     def adjustDuplicateTextEditSize(self):
         for i in range(len(self.duplicateTextEdits)):
-            newY = self.dupTextEdit.y() + (self.dupTextEdit.height() + self.textOffsetY) * (i + 1)
-            self.duplicateTextEdits[i].setGeometry(self.dupTextEdit.x() - self.textOffsetX , newY, self.dupTextEdit.width(), self.dupTextEdit.height())
+            newY = self.textEdit.y() + (self.textEdit.height() + self.textOffsetY) * (i + 1)
+            self.duplicateTextEdits[i].setGeometry(self.textEdit.x() + self.orLabel.width(), newY, self.textEdit.width() - self.orLabel.width() - self.textOffsetX,self.textEdit.height())
         for i in range(len(self.duplicateCombos)):
             newY = self.orLabel.y() + (self.orLabel.height() + self.textOffsetY) * (i + 1)
             self.duplicateCombos[i].setGeometry(self.orLabel.x(), newY, self.orLabel.width(), self.orLabel.height())
@@ -275,9 +275,6 @@ class startScreen(QDialog):
 
         # Set geometry for the new QLineEdit        
         new_text_edit.setGeometry(self.textEdit.x() + self.orLabel.width() , newY, self.textEdit.width() - self.orLabel.width() - self.textOffsetX, self.textEdit.height())
-        
-        # If there's any specific initialization content or placeholder text
-        new_text_edit.setPlaceholderText(self.textEdit.placeholderText())
     
         self.original_widget_values[new_text_edit] = {
             'geometry': new_text_edit.geometry(),
