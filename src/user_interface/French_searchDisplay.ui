@@ -141,8 +141,8 @@ color: white;
    <widget class="QLabel" name="institutionName">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>740</y>
+      <x>50</x>
+      <y>770</y>
       <width>281</width>
       <height>41</height>
      </rect>
