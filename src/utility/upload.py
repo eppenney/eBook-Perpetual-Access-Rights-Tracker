@@ -158,7 +158,7 @@ class UploadThread(QThread):
                 return
 
             # Check if in correct format
-            valid_file = Scraping.check_file_format(file_df)
+            valid_file = Scraping.check_file_format(file_df, language)
             if valid_file is not True:
                 self.error_signal.emit("Invalid File Format" if language == "English" else "Format de fichier invalide", 
                                        f"{file_name_with_ext}\n{valid_file}\nUpload aborted." if language == "English" else 
@@ -177,11 +177,25 @@ class UploadThread(QThread):
                 new_institutions_display = '\n'.join(new_institutions[:5]) 
                 if len(new_institutions) > 5:
                     new_institutions_display += '...'
-                self.get_answer_yes_no.emit("New Institutions", f"{len(new_institutions)} institution name{'s' if len(new_institutions) > 1 else ''} found that " +
-                                            f"{'are' if len(new_institutions) > 1 else 'is'} not a CRKN institution and {'are' if len(new_institutions) > 1 else 'is'} not on the list of local institutions.\n\n" +
-                                            f"{new_institutions_display}\n" +
-                                            "Would you like to add them to the local list? \n'No' - The file will not be uploaded. \n'Yes' - The file will be uploaded, and the new institution names will be added as options" +
-                                            " and will be available in the settings menu.")
+                if language == "English:":
+                    self.get_answer_yes_no.emit("New Institutions", f"{len(new_institutions)} institution name{'s' if len(new_institutions) > 1 else ''} found that " +
+                                                f"{'are' if len(new_institutions) > 1 else 'is'} not a CRKN institution and {'are' if len(new_institutions) > 1 else 'is'} not on the list of local institutions.\n\n" +
+                                                f"{new_institutions_display}\n" +
+                                                "Would you like to add them to the local list? \n'No' - The file will not be uploaded. \n'Yes' - The file will be uploaded, and the new institution names" +
+                                                " will be available in the settings menu.")
+                else:
+                    if len(new_institutions) == 1:
+                        self.get_answer_yes_no.emit("Nouveaux établissement",
+                                                    f"{len(new_institutions)} nom d'établissement trouvé qui n'est pas un établissement du RCDR et n'est pas sur la liste des établissement locals.\n\n" +
+                                                    f"{new_institutions_display}\n" +
+                                                    "Souhaitez-vous l'ajouter à la liste locale ? 'Non' - Le fichier ne sera pas téléchargé. 'Oui' - Le fichier sera téléchargé et le nouveau nom d'établissement" +
+                                                    "sera disponible dans le menu des paramètres.")
+                    else:
+                        self.get_answer_yes_no.emit("Nouveaux établissements",
+                                                    f"{len(new_institutions)} noms d'établissements trouvés qui ne sont pas des établissements du RCDR et ne sont pas sur la liste des établissement locals.\n\n" +
+                                                    f"{new_institutions_display}\n" +
+                                                    "Souhaitez-vous les ajouter à la liste locale ? 'Non' - Le fichier ne sera pas téléchargé. 'Oui' - Le fichier sera téléchargé et les nouveaux noms d'établissements" +
+                                                    "seront disponible dans le menu des paramètres.")
                 reply = self.wait_for_response()
                 if reply == False:
                     self.error_signal.emit("File Upload Cancelled" if language == "English" else "Chargement de fichier annulé",

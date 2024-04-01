@@ -173,21 +173,21 @@ class TestScrapingThread(unittest.TestCase):
             "collection_name": ["Collection 1"],
             "title_metadata_last_modified": ["2021-01-01"],
         })
-        assert check_file_format(correct_df) is True, "The function should return True for correct format"
+        assert check_file_format(correct_df, language="English") is True, "The function should return True for correct format"
 
     def test_check_file_format_incorrect_header(self):
         # DataFrame with one incorrect header
         incorrect_header_df = pd.DataFrame(
             columns=["Title", "WrongHeader", "Platform_YOP", "Platform_eISBN", "OCN", "agreement_code",
                      "collection_name", "title_metadata_last_modified"])
-        result = check_file_format(incorrect_header_df)
+        result = check_file_format(incorrect_header_df, language="English")
         assert isinstance(result,
                           str) and "Missing or incorrect header column" in result, "The function should return an error message for incorrect header"
 
     def test_check_file_format_missing_columns(self):
         # DataFrame with missing columns
         missing_columns_df = pd.DataFrame(columns=["Title", "Publisher"])
-        result = check_file_format(missing_columns_df)
+        result = check_file_format(missing_columns_df, language="English")
         assert result == "Missing columns in the header row.", "The function should return an error message for missing columns"
 
     def test_upload_to_database_success(self):
