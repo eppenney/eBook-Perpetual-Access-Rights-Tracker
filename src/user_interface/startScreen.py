@@ -110,7 +110,7 @@ class startScreen(QDialog):
         self.settingMenuButton = self.findChild(QPushButton, 'settingButton1')
         self.institutionButton = self.findChild(QPushButton, "institutionButton")
         self.institutionName = self.findChild(QLabel, "institutionName")
-        self.institutionName.setToolTip("Currently Selected Institution" if self.language_value == "English" else "établissement sélectionné")
+        self.institutionName.setToolTip("Currently Selected Institution" if self.language_value == "English" else "Établissement sélectionné")
 
         # Clear Button
         self.clearButton = self.findChild(QPushButton, "clearButton")
@@ -197,7 +197,7 @@ class startScreen(QDialog):
                 self.internetConnectionLabel.setToolTip("Connexion Internet : en ligne")
             else:
                 self.internetConnectionLabel.setPixmap(QPixmap(get_image_path("red_signal.png")))
-                self.internetConnectionLabel.setToolTip("Internet Connection : hors ligne")
+                self.internetConnectionLabel.setToolTip("Connexion Internet : hors ligne")
 
     def displayInstitutionName(self):
         institution_name = settings_manager.get_setting('institution')
