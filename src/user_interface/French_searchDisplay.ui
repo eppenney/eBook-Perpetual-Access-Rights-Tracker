@@ -30,7 +30,7 @@
      <rect>
       <x>30</x>
       <y>120</y>
-      <width>111</width>
+      <width>131</width>
       <height>41</height>
      </rect>
     </property>
@@ -53,7 +53,7 @@
         </string>
     </property>
     <property name="text">
-     <string>Maison</string>
+     <string>Page d'accueil</string>
     </property>
    </widget>
    <widget class="QWidget" name="widget_2" native="true">
