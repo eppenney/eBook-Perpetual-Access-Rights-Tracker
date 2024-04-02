@@ -5,6 +5,17 @@ from src.utility.settings_manager import Settings
 settings_manager = Settings()
 
 def question_yes_no_box(title, body, icon = QMessageBox.Icon.Question):
+    """
+    Display a message box with Yes and No buttons.
+
+    Parameters:
+    - title (str): The title of the message box.
+    - body (str): The message body to display.
+    - icon (QMessageBox.Icon, optional): The icon to display in the message box. Defaults to QMessageBox.Icon.Question.
+
+    Returns:
+    - bool: True if the Yes button is clicked, False otherwise.
+    """
     language = settings_manager.get_setting("language")
     msg_box = QMessageBox()
     msg_box.setIcon(icon)
@@ -23,6 +34,17 @@ def question_yes_no_box(title, body, icon = QMessageBox.Icon.Question):
     return msg_box.clickedButton() == yes_button
 
 def information_box(title, body, icon = QMessageBox.Icon.Information):
+    """
+    Display an information message box with an OK button.
+
+    Parameters:
+    - title (str): The title of the message box.
+    - body (str): The message body to display.
+    - icon (QMessageBox.Icon, optional): The icon to display in the message box. Defaults to QMessageBox.Icon.Information.
+
+    Returns:
+    - None
+    """
     language = settings_manager.get_setting("language")
     msg_box = QMessageBox()
     msg_box.setWindowTitle(title)
@@ -37,6 +59,18 @@ def information_box(title, body, icon = QMessageBox.Icon.Information):
     msg_box.exec()
 
 def input_dialog_ok_cancel(title, body, icon=QMessageBox.Icon.Question):
+    """
+    Display an input dialog with OK and Cancel buttons.
+
+    Parameters:
+    - title (str): The title of the input dialog.
+    - body (str): The prompt text for the input dialog.
+    - icon (QMessageBox.Icon, optional): The icon to display in the input dialog. Defaults to QMessageBox.Icon.Question.
+
+    Returns:
+    - tuple[str, bool]: A tuple containing the entered text and a boolean indicating whether the OK button was clicked.
+                        Can be accessed in the form str_param, bool_param = input_dialog_ok_cancel("some_title", "some_body")
+    """
     language = settings_manager.get_setting("language")
     input_dialog = QInputDialog()
     input_dialog.setWindowTitle(title)
