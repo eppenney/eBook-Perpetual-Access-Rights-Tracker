@@ -51,10 +51,7 @@ def information_box(title, body, icon = QMessageBox.Icon.Information):
     msg_box.setIcon(icon)
     msg_box.setText(body)
     
-    if language == "French":
-        ok_button = msg_box.addButton("D'accord", QMessageBox.ButtonRole.AcceptRole)
-    else:
-        ok_button = msg_box.addButton(QMessageBox.StandardButton.Ok)
+    ok_button = msg_box.addButton(QMessageBox.StandardButton.Ok)
         
     msg_box.exec()
 
@@ -77,7 +74,7 @@ def input_dialog_ok_cancel(title, body, icon=QMessageBox.Icon.Question):
     input_dialog.setLabelText(body)
     
     if language == "French":
-        input_dialog.setOkButtonText("D'accord")
+        input_dialog.setOkButtonText("OK")
         input_dialog.setCancelButtonText("Annuler")
     else:
         input_dialog.setOkButtonText("OK")
