@@ -64,11 +64,8 @@ class LoadingPopup(QDialog):
         dialog.setWindowTitle("Error" if language == "English" else "Erreur")
         dialog.setText(error_msg)
         dialog.setIcon(QMessageBox.Icon.Critical)
-        if language == "French":
-            okay_button = dialog.addButton("D'accord", QMessageBox.ButtonRole.AcceptRole)
-        else:
-            okay_button = dialog.addButton(QMessageBox.StandardButton.Ok)
-        if (not end_thread):
+        okay_button = dialog.addButton(QMessageBox.StandardButton.Ok)
+        if not end_thread:
             okay_button.clicked.connect(lambda: self.loading_thread.receive_response("Y"))
         dialog.exec()
         if (end_thread):
