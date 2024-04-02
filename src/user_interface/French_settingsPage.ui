@@ -359,7 +359,7 @@
      <rect>
       <x>310</x>
       <y>520</y>
-      <width>150</width>
+      <width>250</width>
       <height>40</height>
      </rect>
     </property>
@@ -367,7 +367,7 @@
      <string>font: 75 14pt &quot;Arial&quot;; color: black;</string>
     </property>
     <property name="text">
-     <string>URL d'aide :</string>
+     <string>URL des données du RCDR :</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="helpURL">
