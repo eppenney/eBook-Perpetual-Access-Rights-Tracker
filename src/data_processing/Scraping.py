@@ -123,11 +123,7 @@ class ScrapingThread(QThread):
         files_to_remove = [file for file in database.get_tables(connection) if not file.startswith("local_")]
 
         # Check if links on CRKN website need to be added/updated in local database
-        i = 0
         for link in links:
-            i += 1
-            # progress = 10 + int((i / len(links)) * 20)
-            # self.progress_update.emit(progress)
             file_link = link.get("href")
             file_first, file_date = split_CRKN_file_name(file_link)
             result = compare_file([file_first, file_date], "CRKN", connection)
