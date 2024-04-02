@@ -187,7 +187,7 @@ class UploadThread(QThread):
                         self.get_answer_yes_no.emit("Nouveaux établissement",
                                                     f"{len(new_institutions)} nom d'établissement trouvé qui n'est pas un établissement du RCDR et n'est pas sur la liste des établissement locals.\n\n" +
                                                     f"{new_institutions_display}\n" +
-                                                    "\nSouhaitez-vous l'ajouter à la liste locale ? 'Non' - Le fichier ne sera pas chargé. 'Oui' - Le fichier sera téléchargé et le nouveau nom d'établissement" +
+                                                    "\nSouhaitez-vous l'ajouter à la liste locale ? 'Non' - Le fichier ne sera pas chargé. 'Oui' - Le fichier sera chargé et le nouveau nom d'établissement" +
                                                     "sera disponible dans le menu des paramètres.")
                     else:
                         self.get_answer_yes_no.emit("Nouveaux établissements",
