@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QDialog, QPushButton, QLabel, QFrame, QMessageBox
+from PyQt6.QtWidgets import QDialog, QPushButton, QLabel, QFrame
 from PyQt6.uic import loadUi
 from src.utility.upload import upload_and_process_file
 from src.data_processing.database import connect_to_database, close_database, get_table_data
@@ -52,19 +52,19 @@ class ManageLocalDatabasesPopup(QDialog):
     def remove_table(self, table_name):
         from src.utility.upload import remove_local_file
         confirm = question_yes_no_box("Confirmation", 
-                                       f"Are you sure you want to remove {table_name}?" if self.language_value == "English" else f"Êtes-vous sûr de vouloir supprimer {table_name}?")
+                                      f"Are you sure you want to remove {table_name}?" if self.language_value == "English" else f"Êtes-vous sûr de vouloir supprimer {table_name}?")
         if confirm:
             remove_local_file(table_name.lstrip("local_"))
             self.populate_table_information() 
             information_box("Success" if self.language_value == "English" else "Succès", 
-                                    f"{table_name} has been removed successfully." if self.language_value == "English" else f"{table_name} a été supprimé avec succès.")
+                            f"{table_name} has been removed successfully." if self.language_value == "English" else f"{table_name} a été supprimé avec succès.")
             
     def deleteTableData(self):
         for i in reversed(range(self.scrollLayout.count())):
             item = self.scrollLayout.itemAt(i)
-            if (item is not None):
+            if item is not None:
                 widget = item.widget()
-                if (widget is not None):
+                if widget is not None:
                     self.scrollLayout.removeWidget(widget) 
                     widget.setParent(None)
                     widget.deleteLater()

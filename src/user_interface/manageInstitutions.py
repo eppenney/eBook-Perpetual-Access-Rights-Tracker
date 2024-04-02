@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QDialog, QPushButton, QLabel, QInputDialog, QFrame, QMessageBox
+from PyQt6.QtWidgets import QDialog, QPushButton, QLabel, QFrame, QMessageBox
 from PyQt6.uic import loadUi
 from src.data_processing.database import connect_to_database, close_database
 from src.utility.settings_manager import Settings
@@ -49,28 +49,27 @@ class ManageInstitutionsPopup(QDialog):
         close_database(connection)
 
     def remove_institution(self, institution):
-        from src.utility.upload import remove_local_file
         confirm = question_yes_no_box("Confirmation", 
-                                       f"Are you sure you want to remove {institution}?" if self.language_value == "English" else f"Êtes-vous sûr de vouloir supprimer {institution}?")
+                                      f"Are you sure you want to remove {institution}?" if self.language_value == "English" else f"Êtes-vous sûr de vouloir supprimer {institution}?")
         if confirm:
             settings_manager.remove_local_institution(institution)
             self.populate_table_information() 
             information_box("Success" if self.language_value == "English" else "Succès", 
-                                    f"{institution} has been removed successfully." if self.language_value == "English" else f"{institution} a été supprimé avec succès.")
+                            f"{institution} has been removed successfully." if self.language_value == "English" else f"{institution} a été supprimé avec succès.")
             
     def deleteTableData(self):
         for i in reversed(range(self.scrollLayout.count())):
             item = self.scrollLayout.itemAt(i)
-            if (item is not None):
+            if item is not None:
                 widget = item.widget()
-                if (widget is not None):
+                if widget is not None:
                     self.scrollLayout.removeWidget(widget) 
                     widget.setParent(None)
                     widget.deleteLater()
 
     def upload_local_institution(self):
         institution, ok_pressed = input_dialog_ok_cancel("Add Institution" if self.language_value == "English" else "Ajouter un établissement", 
-                                                       "Enter institution name:" if self.language_value == "English" else "Entrez le nom de l'établissement :")
+                                                         "Enter institution name:" if self.language_value == "English" else "Entrez le nom de l'établissement :")
         if not ok_pressed:
             return
         elif institution.strip() and institution not in settings_manager.get_setting("local_institutions"): 
@@ -78,7 +77,7 @@ class ManageInstitutionsPopup(QDialog):
             self.populate_table_information()
         elif institution in settings_manager.get_institutions():
             information_box("Warning" if self.language_value == "English" else "Avertissement", 
-                                "Institution already saved." if self.language_value == "English" else "Établissement déjà enregistré.", QMessageBox.Icon.Warning)
+                            "Institution already saved." if self.language_value == "English" else "Établissement déjà enregistré.", QMessageBox.Icon.Warning)
         else:
-            information_box( "Warning" if self.language_value == "English" else "Avertissement", 
-                                "No institution name entered or input is empty." if self.language_value == "English" else "Aucun nom d'institution saisi ou la saisie est vide.", QMessageBox.Icon.Warning)
+            information_box("Warning" if self.language_value == "English" else "Avertissement",
+                            "No institution name entered or input is empty." if self.language_value == "English" else "Aucun nom d'institution saisi ou la saisie est vide.", QMessageBox.Icon.Warning)
