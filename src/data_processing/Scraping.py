@@ -43,14 +43,11 @@ class ScrapingThread(QThread):
 
     def scrapeCRKN(self):
         crkn_url = settings_manager.get_setting('CRKN_url')
-        self.progress_update.emit(0)
+        self.progress_update.emit(1)
         """Scrape the CRKN website for listed ebook files."""
         error = ""
         error_message = ""
         attempt = 0
-
-        # Show the user scraping has started
-        self.progress_update.emit(5)
 
         while attempt < 3:
             try:
@@ -126,11 +123,7 @@ class ScrapingThread(QThread):
         files_to_remove = [file for file in database.get_tables(connection) if not file.startswith("local_")]
 
         # Check if links on CRKN website need to be added/updated in local database
-        i = 0
         for link in links:
-            i += 1
-            progress = 10 + int((i / len(links)) * 20)
-            self.progress_update.emit(progress)
             file_link = link.get("href")
             file_first, file_date = split_CRKN_file_name(file_link)
             result = compare_file([file_first, file_date], "CRKN", connection)
@@ -149,16 +142,18 @@ class ScrapingThread(QThread):
         if file_changes > 0:
             self.file_changes_signal.emit(file_changes)
             ans = self.wait_for_response()
+            progress_per_file = int(100 / file_changes)
             if ans == "Y":
                 if len(files_to_update) > 0:
-                    self.download_files(files_to_update, connection)
+                    self.download_files(files_to_update, connection, progress_per_file)
                 if len(files_to_remove) > 0:
-                    i = 0
+                    progress = len(files_to_update) * progress_per_file
                     for file in files_to_remove:
-                        i += 1
-                        progress = 90 + int((i / len(files_to_remove)) * 9)
-                        self.progress_update.emit(progress)
                         update_tables([file], "CRKN", connection, "DELETE")
+                        progress += progress_per_file
+                        if progress == 100:
+                            progress = 99
+                        self.progress_update.emit(progress)
 
         settings_manager.get_CRKN_institutions(connection)
 
@@ -175,19 +170,17 @@ class ScrapingThread(QThread):
     def receive_response(self, response):
         self.response = response
     
-    def download_files(self, files, connection):        
+    def download_files(self, files, connection, progress_per_file):
         """
         For all files that need downloading from CRKN, do so and store in local database.
         :param files: list of files to download from CRKN
         :param connection: database connection object
+        :param progress_per_file: Amount progress bar increases for each file
         """
         language = settings_manager.get_setting("language")
         try:
-            i = 0
+            progress = 0
             for [link, command] in files:
-                i += 1
-                progress = 30 + int((i / len(files)) * 30)
-                self.progress_update.emit(progress)
                 file_link = link.get("href")
 
                 # Get which type of file it is (xlsx, csv, or tsv)
@@ -217,6 +210,11 @@ class ScrapingThread(QThread):
                 else:
                     m_logger.error(f"{file_link.split('/')[-1]} - The file was not in the correct format, so it was not uploaded.\n{valid_format}")
                     self.error_signal.emit(f"{file_link.split('/')[-1]}\nThe file was not in the correct format, so it was not uploaded.\n{valid_format}" if language == "English" else f"{file_link.split('/')[-1]}\nLe fichier n’était pas au bon format et n’a donc pas été chargé.\n{valid_format}")
+
+                progress += progress_per_file
+                if progress == 100:
+                    progress = 99
+                self.progress_update.emit(progress)
 
         # Handle connection loss in middle of scraping
         except requests.exceptions.HTTPError as http_err:
