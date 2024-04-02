@@ -12,6 +12,7 @@ from src.data_processing import database
 from PyQt6.QtCore import QTimer, QThread, pyqtSignal
 from src.utility.logger import m_logger
 import os
+from src.utility.utils import get_base_path
 
 settings_manager = Settings()
 
@@ -194,17 +195,17 @@ class ScrapingThread(QThread):
                 file_first, file_date = split_CRKN_file_name(file_link)
 
                 # Write file to temporary local file
-                with open(f"{os.path.abspath(os.path.dirname(__file__))}/temp.{file_type}", 'wb') as file:
+                with open(os.path.join(get_base_path(), 'temp.xlsx'), 'wb') as file:
                     response = requests.get(settings_manager.get_setting("CRKN_root_url") + file_link)
                     file.write(response.content)
 
                 # Convert file into dataframe
                 if file_type == "xlsx":
-                    file_df = file_to_dataframe_excel(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
+                    file_df = file_to_dataframe_excel(file_link.split("/")[-1], os.path.join(get_base_path(), 'temp.xlsx'))
                 elif file_type == "tsv":
-                    file_df = file_to_dataframe_tsv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.tsv")
+                    file_df = file_to_dataframe_tsv(file_link.split("/")[-1], os.path.join(get_base_path(), 'temp.tsv'))
                 else:
-                    file_df = file_to_dataframe_csv(file_link.split("/")[-1], f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
+                    file_df = file_to_dataframe_csv(file_link.split("/")[-1], os.path.join(get_base_path(), 'temp.csv'))
 
                 # Check if in correct format, if it is, upload and update tables
                 valid_format = check_file_format(file_df, language)
@@ -258,15 +259,15 @@ class ScrapingThread(QThread):
 
         # Remove temp.xlsx used for uploading files
         try:
-            os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.xlsx")
+            os.remove(os.path.join(get_base_path(), 'temp.xlsx'))
         except FileNotFoundError:
             pass
         try:
-            os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.csv")
+            os.remove(os.path.join(get_base_path(), 'temp.tsv'))
         except FileNotFoundError:
             pass
         try:
-            os.remove(f"{os.path.abspath(os.path.dirname(__file__))}/temp.tsv")
+            os.remove(os.path.join(get_base_path(), 'temp.csv'))
         except FileNotFoundError:
             pass
 
