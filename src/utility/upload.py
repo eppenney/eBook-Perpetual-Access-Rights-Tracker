@@ -5,6 +5,7 @@ import sys
 import datetime
 from src.utility.logger import m_logger
 from src.utility.settings_manager import Settings
+from src.utility.message_boxes import question_yes_no_box, information_box
 
 
 settings_manager = Settings()
@@ -61,8 +62,9 @@ class UploadUI(QDialog):
 
     def handle_error(self, title, error_msg):
         m_logger.error(error_msg)
-        QMessageBox.critical(None, title, error_msg, QMessageBox.StandardButton.Ok)
+        information_box(title, error_msg, QMessageBox.Icon.Warning)
         self.loading_thread.receive_response(True)
+
 
     def update_progress(self, value):
         m_logger.info(f"File upload progress at {value}%")
@@ -74,13 +76,16 @@ class UploadUI(QDialog):
 
     def get_answer_yes_no(self, title, body):
         m_logger.info(body)
-        reply = QMessageBox.question(None, title, body, 
-                                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        self.loading_thread.receive_response(reply == QMessageBox.StandardButton.Yes)
+        response = question_yes_no_box(title, body)
+        if response:
+            self.loading_thread.receive_response(True)
+        else:
+            self.loading_thread.receive_response(False)
+
 
     def get_okay(self, title, body):
         m_logger.info(body)
-        QMessageBox.information(None, title, body, QMessageBox.StandardButton.Ok)
+        information_box(title, body)
         self.loading_thread.receive_response(True)
 
 

@@ -2,6 +2,7 @@ from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QProgressBar, QMessageBox
 from src.data_processing.Scraping import ScrapingThread
 from src.utility.settings_manager import Settings
+from src.utility.message_boxes import question_yes_no_box, information_box
 
 settings_manager = Settings()
 language = settings_manager.get_setting("language")
@@ -49,11 +50,10 @@ class LoadingPopup(QDialog):
     
     def handle_file_changes(self, file_changes):
         self.timer.stop()
-        reply = QMessageBox.question(self, "Database Update" if language == "English" else "Mise à jour de la base de données", 
+        reply = question_yes_no_box("Database Update" if language == "English" else "Mise à jour de la base de données", 
                                      f"There {'is' if file_changes == 1 else 'are'} {file_changes} {'file' if file_changes == 1 else 'files'} to update in the database. Would you like to do the update now?" if language == "English" else 
-                                     f"Il y a {file_changes} {'fichier' if file_changes == 1 else 'fichers'} à mettre à jour dans la base de données. Souhaitez-vous effectuer la mise à jour maintenant ?",
-                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        if reply == QMessageBox.StandardButton.Yes:
+                                     f"Il y a {file_changes} {'fichier' if file_changes == 1 else 'fichers'} à mettre à jour dans la base de données. Souhaitez-vous effectuer la mise à jour maintenant ?")
+        if reply:
             self.loading_thread.receive_response("Y")
         else:
             self.loading_thread.receive_response("N")
@@ -64,7 +64,10 @@ class LoadingPopup(QDialog):
         dialog.setWindowTitle("Error" if language == "English" else "Erreur")
         dialog.setText(error_msg)
         dialog.setIcon(QMessageBox.Icon.Critical)
-        okay_button = dialog.addButton(QMessageBox.StandardButton.Ok)
+        if language == "French":
+            okay_button = dialog.addButton("D'accord", QMessageBox.ButtonRole.AcceptRole)
+        else:
+            okay_button = dialog.addButton(QMessageBox.StandardButton.Ok)
         if (not end_thread):
             okay_button.clicked.connect(lambda: self.loading_thread.receive_response("Y"))
         dialog.exec()
@@ -75,9 +78,5 @@ class LoadingPopup(QDialog):
 
 
     def show_popup_once(self):
-        dialog = QMessageBox(self)
-        dialog.setWindowTitle("Task Completed" if language == "English" else "Tâche terminée")
-        dialog.setText("Data retrieval complete." if language == "English" else "Récupération des données terminée.")
-        dialog.setIcon(QMessageBox.Icon.Information)
-        dialog.addButton(QMessageBox.StandardButton.Ok)
-        dialog.exec()
+        information_box("Task Completed" if language == "English" else "Tâche terminée", "Data retrieval complete." if language == "English" else "Récupération des données terminée.")
+        
