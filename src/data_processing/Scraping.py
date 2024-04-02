@@ -514,12 +514,12 @@ def check_file_format(file_df, language):
                 return "Missing title data."
             else:
                 return "Données de titre manquantes."
-        """if df_series["Platform_eISBN"] != rows:
+        if df_series["Platform_eISBN"] != rows:
             m_logger.error("Missing ISBN data")
             if language == "English":
                 return "Missing Platform_eISBN data."
             else:
-                return "Données de Platform_eISBN manquantes."""""
+                return "Données de Platform_eISBN manquantes."
         for institution_column in df_series[8:-2]:
             if institution_column != rows:
                 m_logger.error("Missing Y/N data")
