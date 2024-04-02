@@ -1,8 +1,9 @@
-from PyQt6.QtWidgets import QFileDialog, QApplication, QMessageBox
+from PyQt6.QtWidgets import QFileDialog, QApplication
 import pandas as pd
 import sys
 from src.utility.logger import m_logger
 from src.utility.settings_manager import Settings
+from src.utility.message_boxes import information_box
 
 
 settings_manager = Settings()
@@ -32,7 +33,8 @@ def export_data(data, headers):
         # Save the DataFrame to TSV
         df.to_csv(save_path, sep="\t", index=False)
         m_logger.info(f"Data exported to: {save_path}")
-        QMessageBox.information(None, "File Export" if language == "English" else "Exportation de fichiers", f"File has been exported to:\n{save_path}" if language == "English" else f"Le fichier a été exporté vers:\n{save_path}", QMessageBox.StandardButton.Ok)
+        information_box("File Export" if language == "English" else "Exportation de fichiers", 
+                        f"File has been exported to:\n{save_path}" if language == "English" else f"Le fichier a été exporté vers:\n{save_path}")
 
 
 def get_save_path():

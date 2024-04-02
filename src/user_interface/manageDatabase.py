@@ -3,6 +3,7 @@ from PyQt6.uic import loadUi
 from src.utility.upload import upload_and_process_file
 from src.data_processing.database import connect_to_database, close_database, get_table_data
 from src.utility.settings_manager import Settings
+from src.utility.message_boxes import question_yes_no_box, information_box
 import os
 
 settings_manager = Settings()
@@ -41,12 +42,6 @@ class ManageLocalDatabasesPopup(QDialog):
             line.setFrameShape(QFrame.Shape.HLine)
             line.setFrameShadow(QFrame.Shadow.Sunken)
             
-            # Create a horizontal layout for each row
-            # row_layout = QVBoxLayout()
-            # row_layout.addWidget(table_label)
-            # row_layout.addWidget(remove_button)
-            # row_layout.addWidget(line)
-
             # Add the horizontal layout to the main vertical layout
             self.scrollLayout.addWidget(table_label)
             self.scrollLayout.addWidget(remove_button)
@@ -56,12 +51,12 @@ class ManageLocalDatabasesPopup(QDialog):
 
     def remove_table(self, table_name):
         from src.utility.upload import remove_local_file
-        confirm = QMessageBox.question(self, "Confirmation", 
-                                       f"Are you sure you want to remove {table_name}?" if self.language_value == "English" else f"Êtes-vous sûr de vouloir supprimer {table_name}?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        if confirm == QMessageBox.StandardButton.Yes:
+        confirm = question_yes_no_box("Confirmation", 
+                                       f"Are you sure you want to remove {table_name}?" if self.language_value == "English" else f"Êtes-vous sûr de vouloir supprimer {table_name}?")
+        if confirm:
             remove_local_file(table_name.lstrip("local_"))
             self.populate_table_information() 
-            QMessageBox.information(self, "Success" if self.language_value == "English" else "Succès", 
+            information_box("Success" if self.language_value == "English" else "Succès", 
                                     f"{table_name} has been removed successfully." if self.language_value == "English" else f"{table_name} a été supprimé avec succès.")
             
     def deleteTableData(self):

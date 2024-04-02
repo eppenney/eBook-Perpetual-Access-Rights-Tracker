@@ -15,6 +15,7 @@ from src.user_interface.settingsPage import settingsPage
 from src.data_processing.database import connect_to_database, \
     close_database, search_database
 from src.utility.settings_manager import Settings
+from src.utility.message_boxes import information_box
 import sys
 import os
 
@@ -239,7 +240,8 @@ class startScreen(QDialog):
             self.questionButton.setGeometry(self.questionButton.x(), newY, self.questionButton.width(), self.questionButton.height())
 
         else:
-            QMessageBox.warning(self, "Limit reached" if self.language_value == "English" else "Limite atteinte", f"You can only search with {MAX_DUPLICATES+1} fields at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher avec {MAX_DUPLICATES+1} cases à la fois.")
+            information_box("Limit reached" if self.language_value == "English" else "Limite atteinte", 
+                            f"You can only search with {MAX_DUPLICATES+1} fields at a time" if self.language_value == "English" else f"Vous ne pouvez rechercher avec {MAX_DUPLICATES+1} cases à la fois.", QMessageBox.Icon.Warning)
 
     def adjustDuplicateTextEditSize(self):
         for i in range(len(self.duplicateTextEdits)):
@@ -349,7 +351,8 @@ class startScreen(QDialog):
             self.questionButton.setGeometry(self.questionButton.x(), newY, self.questionButton.width(),self.questionButton.height())
 
         else:
-            QMessageBox.information(self, "Minimum Fields Reached" if self.language_value == "English" else "Cases minimum atteints", "There are no more search fields to remove." if self.language_value == "English" else "Il n'y a plus de cases de recherche à supprimer.")
+            information_box("Minimum Fields Reached" if self.language_value == "English" else "Cases minimum atteints", 
+                            "There are no more search fields to remove." if self.language_value == "English" else "Il n'y a plus de cases de recherche à supprimer.")
 
     def clearSearch(self):
         for i in range(len(self.duplicateTextEdits)):
@@ -383,14 +386,14 @@ class startScreen(QDialog):
 
         # Do not search if no institution selected to search.
         if institution == "":
-            QMessageBox.information(self, "No institution selected" if self.language_value == "English" else "Aucun établissement sélectionné", "You have no institution selected. Please select an institution on the settings page." if self.language_value == "English" else "Vous n'avez sélectionné aucun institut. Veuillez sélectionner un institut sur la page des paramètres.")
+            information_box("No institution selected" if self.language_value == "English" else "Aucun établissement sélectionné", 
+                            "You have no institution selected. Please select an institution on the settings page." if self.language_value == "English" else "Vous n'avez sélectionné aucun institut. Veuillez sélectionner un institut sur la page des paramètres.")
             return
 
         searchText = self.textEdit.text().strip()
         if searchText == "":
-            QMessageBox.information(self,
-                                    "No Search Items" if self.language_value == "English" else "Aucun Terme de Recherche",
-                                    "There are no search items in the first search box." if self.language_value == "English" else "Il n'y a aucun terme de recherche dans le premier cas de recherche.")
+            information_box("No Search Items" if self.language_value == "English" else "Aucun Terme de Recherche",
+                            "There are no search items in the first search box." if self.language_value == "English" else "Il n'y a aucun terme de recherche dans le premier cas de recherche.")
             return
         terms = [searchText]
         searchTypeIndex = self.booleanSearchType.currentIndex()
@@ -398,7 +401,8 @@ class startScreen(QDialog):
         searchTypes = [searchType]
 
         if "*" in searchText and searchType != "Title":
-            QMessageBox.information(self, "Invalid Search" if self.language_value == "English" else "Recherche invalide", "Partial search is unavailable for ISBN or OCN searches." if self.language_value == "English" else "La recherche partielle n'est pas disponible pour les recherches ISBN ou OCN.")
+            information_box("Invalid Search" if self.language_value == "English" else "Recherche invalide", 
+                            "Partial search is unavailable for ISBN or OCN searches." if self.language_value == "English" else "La recherche partielle n'est pas disponible pour les recherches ISBN ou OCN.", QMessageBox.Icon.Warning)
             return
         query = f"SELECT [{institution}], File_Name, Platform, Title, Publisher, Platform_YOP, Platform_eISBN, OCN, agreement_code, collection_name, title_metadata_last_modified FROM table_name WHERE "
 
@@ -409,16 +413,16 @@ class startScreen(QDialog):
         for i in range(len(self.duplicateTextEdits)):
             searchText = self.duplicateTextEdits[i].text().strip()
             if searchText == "":
-                QMessageBox.information(self,
-                                        "No Search Items" if self.language_value == "English" else "Aucun Terme de Recherche",
-                                        "There are no search items in one or more of the search boxes." if self.language_value == "English" else "Il n'y a aucun terme de recherche dans un ou plusieurs des cases de recherche.")
+                information_box("No Search Items" if self.language_value == "English" else "Aucun Terme de Recherche",
+                                    "There are no search items in one or more of the search boxes." if self.language_value == "English" else "Il n'y a aucun terme de recherche dans un ou plusieurs des cases de recherche.", QMessageBox.Icon.Warning)
                 return
             terms.append(searchText)
             searchTypeIndex = self.duplicateSearchTypes[i].currentIndex()
             searchType = "Title" if searchTypeIndex == 0 else "Platform_eISBN" if searchTypeIndex == 1 else "OCN"
             searchTypes.append(searchType)
             if "*" in terms[i+1] and searchType != "Title":
-                QMessageBox.information(self, "Invalid Search" if self.language_value == "English" else "Recherche invalide", "Partial search is unavailable for ISBN or OCN searches." if self.language_value == "English" else "La recherche partielle n'est pas disponible pour les recherches ISBN ou OCN.")
+                information_box("Invalid Search" if self.language_value == "English" else "Recherche invalide", 
+                                "Partial search is unavailable for ISBN or OCN searches." if self.language_value == "English" else "La recherche partielle n'est pas disponible pour les recherches ISBN ou OCN.", QMessageBox.Icon.Warning)
                 return
 
         connection = connect_to_database()
@@ -427,7 +431,7 @@ class startScreen(QDialog):
 
         # Do not go to results page if there are no results or no text in the search field.
         if len(results) == 0:
-            QMessageBox.information(self, "No Results Found" if self.language_value == "English" else "Aucun résultat trouvé", "There are no results for the search." if self.language_value == "English" else "Il n'y a aucun résultat pour la recherche.")
+            information_box("No Results Found" if self.language_value == "English" else "Aucun résultat trouvé", "There are no results for the search." if self.language_value == "English" else "Il n'y a aucun résultat pour la recherche.")
             return
 
         self.searchToDisplay(results)

@@ -7,6 +7,7 @@ from src.user_interface.welcomeScreen import WelcomePage
 from src.utility.settings_manager import Settings
 from src.utility.logger import m_logger
 from src.utility.utils import get_base_path
+from src.utility.message_boxes import question_yes_no_box
 import os
 
 
@@ -58,10 +59,11 @@ def main():
 
         language = settings_manager.get_setting("language")
         if settings_manager.get_setting('allow_CRKN') == "True":
-            reply = QMessageBox.question(None, 'Update CRKN' if language == "English" else "Mettre à jour de RCDR",
-                                     'Would you like to update CRKN database before proceeding?' if language == "English" else "Souhaitez-vous mettre à jour la base de données du RCDR avant de continuer ?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-            if reply == QMessageBox.StandardButton.Yes:
+            reply = question_yes_no_box('Update CRKN' if language == "English" else "Mettre à jour de RCDR",
+                                     'Would you like to update CRKN database before proceeding?' if language == "English" else "Souhaitez-vous mettre à jour la base de données du RCDR avant de continuer ?")
+            if reply:
                 scrapeCRKN()
+                
         welcome_page = WelcomePage.get_instance(widget)
         widget.addWidget(welcome_page)
         widget.setMinimumHeight(800)
@@ -76,9 +78,9 @@ def main():
         widget.show()
 
         if settings_manager.get_setting('allow_CRKN') == "True":
-            reply = QMessageBox.question(None, 'Update CRKN' if language == "English" else "Mettre à jour de RCDR",
-                                     'Would you like to update CRKN database before proceeding?' if language == "English" else "Souhaitez-vous mettre à jour la base de données du RCDR avant de continuer ?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-            if reply == QMessageBox.StandardButton.Yes:
+            reply = question_yes_no_box('Update CRKN' if language == "English" else "Mettre à jour de RCDR",
+                                     'Would you like to update CRKN database before proceeding?' if language == "English" else "Souhaitez-vous mettre à jour la base de données du RCDR avant de continuer ?")
+            if reply:
                 scrapeCRKN()
 
     sys.exit(app.exec())

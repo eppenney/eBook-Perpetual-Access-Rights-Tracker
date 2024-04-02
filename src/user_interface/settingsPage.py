@@ -9,6 +9,7 @@ from PyQt6.uic import loadUi
 from PyQt6.QtWidgets import QDialog, QPushButton, QWidget, QComboBox, QMessageBox, QCheckBox, QLineEdit
 from src.user_interface.scraping_ui import scrapeCRKN
 from src.utility.upload import upload_and_process_file
+from src.utility.message_boxes import question_yes_no_box, information_box
 from src.utility.settings_manager import Settings
 import os
 
@@ -162,10 +163,9 @@ class settingsPage(QDialog):
         selected_language = self.languageSelection.currentIndex()
         if current_language == ("English" if selected_language == 0 else "French"):
             return
-        reply = QMessageBox.question(None, "Language Change" if current_language == "English" else "Changement de langue", 
-                                     "Are you sure you want to change your language setting?" if current_language == "English" else "Êtes-vous sûr de vouloir modifier votre paramètre de langue ?", 
-                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        if reply == QMessageBox.StandardButton.Yes:
+        reply = question_yes_no_box("Language Change" if current_language == "English" else "Changement de langue", 
+                                     "Are you sure you want to change your language setting?" if current_language == "English" else "Êtes-vous sûr de vouloir modifier votre paramètre de langue ?")
+        if reply:
             settings_manager.set_language("English" if selected_language == 0 else "French")   
         self.reset_app()
     
@@ -173,10 +173,9 @@ class settingsPage(QDialog):
         selected_institution = self.institutionSelection.currentText()
         if selected_institution == settings_manager.get_setting("institution"):
             return
-        response = QMessageBox.warning(self, "Change Institution" if self.language_value == "English" else "Changer d'établissement", 
-                            "Are you sure you want to change the institution?" if self.language_value == "English" else "Etes-vous sûr de vouloir changer d'établissement?",
-                            QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
-        if response == QMessageBox.StandardButton.Yes:
+        response = question_yes_no_box("Change Institution" if self.language_value == "English" else "Changer d'établissement", 
+                            "Are you sure you want to change the institution?" if self.language_value == "English" else "Etes-vous sûr de vouloir changer d'établissement?")
+        if response:
             if selected_institution.strip():
                 settings_manager.set_institution(selected_institution)
             else:
@@ -188,15 +187,14 @@ class settingsPage(QDialog):
         if crkn_url == settings_manager.get_setting("CRKN_url"):
             return
         if not (crkn_url.startswith("https://") or crkn_url.startswith("http://")):
-            QMessageBox.warning(self, "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
+            information_box("Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
                                 "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else 
-                                "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",QMessageBox.StandardButton.Ok)
+                                "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.", QMessageBox.Icon.Warning)
             self.reset_app()
             return
-        response = QMessageBox.warning(self, "Change CRKN URL" if self.language_value == "English" else "Modifier l'URL du CRKN", 
-                            "Are you sure you want to change the CRKN retrieval URL?" if self.language_value == "English" else "Êtes-vous sûr de vouloir modifier l'URL de récupération du CRKN?",
-                            QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
-        if response == QMessageBox.StandardButton.Yes:
+        response = question_yes_no_box("Change CRKN URL" if self.language_value == "English" else "Modifier l'URL du CRKN", 
+                            "Are you sure you want to change the CRKN retrieval URL?" if self.language_value == "English" else "Êtes-vous sûr de vouloir modifier l'URL de récupération du CRKN?")
+        if response:
             settings_manager.set_crkn_url(crkn_url)
         self.reset_app()
 
@@ -205,15 +203,14 @@ class settingsPage(QDialog):
         if help_url == settings_manager.get_setting("github_link"):
             return
         if not (help_url.startswith("https://") or help_url.startswith("http://")):
-            QMessageBox.warning(self, "Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
+            information_box("Incorrect URL format" if self.language_value == "English" else "Format d'URL incorrect", 
                                 "Incorrect URL format.\nEnsure URL begins with http:// or https://." if self.language_value == "English" else 
-                                "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",QMessageBox.StandardButton.Ok)
+                                "Format d'URL incorrect.\nAssurez-vous que l'URL commence par http:// ou https://.",QMessageBox.Icon.Warning)
             self.reset_app()
             return
-        response = QMessageBox.warning(self, "Change help URL" if self.language_value == "English" else "Modifier l'URL de l'aide", 
-                            "Are you sure you want to change the help URL?" if self.language_value == "English" else "Êtes-vous sûr de vouloir modifier l'URL d'aide ?",
-                            QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No)
-        if response == QMessageBox.StandardButton.Yes:
+        response = question_yes_no_box("Change help URL" if self.language_value == "English" else "Modifier l'URL de l'aide", 
+                            "Are you sure you want to change the help URL?" if self.language_value == "English" else "Êtes-vous sûr de vouloir modifier l'URL d'aide ?")
+        if response:
             settings_manager.set_github_url(help_url)
         self.reset_app()
 
