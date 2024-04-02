@@ -155,6 +155,8 @@ class ScrapingThread(QThread):
                     for file in files_to_remove:
                         update_tables([file], "CRKN", connection, "DELETE")
                         progress += progress_per_file
+                        if progress == 100:
+                            progress = 99
                         self.progress_update.emit(progress)
 
         settings_manager.get_CRKN_institutions(connection)
@@ -214,6 +216,8 @@ class ScrapingThread(QThread):
                     self.error_signal.emit(f"{file_link.split('/')[-1]}\nThe file was not in the correct format, so it was not uploaded.\n{valid_format}" if language == "English" else f"{file_link.split('/')[-1]}\nLe fichier n’était pas au bon format et n’a donc pas été chargé.\n{valid_format}")
 
                 progress += progress_per_file
+                if progress == 100:
+                    progress = 99
                 self.progress_update.emit(progress)
 
         # Handle connection loss in middle of scraping
