@@ -31,7 +31,7 @@ class ScrapingThread(QThread):
 
     progress_update = pyqtSignal(int)
     file_changes_signal = pyqtSignal(int)
-    error_signal = pyqtSignal(str)
+    error_signal = pyqtSignal(str, bool)
 
     def retry_scrape(self, attempt, max_attempt=3):
         """ Attempt to scrape again if connection is lost in the middle of scraping"""
@@ -76,6 +76,8 @@ class ScrapingThread(QThread):
                 error = http_err
                 page_text = None
                 if not self.retry_scrape(attempt):
+                    m_logger.error(f"An error occurred: {error}")
+                    self.error_signal.emit(error_message, True)
                     return
             except requests.exceptions.ConnectionError as conn_err:
                 # Handle errors like refused connections
@@ -88,6 +90,8 @@ class ScrapingThread(QThread):
                 error = conn_err
                 page_text = None
                 if not self.retry_scrape(attempt):
+                    m_logger.error(f"An error occurred: {error}")
+                    self.error_signal.emit(error_message, True)
                     return
             except requests.exceptions.Timeout as timeout_err:
                 # Handle request timeout
@@ -111,7 +115,7 @@ class ScrapingThread(QThread):
         # Log and display error message
         if page_text is None:
             m_logger.error(f"An error occurred: {error}")
-            self.error_signal.emit(error_message)
+            self.error_signal.emit(error_message, True)
             return
 
         # Get list of links that end in xlsx, csv, or tsv from the CRKN website link
@@ -216,8 +220,9 @@ class ScrapingThread(QThread):
                     update_tables([file_first, file_date], "CRKN", connection, command)
                 else:
                     m_logger.error(f"{file_link.split('/')[-1]} - The file was not in the correct format, so it was not uploaded.\n{valid_format}")
-                    self.error_signal.emit(f"{file_link.split('/')[-1]}\nThe file was not in the correct format, so it was not uploaded.\n{valid_format}" if language == "English" else f"{file_link.split('/')[-1]}\nLe fichier n’était pas au bon format et n’a donc pas été chargé.\n{valid_format}")
-
+                    self.error_signal.emit(f"{file_link.split('/')[-1]}\nThe file was not in the correct format, so it was not uploaded.\n{valid_format}" if language == "English" 
+                                           else f"{file_link.split('/')[-1]}\nLe fichier n’était pas au bon format et n’a donc pas été chargé.\n{valid_format}", False)
+                    self.wait_for_response()
         # Handle connection loss in middle of scraping
         except requests.exceptions.HTTPError as http_err:
             # Handle HTTP errors
@@ -226,7 +231,7 @@ class ScrapingThread(QThread):
             else:
                 error_message = ("Erreur de Connexion Internet : La connexion su serveur a été perdue. Tous les fichiers n'ont pas été récupérés. Veuillez réessayer de mettre  à jour RCDR de nouveau.")
             m_logger.error(http_err)
-            self.error_signal.emit(error_message)
+            self.error_signal.emit(error_message, True)
         except requests.exceptions.ConnectionError as conn_err:
             # Handle errors like refused connections
             if language == "English":
@@ -234,7 +239,7 @@ class ScrapingThread(QThread):
             else:
                 error_message = ("Erreur de Connexion Internet : La connexion à l'internet a été perdue. Tous les fichiers n'ont pas été récupérés avec succès. Veuillez réessayer de mettre à jour RCDR de nouveau.")
             m_logger.error(conn_err)
-            self.error_signal.emit(error_message)
+            self.error_signal.emit(error_message, True)
         except requests.exceptions.Timeout as timeout_err:
             # Handle request timeout
             if language == "English":
@@ -242,7 +247,7 @@ class ScrapingThread(QThread):
             else:
                 error_message = "Expiration de la Connexion : Le serveur a mis trop de temps à répondre. Tous les fichiers n'ont pas été récupérés avec succès. Veuillez réessayer de mettre  à jour RCDR de nouveau."
             m_logger.error(timeout_err)
-            self.error_signal.emit(error_message)
+            self.error_signal.emit(error_message, True)
         except Exception as e:
             # Handle any other exceptions
             if language == "English":
@@ -250,7 +255,7 @@ class ScrapingThread(QThread):
             else:
                 error_message = "Erreur inattendue : Tous les fichiers n'ont pas été récupérés avec succès. Veuillez réessayer de mettre  à jour RCDR de nouveau."
             m_logger.error(e)
-            self.error_signal.emit(error_message)
+            self.error_signal.emit(error_message, True)
 
         # Remove temp.xlsx used for uploading files
         try:

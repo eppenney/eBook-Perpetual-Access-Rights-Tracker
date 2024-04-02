@@ -58,16 +58,21 @@ class LoadingPopup(QDialog):
         else:
             self.loading_thread.receive_response("N")
             
-    def handle_error(self, error_msg):
+    def handle_error(self, error_msg, end_thread):
         self.timer.stop()
         dialog = QMessageBox(self)
         dialog.setWindowTitle("Error" if language == "English" else "Erreur")
         dialog.setText(error_msg)
         dialog.setIcon(QMessageBox.Icon.Critical)
-        dialog.addButton(QMessageBox.StandardButton.Ok)
+        okay_button = dialog.addButton(QMessageBox.StandardButton.Ok)
+        if (not end_thread):
+            okay_button.clicked.connect(lambda: self.loading_thread.receive_response("Y"))
         dialog.exec()
-        self.finished = True
-        self.close()
+        if (end_thread):
+            self.finished = True
+            self.loading_thread = None
+            self.close()
+
 
     def show_popup_once(self):
         dialog = QMessageBox(self)
