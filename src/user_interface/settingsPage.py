@@ -106,9 +106,9 @@ class settingsPage(QDialog):
         self.helpURL = self.findChild(QLineEdit, 'helpURL')
         self.helpURL.setText(current_help_url)
         if self.language_value == "English":
-            self.crknURL.setToolTip("Press Enter to confirm changes")
+            self.helpURL.setToolTip("Press Enter to confirm changes")
         elif self.language_value == "French":
-            self.crknURL.setToolTip("Appuyez sur Entrée pour confirmer les modifications")
+            self.helpURL.setToolTip("Appuyez sur Entrée pour confirmer les modifications")
         self.helpURL.returnPressed.connect(self.save_help_url)
 
         self.set_current_settings_values()
